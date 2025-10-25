@@ -11,8 +11,10 @@ from services.CsvParser import parse_participants_csv, parse_prizes_csv, parse_w
 # Singletonなので、インスタンスは1つしか作成されない
 class DataHandler(metaclass=Singleton):
 
-    # 作成される際に既存ファイルを読み込む
     def __init__(self):
+        """
+        作成時に既存ファイルを読み込む
+        """
         
         # 全参加者リスト（不参加含む）
         self.all_participants: list[Participant] = []
@@ -99,61 +101,70 @@ class DataHandler(metaclass=Singleton):
         # Done
         return
     
-    # 会場に居る参加者リスト（self.attending_participants）を更新
-    # 参加者リスト又は不参加リストが更新された際は必ず呼ぶべき
     def update_attending_participants(self) -> None:
+        """
+        会場に居る参加者リスト（self.attending_participants）を更新  
+        参加者リスト又は不参加リストが更新された際は必ず呼ぶべき
+        """
         self.attending_participants = [participant for participant in self.all_participants 
                 if participant.connpass_attending and
                    participant.registration_id not in self.cancels
                 ]
         
-    # 参加者が会場にいるかを確認
-    # Connpassでキャンセルされてない＋当日キャンセルリストに含まれてない
     def is_attending(self, id: str) -> bool:
+        """
+        参加者が会場にいるかを確認  
+        （Connpassでキャンセルされてない＋当日不参加リストに含まれてない）
+        """
         # 当日参加リスト（self.attending_participants）に入ってるかチェック
         return any(participant.registration_id == id for participant in self.attending_participants)
     
-    # 参加者リストを取得（不参加を含む）
     def get_all_participants(self) -> list[Participant]:
+        """
+        参加者リストを取得（不参加を含む）
+        """
         return self.all_participants
     
-    # 参加者リストのIDだけを取得
     def get_all_participant_ids(self) -> list[str]:
+        """
+        全参加者のIDだけを取得
+        """
         return [participant.registration_id for participant in self.all_participants]
     
-    # 会場に居る参加者リストを取得（Connpass不参加、当日不参加を省く）
     def get_available_participants(self) -> list[Participant]:
+        """
+        会場に居る参加者リストを取得（Connpass不参加、当日不参加を省く）
+        """
         return self.attending_participants
     
-    # 会場にいる参加者のIDだけを取得（Connpass不参加、当日不参加を省く）
     def get_available_participant_ids(self) -> list[str]:
+        """
+        会場にいる参加者のIDリストを取得（Connpass不参加、当日不参加を省く）
+        """
         return [participant.registration_id for participant in self.attending_participants]
     
-    # 参加者を取得（存在しない場合はNone）
     def get_participant_by_id(self, id: str) -> Participant | None:
+        """
+        参加者をIDから取得（存在しない場合はNone）
+        """
         return next((participant for participant in self.all_participants if participant.registration_id == id), None)
         
-    # 現在当選していない参加者リストを取得（抽選用）
-    # TODO: 当選者＜景品数に対応
-    def get_prizeless_participants(self) -> list[Participant]:
-        return [participant for participant in self.attending_participants
-                if participant.registration_id not in [entry.participant_id for entry in self.winner_mappings]]
-        
-    # 全景品リストを取得
     def get_all_prizes(self) -> list[Prize]:
+        """
+        全景品リストを取得
+        """
         return self.prizes
         
-    # 現在すべてのIDが当選していない景品グループのリストを取得
-    def get_winnerless_prizes(self) -> list[Prize]:
-        return [prize for prize in self.prizes
-                if prize.id not in [entry.prize_id for entry in self.winner_mappings]]
-        
-    # 全ての当日不参加IDを取得
     def get_all_cancel_ids(self) -> list[str]:
+        """
+        全ての当日不参加者のIDを取得
+        """
         return self.cancels
     
-    # 当日非参加リストにIDを追加する
     def add_cancel(self, id: str) -> AttendanceModificationStatus:
+        """
+        当日不参加リストにIDを追加する
+        """
         
         if not self.get_participant_by_id(id):
             return AttendanceModificationStatus.NONEXISTENT_ID
@@ -165,8 +176,10 @@ class DataHandler(metaclass=Singleton):
             self.update_attending_participants()
             return AttendanceModificationStatus.PROCESSED_SUCCESSFULLY
         
-    # 当日非参加リストからIDを削除する
     def remove_cancel(self, id: str) -> AttendanceModificationStatus:
+        """
+        当日不参加リストからIDを削除する
+        """
         
         if not self.get_participant_by_id(id):
             return AttendanceModificationStatus.NONEXISTENT_ID
@@ -178,23 +191,29 @@ class DataHandler(metaclass=Singleton):
             self.update_attending_participants()
             return AttendanceModificationStatus.PROCESSED_SUCCESSFULLY
         
-    # 当日不参加IDリストをリセット
     def wipe_cancels(self) -> None:
+        """
+        当日不参加IDリストをリセット
+        """
         self.cancels = []
         self.write_cancels()
         self.update_attending_participants()
         return
-    
-    # 当日不参加リストを書き出す
-    # self.cancelsを変更後に必ず行うべき
+
     def write_cancels(self) -> None:
+        """
+        当日不参加リストを書き出す
+        self.cancelsを変更後に必ず行うべき
+        """
         cancels_file = open('./cancels.txt', 'wt')
         for entry in self.cancels:
             cancels_file.write(f"{entry}\n")
         cancels_file.close()
     
-    # 新たな参加者リストを読み込み・置き換え
     def import_new_participants_list(self, new_participants: list[Participant]) -> bool:
+        """
+        新たな参加者リストを読み込み・置き換え
+        """
         # もし抽選結果が存在する場合、参加者リストの置き換えを許さない
         if len(self.winner_mappings) > 0:
             return False
@@ -202,8 +221,10 @@ class DataHandler(metaclass=Singleton):
         self.update_attending_participants()
         return True
     
-    # 参加者リストの削除
     def wipe_participants_list(self) -> bool:
+        """
+        参加者リストの削除
+        """
         # もし抽選結果が存在する場合、参加者リストの置き換えを許さない
         if len(self.winner_mappings) > 0:
             return False
@@ -211,23 +232,35 @@ class DataHandler(metaclass=Singleton):
         self.update_attending_participants()
         return True
     
-    # 新たな景品リストを読み込み・置き換え
     def import_new_prizes_list(self, new_prizes: list[Prize]) -> bool:
+        """
+        新たな景品リストを読み込み・置き換え
+        """
         # もし抽選結果が存在する場合、景品リストの置き換えを許さない
         if len(self.winner_mappings) > 0:
             return False
         self.prizes = new_prizes
         return True
     
-    # 景品リストの削除
     def wipe_prizes_list(self, new_prizes: list[Prize]) -> bool:
+        """
+        景品リストの削除
+        """
         # もし抽選結果が存在する場合、景品リストの置き換えを許さない
         if len(self.winner_mappings) > 0:
             return False
         self.prizes = []
         return True
     
-    # 抽選結果をリセット
+    def get_prize_winner_mappings(self) -> list[WinnerMapping]:
+        """
+        現在存在する抽選結果を取得
+        """
+        return self.winner_mappings
+    
     def wipe_prize_winner_mappings(self) -> None:
+        """
+        抽選結果をリセット
+        """
         self.winner_mappings = []
         return
