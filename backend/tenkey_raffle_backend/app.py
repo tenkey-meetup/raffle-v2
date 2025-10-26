@@ -11,9 +11,9 @@ from blueprints.Raffle import api_v1_raffle
 
 
 flask_app = Flask(__name__)
-from services import Database
-Database.init_app(flask_app)
 flask_app.register_blueprint(api_v1_participants)
+flask_app.register_blueprint(api_v1_prizes)
+flask_app.register_blueprint(api_v1_raffle)
 
 
 if __name__ == "__main__":
