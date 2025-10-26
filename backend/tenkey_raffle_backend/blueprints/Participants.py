@@ -1,8 +1,9 @@
 import csv
 from os import fdopen
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, make_response, request
 from markupsafe import escape
 
+from services.RaffleManager import RaffleManager
 from services.CsvParser import parse_participants_csv
 from services.ParticipantsManager import ParticipantsManager
 from typedefs.FunctionReturnTypes import AttendanceModificationStatus
@@ -10,6 +11,7 @@ from typedefs.FunctionReturnTypes import AttendanceModificationStatus
 api_v1_participants = Blueprint('api_v1_participants', __name__)
 
 participants_manager = ParticipantsManager()
+raffle_manager = RaffleManager()
 
 
 # 全参加者ルート
@@ -23,9 +25,13 @@ def route_participants():
     # PUT -> CSV読み込み、既存リストを破棄して置き換え
     elif request.method == "PUT":
         
+        # もし抽選結果が存在する場合、参加者リストの置き換えを許さない
+        if len(raffle_manager.get_prize_winner_mappings()) > 0:
+            return make_response(jsonify({"parsed_participants": 0, "error": '抽選結果が存在する場合は参加者リストの書き換えを行えません。'}), 400)
+        
         # CSVファイルが添付されてるか確認する
         if 'csv' not in request.files:
-            return Response({"parsed_participants": 0, "error": 'ファイル「csv」が添付されていません'}, status=400)
+            return make_response(jsonify({"parsed_participants": 0, "error": 'ファイル「csv」が添付されていません'}), 400)
         
         # CSVファイルを開く
         f = request.files['csv']
@@ -36,22 +42,18 @@ def route_participants():
             csvfile.close()
             
         if parsed_data['error']:
-            return Response({"parsed_participants": 0, "error": parsed_data['error']}, status=400)
+            return make_response(jsonify({"parsed_participants": 0, "error": parsed_data['error']}), 400)
         
-        successfully_imported = participants_manager.import_new_participants_list(parsed_data['participants'])
-        if not successfully_imported:
-            return Response({"parsed_participants": 0, "error": '抽選結果が存在する場合は参加者リストの書き換えを行えません。'}, status=400)
-        
-        return Response({"parsed_participants": len(participants_manager.get_all_participants()), "error": None}, status=201)
+        participants_manager.import_new_participants_list(parsed_data['participants'])
+        return make_response(jsonify({"parsed_participants": len(participants_manager.get_all_participants()), "error": None}), 201)
     
     # DELETE -> 全データ削除
     elif request.method == 'DELETE':
-        success = participants_manager.wipe_participants_list()
-        if success:
-            return Response(f"参加者データを削除しました。", status=200)
-        else:
-            return Response(f"抽選結果が存在する場合は参加者リストの書き換えを行えません。", status=400)
-
+        # もし抽選結果が存在する場合、参加者リストの置き換えを許さない
+        if len(raffle_manager.get_prize_winner_mappings()) > 0:
+            return Response('抽選結果が存在する場合は参加者リストの書き換えを行えません。', status=400)
+        participants_manager.wipe_participants_list()
+        return Response(f"参加者データを削除しました。", status=200)
 
 # 参加者ID指定ルート
 @api_v1_participants.route("/api/v1/participants/by-id/<id>", methods=['GET'])
@@ -97,11 +99,11 @@ def route_participants_cancels():
             else:
                 nonexistent_ids.append(id)
                 
-        return Response({
+        return make_response(jsonify({
             "success": success,
             "skipped": skipped,
             "nonexistent_ids": nonexistent_ids
-        }, status=200)
+        }), 200)
                 
     # DELETE -> 指定された参加者を不参加リストから削除する
     elif request.method == 'DELETE':
@@ -126,9 +128,9 @@ def route_participants_cancels():
             else:
                 nonexistent_ids.append(id)
                 
-        return Response({
+        return make_response(jsonify({
             "success": success,
             "skipped": skipped,
             "nonexistent_ids": nonexistent_ids
-        }, status=200)
+        }), 200)
 

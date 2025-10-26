@@ -2,6 +2,7 @@
 from os import path
 import csv
 
+from settings import PRIZES_CSV_FILEPATH
 from util.SingletonMetaclass import Singleton
 from typedefs.RaffleDatatypes import Prize
 from services.CsvParser import parse_prizes_csv
@@ -19,11 +20,11 @@ class PrizesManager(metaclass=Singleton):
         self.prizes: list[Prize] = []
         
         # 景品リスト読み込み
-        if not path.exists('./prizes.csv'):
+        if not path.exists(PRIZES_CSV_FILEPATH):
             print('既存のprizes.csvはありません')
         else:
             print('既存のprizes.csvを利用します')
-            prizes_file = open('./prizes.csv', 'rt', newline='')
+            prizes_file = open(PRIZES_CSV_FILEPATH, 'rt', newline='')
             prizes_reader = csv.DictReader(prizes_file)
             prizes_return = parse_prizes_csv(prizes_reader)
             if prizes_return['error']:
@@ -41,11 +42,15 @@ class PrizesManager(metaclass=Singleton):
         ローカル保管の景品CSVを書き出す
         self.prizesを変更後に必ず行うべき
         """
-        prizes_file = open('./prizes.csv', 'wt', newline='')
+        prizes_file = open(PRIZES_CSV_FILEPATH, 'wt', newline='')
         writer = csv.DictWriter(prizes_file, fieldnames=['管理No', '提供元', '景品名'])
         writer.writeheader()
         for prize in self.prizes:
-            writer.writerow(prize.id, prize.provider, prize.display_name)
+            writer.writerow({
+                '管理No': prize.id, 
+                '提供元': prize.provider, 
+                '景品名': prize.display_name
+                })
         prizes_file.close()
     
     
@@ -89,25 +94,19 @@ class PrizesManager(metaclass=Singleton):
     
     # === 景品情報編集 ===
     
-    def import_new_prizes_list(self, new_prizes: list[Prize]) -> bool:
+    def import_new_prizes_list(self, new_prizes: list[Prize]) -> None:
         """
         新たな景品リストを読み込み・置き換え
         """
-        # もし抽選結果が存在する場合、景品リストの置き換えを許さない
-        if len(self.winner_mappings) > 0:
-            return False
         self.prizes = new_prizes
         self.__write_prizes()
-        return True
+        return
     
-    def wipe_prizes_list(self, new_prizes: list[Prize]) -> bool:
+    def wipe_prizes_list(self, new_prizes: list[Prize]) -> None:
         """
         景品リストの削除
         """
-        # もし抽選結果が存在する場合、景品リストの置き換えを許さない
-        if len(self.winner_mappings) > 0:
-            return False
         self.prizes = []
         self.__write_prizes()
-        return True
+        return
     

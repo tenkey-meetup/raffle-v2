@@ -1,1 +1,5 @@
 DATA_PATH = './data'
+
+WINNERS_CSV_FILEPATH = DATA_PATH + '/winners.csv'
+PARTICIPANT_CSV_FILEPATH = DATA_PATH + '/parts.csv'
+PRIZES_CSV_FILEPATH = DATA_PATH + '/prizes.csv'

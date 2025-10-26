@@ -2,6 +2,7 @@
 from os import path
 import csv
 
+from settings import PARTICIPANT_CSV_FILEPATH
 from typedefs.FunctionReturnTypes import AttendanceModificationStatus
 from util.SingletonMetaclass import Singleton
 from typedefs.RaffleDatatypes import Participant
@@ -28,11 +29,11 @@ class ParticipantsManager(metaclass=Singleton):
         
         
         # 参加者リスト読み込み
-        if not path.exists('./parts.csv'):
+        if not path.exists(PARTICIPANT_CSV_FILEPATH):
             print('既存のparts.csvはありません')
         else:
             print('既存のparts.csvを利用します')
-            participants_file = open('./parts.csv', 'rt', newline='')
+            participants_file = open(PARTICIPANT_CSV_FILEPATH, 'rt', newline='')
             participants_reader = csv.DictReader(participants_file)
             participants_return = parse_participants_csv(participants_reader)
             if participants_return['error']:
@@ -85,11 +86,16 @@ class ParticipantsManager(metaclass=Singleton):
         ローカル保管の参加者CSVを書き出す
         self.all_participantsを変更後に必ず行うべき
         """
-        participants_file = open('./parts.csv', 'wt', newline='')
+        participants_file = open(PARTICIPANT_CSV_FILEPATH, 'wt', newline='')
         writer = csv.DictWriter(participants_file, fieldnames=['ユーザー名', '表示名', '参加ステータス', '受付番号'])
         writer.writeheader()
         for participant in self.all_participants:
-            writer.writerow(participant.username, participant.display_name, participant.connpass_attending, participant.registration_id)
+            writer.writerow({
+                'ユーザー名': participant.username, 
+                '表示名': participant.display_name, 
+                '参加ステータス': '参加' if participant.connpass_attending else '参加キャンセル', 
+                '受付番号': participant.registration_id
+            })
         participants_file.close()
         
     
@@ -150,29 +156,23 @@ class ParticipantsManager(metaclass=Singleton):
     
     # === 参加者情報編集 ===
     
-    def import_new_participants_list(self, new_participants: list[Participant]) -> bool:
+    def import_new_participants_list(self, new_participants: list[Participant]) -> None:
         """
         新たな参加者リストを読み込み・置き換え
         """
-        # もし抽選結果が存在する場合、参加者リストの置き換えを許さない
-        if len(self.winner_mappings) > 0:
-            return False
         self.all_participants = new_participants
         self.__write_participants()
         self.__update_attending_participants()
-        return True
+        return
     
-    def wipe_participants_list(self) -> bool:
+    def wipe_participants_list(self) -> None:
         """
         参加者リストの削除
         """
-        # もし抽選結果が存在する場合、参加者リストの置き換えを許さない
-        if len(self.winner_mappings) > 0:
-            return False
         self.all_participants = []
         self.__write_participants()
         self.__update_attending_participants()
-        return True
+        return
         
         
     # === キャンセル（当日不参加）管理 ===

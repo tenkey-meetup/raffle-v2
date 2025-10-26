@@ -31,6 +31,12 @@ def parse_participants_csv(participants_reader: DictReader[str]) ->  Participant
         error_msg = '参加者CSVに「参加ステータス」列がありません'
     elif '受付番号' not in participants_headers:
         error_msg = '参加者CSVに「受付番号」列がありません'
+        
+    if error_msg: 
+        return {
+            "participants": [],
+            "error": error_msg
+        }
     
     for row in participants_reader:
         id = row['受付番号']
@@ -49,12 +55,8 @@ def parse_participants_csv(participants_reader: DictReader[str]) ->  Participant
             connpass_attending=True if row['参加ステータス'] == "参加" else False,
         ))
     
-    if error_msg: 
-        return {
-            "participants": [],
-            "error": error_msg
-        }
-    elif len(faulty_attendance_status_ids) > 0:
+
+    if len(faulty_attendance_status_ids) > 0:
         return {
             "participants": [],
             "error": f"参加者CSVに「参加ステータス」が参加・参加キャンセル以外の参加者が存在します（{str(faulty_attendance_status_ids)}）"
@@ -94,6 +96,13 @@ def parse_prizes_csv(prizes_reader: DictReader[str]) ->  PrizesParserReturnType:
         error_msg = '景品CSVに「提供元」列がありません'
     elif '景品名' not in prizes_headers:
         error_msg = '景品CSVに「景品名」列がありません'
+    
+    if error_msg:
+        return {
+            "prizes": [],
+            "error": error_msg
+        }  
+        
     for row in prizes_reader:
         id = row['管理No']
         # 重複IDの確認
@@ -107,12 +116,8 @@ def parse_prizes_csv(prizes_reader: DictReader[str]) ->  PrizesParserReturnType:
             display_name=row['景品名']
         )) 
       
-    if error_msg:
-        return {
-            "prizes": [],
-            "error": error_msg
-        }  
-    elif len(duplicate_prize_ids) > 0:
+
+    if len(duplicate_prize_ids) > 0:
         return {
             "prizes": [],
             "error": f"景品CSVに景品IDの重複があります（{str(set(duplicate_prize_ids))}）"
@@ -148,6 +153,12 @@ def parse_winners_csv(winners_reader: DictReader[str], participants: list[Partic
     elif '当選者受付番号' not in winners_headers:
         error_msg = '当選者リストCSVに「当選者受付番号」列がありません'
         
+    if error_msg:
+        return {
+            "winner_mappings": [],
+            "error": error_msg
+        } 
+        
     # 存在する景品・参加者IDリストを作製
     all_prize_ids = [prize.id for prize in prizes]
     all_participant_ids = [participant.registration_id for participant in participants]
@@ -172,13 +183,8 @@ def parse_winners_csv(winners_reader: DictReader[str], participants: list[Partic
             prize_id=prize_id,
             participant_id=participant_id
         )) 
-      
-    if error_msg:
-        return {
-            "winner_mappings": [],
-            "error": error_msg
-        }  
-    elif len(duplicate_prize_ids) > 0:
+       
+    if len(duplicate_prize_ids) > 0:
         return {
             "winner_mappings": [],
             "error": f"当選者リストCSVに景品IDの重複があります（{str(set(duplicate_prize_ids))}）"

@@ -1,6 +1,6 @@
 import csv
 from os import fdopen
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, make_response, request
 
 from typedefs.FunctionReturnTypes import RaffleModificationStatus
 from blueprints.forms.RaffleForms import RaffleSetWinnerForm, RaffleDeleteWinnerForm
@@ -39,7 +39,7 @@ def get_next_raffle_return_payload():
 @api_v1_raffle.route("/api/v1/raffle/next", methods=['GET'])
 def route_raffle_next():
     if request.method == "GET":
-        return Response(get_next_raffle_return_payload(), status=200)
+        return make_response(jsonify(get_next_raffle_return_payload()), 200)
 
 
 # 抽選結果を変更
@@ -65,7 +65,7 @@ def route_raffle_set():
         elif edit_status == RaffleModificationStatus.NOT_OVERWRITING:
             return Response(f"景品「{prize_id}」は既に抽選済みです。", status=400)
         
-        return Response(get_next_raffle_return_payload(), status=200)
+        return make_response(jsonify(get_next_raffle_return_payload()), 200)
     
     # PUT: 当選を上書きする
     # 主に抽選ミスの編集用
@@ -84,7 +84,7 @@ def route_raffle_set():
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         
-        return Response(get_next_raffle_return_payload(), status=200)
+        return make_response(jsonify(get_next_raffle_return_payload()), 200)
     
     # DELETE: 当選を取り消す
     elif request.method == 'DELETE':
@@ -101,6 +101,6 @@ def route_raffle_set():
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         
-        return Response(get_next_raffle_return_payload(), status=200)
+        return make_response(jsonify(get_next_raffle_return_payload()), status=200)
     
     

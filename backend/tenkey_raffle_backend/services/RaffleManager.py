@@ -2,6 +2,7 @@
 from os import path
 import csv
 
+from settings import WINNERS_CSV_FILEPATH
 from typedefs.FunctionReturnTypes import RaffleModificationStatus
 from typedefs.RaffleDatatypes import Participant, Prize, WinnerMapping
 from services.PrizesManager import PrizesManager
@@ -26,11 +27,11 @@ class RaffleManager(metaclass=Singleton):
         self.prizes_manager = PrizesManager()
                     
         # 当選リストの読み込み
-        if not path.exists('./winners.csv'):
+        if not path.exists(WINNERS_CSV_FILEPATH):
             print('既存のwinners.csvはありません')
         else:
             print('既存のwinners.csvを利用します')
-            winners_file = open('./winners.csv', 'rt', newline='')
+            winners_file = open(WINNERS_CSV_FILEPATH, 'rt', newline='')
             winners_reader = csv.DictReader(winners_file)
             winners_return = parse_winners_csv(winners_reader, self.all_participants, self.prizes)
             if winners_return['error']:
@@ -50,11 +51,14 @@ class RaffleManager(metaclass=Singleton):
         当選者CSVを書き出す
         self.winner_mappingsを変更後に必ず行うべき
         """
-        winners_file = open('./winners.csv', 'wt', newline='')
+        winners_file = open(WINNERS_CSV_FILEPATH, 'wt', newline='')
         writer = csv.DictWriter(winners_file, fieldnames=['景品ID', '当選者受付番号'])
         writer.writeheader()
         for mapping in self.winner_mappings:
-            writer.writerow(mapping.prize_id, mapping.participant_id)
+            writer.writerow({
+                '景品ID': mapping.prize_id, 
+                '当選者受付番号': mapping.participant_id
+                })
         winners_file.close()
     
     
