@@ -1,0 +1,32 @@
+{
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@mantine/core": "^8.3.5",
+		"@mantine/dropzone": "^8.3.5",
+		"@mantine/hooks": "^8.3.5",
+		"@mantine/modals": "^8.3.5",
+		"@mantine/notifications": "^8.3.5",
+		"preact": "^10.26.9",
+		"preact-iso": "^2.11.0",
+		"react-icons": "^5.5.0"
+	},
+	"devDependencies": {
+		"@preact/preset-vite": "^2.10.2",
+		"eslint": "^9.38.0",
+		"eslint-config-preact": "^2.0.0",
+		"postcss": "^8.5.6",
+		"postcss-preset-mantine": "^1.18.0",
+		"postcss-simple-vars": "^7.0.1",
+		"typescript": "^5.9.3",
+		"vite": "^7.0.4"
+	},
+	"eslintConfig": {
+		"extends": "preact"
+	}
+}
