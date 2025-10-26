@@ -2,11 +2,11 @@
 from os import path
 import csv
 
-from types.FunctionReturnTypes import RaffleModificationStatus
+from typedefs.FunctionReturnTypes import RaffleModificationStatus
+from typedefs.RaffleDatatypes import Participant, Prize, WinnerMapping
 from services.PrizesManager import PrizesManager
 from services.ParticipantsManager import ParticipantsManager
 from util.SingletonMetaclass import Singleton
-from types.RaffleDatatypes import Participant, Prize, WinnerMapping
 from services.CsvParser import parse_winners_csv
 
 

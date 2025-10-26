@@ -1,7 +1,7 @@
 
 from csv import DictReader
 from typing import NamedTuple, TypedDict
-from types.RaffleDatatypes import Participant, Prize, WinnerMapping
+from typedefs.RaffleDatatypes import Participant, Prize, WinnerMapping
 
 
 

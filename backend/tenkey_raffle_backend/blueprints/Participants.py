@@ -5,7 +5,7 @@ from markupsafe import escape
 
 from services.CsvParser import parse_participants_csv
 from services.ParticipantsManager import ParticipantsManager
-from types.FunctionReturnTypes import AttendanceModificationStatus
+from typedefs.FunctionReturnTypes import AttendanceModificationStatus
 
 api_v1_participants = Blueprint('api_v1_participants', __name__)
 

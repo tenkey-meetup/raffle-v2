@@ -3,7 +3,7 @@ from os import path
 import csv
 
 from util.SingletonMetaclass import Singleton
-from types.RaffleDatatypes import Prize
+from typedefs.RaffleDatatypes import Prize
 from services.CsvParser import parse_prizes_csv
 
 

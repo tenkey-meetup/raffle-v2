@@ -2,9 +2,9 @@
 from os import path
 import csv
 
-from types.FunctionReturnTypes import AttendanceModificationStatus
+from typedefs.FunctionReturnTypes import AttendanceModificationStatus
 from util.SingletonMetaclass import Singleton
-from types.RaffleDatatypes import Participant
+from typedefs.RaffleDatatypes import Participant
 from services.CsvParser import parse_participants_csv
 
 

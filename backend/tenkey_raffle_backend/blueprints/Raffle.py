@@ -2,7 +2,7 @@ import csv
 from os import fdopen
 from flask import Blueprint, Response, jsonify, request
 
-from types.FunctionReturnTypes import RaffleModificationStatus
+from typedefs.FunctionReturnTypes import RaffleModificationStatus
 from blueprints.forms.RaffleForms import RaffleSetWinnerForm, RaffleDeleteWinnerForm
 from services.RaffleManager import RaffleManager
 from services.PrizesManager import PrizesManager
