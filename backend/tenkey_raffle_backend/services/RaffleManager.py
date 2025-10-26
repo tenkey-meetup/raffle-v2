@@ -1,0 +1,155 @@
+
+from os import path
+import csv
+
+from services.PrizesManager import PrizesManager
+from services.ParticipantsManager import ParticipantsManager
+from util.SingletonMetaclass import Singleton
+from types.RaffleDatatypes import Participant, Prize, WinnerMapping
+from services.CsvParser import parse_winners_csv
+
+
+# Singletonなので、インスタンスは1つしか作成されない
+class RaffleManager(metaclass=Singleton):
+
+    def __init__(self):
+        """
+        作成時に既存ファイルを読み込む
+        """
+        
+        # 当選者リスト
+        self.winner_mappings: list[WinnerMapping] = []
+        
+        # （既存の）参加者・景品管理クラスオブジェを呼び出す
+        self.participants_manager = ParticipantsManager()
+        self.prizes_manager = PrizesManager()
+                    
+        # 当選リストの読み込み
+        if not path.exists('./winners.csv'):
+            print('既存のwinners.csvはありません')
+        else:
+            print('既存のwinners.csvを利用します')
+            winners_file = open('./winners.csv', 'rt', newline='')
+            winners_reader = csv.DictReader(winners_file)
+            winners_return = parse_winners_csv(winners_reader, self.all_participants, self.prizes)
+            if winners_return['error']:
+                print(winners_return['error'])
+                exit(1)
+            self.winner_mappings = winners_return['winner_mappings']
+            
+            winners_file.close()
+        
+        # 読み込み完了
+        return
+    
+    
+    # === ファイル管理関数 ===
+    def __write_winners(self) -> None:
+        """
+        当選者CSVを書き出す
+        self.winner_mappingsを変更後に必ず行うべき
+        """
+        winners_file = open('./winners.csv', 'wt', newline='')
+        writer = csv.DictWriter(winners_file, fieldnames=['景品ID', '当選者受付番号'])
+        writer.writeheader()
+        for mapping in self.winner_mappings:
+            writer.writerow(mapping.prize_id, mapping.participant_id)
+        winners_file.close()
+    
+    
+    # === 抽選状況の管理・編集 ===
+    
+    def get_prize_winner_mappings(self) -> list[WinnerMapping]:
+        """
+        現在存在する抽選結果を取得
+        """
+        return self.winner_mappings
+    
+    def wipe_prize_winner_mappings(self) -> None:
+        """
+        抽選結果をリセット
+        """
+        self.winner_mappings = []
+        self.__write_winners()
+        return
+    
+    def set_winner_for_prize(self, prize_id: str, winner_id: str, overwrite: bool) -> bool:
+        """
+        景品に対して当選者IDを書き込む  
+        成功の場合はTrue、失敗の場合はFalseを返す  
+        
+        @param overwrite: 景品IDに既存の当選者がいる場合、上書きするかどうか
+        """
+        
+        # 景品が既に抽選されているかを確認、Indexを取得
+        existing_prize_index = next(
+            (index for (index, mapping) in enumerate(self.winner_mappings) if mapping.prize_id == prize_id),
+            None
+        )
+        
+        if existing_prize_index is not None:
+            if overwrite:
+                self.winner_mappings[existing_prize_index].participant_id = winner_id
+            else:
+                return False
+
+        else:
+            self.winner_mappings.append(WinnerMapping(participant_id=winner_id, prize_id=prize_id))
+                
+        self.__write_winners()
+        return True    
+    
+    def delete_winner_for_prize(self, prize_id: str) -> bool:
+        """
+        抽選済みの景品の当選者を削除する  
+        成功した場合はTrue、景品が抽選済みでない場合はFalseを返す
+        """
+        
+        # 景品が既に抽選されているかを確認、Indexを取得
+        existing_prize_index = next(
+            (index for (index, mapping) in enumerate(self.winner_mappings) if mapping.prize_id == prize_id),
+            None
+        )
+        
+        if not existing_prize_index:
+            return False
+        
+        del self.winner_mappings[existing_prize_index]
+        return True
+        
+        
+    
+    # === 抽選関連情報の取得 ===
+    
+    def get_participants_pool(self) -> list[Participant]:
+        """
+        現在当選していない参加者を取得  
+        ここから抽選を行う  
+        TODO: 抽選プール＜景品数の場合に対応
+        """
+        return [
+            participant for participant in self.participants_manager.get_available_participants()
+            if participant.registration_id not in [mapping.participant_id for mapping in self.winner_mappings]
+        ]
+        
+    def get_participants_pool_ids(self) -> list[str]:
+        """
+        現在当選していない参加者のIDのみを取得  
+        """
+        return [participant.registration_id for participant in self.get_participants_pool()]
+    
+    def get_next_prize(self) -> Prize | None:
+        """
+        次に抽選する景品を取得  
+        Noneの場合は全景品が抽選済み
+        """
+        return next(
+            (
+                prize for prize in self.prizes_manager.get_all_prizes() 
+                if prize.id not in [mapping.prize_id for mapping in self.winner_mappings]
+            ),
+            None
+        )
+        
+
+        
