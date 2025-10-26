@@ -2,6 +2,7 @@
 from os import path
 import csv
 
+from types.FunctionReturnTypes import RaffleModificationStatus
 from services.PrizesManager import PrizesManager
 from services.ParticipantsManager import ParticipantsManager
 from util.SingletonMetaclass import Singleton
@@ -73,13 +74,18 @@ class RaffleManager(metaclass=Singleton):
         self.__write_winners()
         return
     
-    def set_winner_for_prize(self, prize_id: str, winner_id: str, overwrite: bool) -> bool:
+    def set_winner_for_prize(self, prize_id: str, winner_id: str, overwrite: bool) -> RaffleModificationStatus:
         """
         景品に対して当選者IDを書き込む  
         成功の場合はTrue、失敗の場合はFalseを返す  
         
         @param overwrite: 景品IDに既存の当選者がいる場合、上書きするかどうか
         """
+        
+        if prize_id not in self.prizes_manager.get_all_prize_ids():
+            return RaffleModificationStatus.NONEXISTENT_PRIZE_ID
+        if winner_id not in self.participants_manager.get_all_participant_ids():
+            return RaffleModificationStatus.NONEXISTENT_PARTICIPANT_ID
         
         # 景品が既に抽選されているかを確認、Indexを取得
         existing_prize_index = next(
@@ -91,19 +97,21 @@ class RaffleManager(metaclass=Singleton):
             if overwrite:
                 self.winner_mappings[existing_prize_index].participant_id = winner_id
             else:
-                return False
+                return RaffleModificationStatus.NOT_OVERWRITING
 
         else:
             self.winner_mappings.append(WinnerMapping(participant_id=winner_id, prize_id=prize_id))
                 
         self.__write_winners()
-        return True    
+        return RaffleModificationStatus.PROCESSED_SUCCESSFULLY
     
-    def delete_winner_for_prize(self, prize_id: str) -> bool:
+    def delete_winner_for_prize(self, prize_id: str) -> RaffleModificationStatus:
         """
         抽選済みの景品の当選者を削除する  
         成功した場合はTrue、景品が抽選済みでない場合はFalseを返す
         """
+        if prize_id not in self.prizes_manager.get_all_prize_ids():
+            return RaffleModificationStatus.NONEXISTENT_PRIZE_ID
         
         # 景品が既に抽選されているかを確認、Indexを取得
         existing_prize_index = next(
@@ -112,10 +120,10 @@ class RaffleManager(metaclass=Singleton):
         )
         
         if not existing_prize_index:
-            return False
+            return RaffleModificationStatus.PRIZE_NOT_RAFFLED
         
         del self.winner_mappings[existing_prize_index]
-        return True
+        return RaffleModificationStatus.PROCESSED_SUCCESSFULLY
         
         
     

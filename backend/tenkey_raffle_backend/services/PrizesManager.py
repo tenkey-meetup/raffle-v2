@@ -57,6 +57,12 @@ class PrizesManager(metaclass=Singleton):
         """
         return self.prizes
     
+    def get_all_prize_ids(self) -> list[str]:
+        """
+        全景品IDを取得
+        """
+        return [prize.id for prize in self.prizes]
+    
     def get_prize_by_id(self, id: str) -> Prize | None:
         """
         景品をIDで取得  

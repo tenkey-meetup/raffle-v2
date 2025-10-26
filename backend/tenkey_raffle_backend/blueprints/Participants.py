@@ -77,12 +77,12 @@ def route_participants_cancels():
     # PUT -> 指定された参加者を不参加リストに加える
     elif request.method == 'PUT':
         
-        # RequestのFormにavailable_dayofが付いているかを確認する
+        # RequestのFormからIDリストを取得
         if not request.form['ids']:
             return Response('Requestの「ids」が指定がされていません。', status=400)
         ids = request.form['ids']
         if not isinstance(ids, list):
-            return Response('idsはIDリストとして定義してください')
+            return Response('idsはIDストリングリストとして定義してください')
         
         success = []
         skipped = []
