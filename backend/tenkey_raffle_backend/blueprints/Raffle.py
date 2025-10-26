@@ -96,11 +96,11 @@ def route_raffle_set():
         prize_id = request.form['prize_id']
         
         edit_status = raffle_manager.delete_winner_for_prize(prize_id=prize_id)
-        if not edit_status == RaffleModificationStatus.PRIZE_NOT_RAFFLED:
+        if edit_status == RaffleModificationStatus.PRIZE_NOT_RAFFLED:
             return Response(f"管理番号「{prize_id}」の景品は抽選されていません。", status=400)
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         
-        return make_response(jsonify(get_next_raffle_return_payload()), status=200)
+        return make_response(jsonify(get_next_raffle_return_payload()), 200)
     
     

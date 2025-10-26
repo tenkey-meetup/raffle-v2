@@ -33,7 +33,7 @@ class RaffleManager(metaclass=Singleton):
             print('既存のwinners.csvを利用します')
             winners_file = open(WINNERS_CSV_FILEPATH, 'rt', newline='')
             winners_reader = csv.DictReader(winners_file)
-            winners_return = parse_winners_csv(winners_reader, self.all_participants, self.prizes)
+            winners_return = parse_winners_csv(winners_reader, self.participants_manager.get_all_participants(), self.prizes_manager.get_all_prizes())
             if winners_return['error']:
                 print(winners_return['error'])
                 exit(1)
@@ -97,9 +97,9 @@ class RaffleManager(metaclass=Singleton):
             None
         )
         
-        if existing_prize_index is not None:
+        if existing_prize_index != None:
             if overwrite:
-                self.winner_mappings[existing_prize_index].participant_id = winner_id
+                self.winner_mappings[existing_prize_index] = self.winner_mappings[existing_prize_index]._replace(participant_id=winner_id)
             else:
                 return RaffleModificationStatus.NOT_OVERWRITING
 
@@ -123,10 +123,11 @@ class RaffleManager(metaclass=Singleton):
             None
         )
         
-        if not existing_prize_index:
+        if existing_prize_index == None:
             return RaffleModificationStatus.PRIZE_NOT_RAFFLED
         
         del self.winner_mappings[existing_prize_index]
+        self.__write_winners()
         return RaffleModificationStatus.PROCESSED_SUCCESSFULLY
         
         
