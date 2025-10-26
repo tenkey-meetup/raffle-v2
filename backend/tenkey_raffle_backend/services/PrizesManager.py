@@ -81,16 +81,19 @@ class PrizesManager(metaclass=Singleton):
     def get_prize_group(self, prize_id: str) -> list[str] | None:
         """
         景品グループ（同一の表示名と提供元の景品）が存在する場合はグループ景品のIDリストを取得する  
-        グループが存在しない場合（又は景品自体が存在しない場合）はNoneを返す  
+        グループが存在しない場合又は[]を返す
+        景品自体が存在しない場合はNoneを返す  
         """
         lookup_prize = self.get_prize_by_id(prize_id)
         if not lookup_prize:
             return None
-        related_prizes = [prize.id for prize in self.prizes if (prize.display_name == lookup_prize.display_name and prize.provider == lookup_prize.provider)]
-        if len(related_prizes) > 0:
-            return related_prizes
+        prize_group = [prize.id for prize in self.prizes if (prize.display_name == lookup_prize.display_name and prize.provider == lookup_prize.provider)]
+        # prize_groupの景品が1つより多い場合は返す
+        if len(prize_group) > 1:
+            return prize_group
+        # そうでない場合はGroupは存在しないので返さない
         else:
-            return None
+            return []
     
     # === 景品情報編集 ===
     

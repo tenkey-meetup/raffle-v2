@@ -30,7 +30,8 @@ def get_next_raffle_return_payload():
         # 次の景品
         "next_prize": next_prize,
         # 次の景品が同一景品グループのうちの1つである場合はグループのIDリスト
-        # そうでない場合はNone
+        # そうでない場合は[]
+        # next_prizeが存在しない場合はNone
         "prize_group_ids": prize_group
     }
 
