@@ -79,18 +79,20 @@ def route_participants_cancels():
     # PUT -> 指定された参加者を不参加リストに加える
     elif request.method == 'PUT':
         
-        # RequestのFormからIDリストを取得
-        if not request.form['ids']:
-            return Response('Requestの「ids」が指定がされていません。', status=400)
-        ids = request.form['ids']
-        if not isinstance(ids, list):
-            return Response('idsはIDストリングリストとして定義してください')
+        # RequestのJsonからIDリストを取得
+        request_payload = request.get_json()
+        if not request_payload:
+            return Response('RequestにIDリストをJSONとして追加してください。', status=400)
+        if not isinstance(request_payload, list):
+            return Response('RequestにIDリストをJSONとして追加してください。', status=400)
         
         success = []
         skipped = []
         nonexistent_ids = []
         
-        for id in ids:
+        for id in request_payload:
+            if not isinstance(id, str):
+                return Response('文字列以外のIDが含まれてます', status=400)
             processing_response = participants_manager.add_cancel(id)
             if processing_response == AttendanceModificationStatus.PROCESSED_SUCCESSFULLY:
                 success.append(id)
@@ -108,18 +110,18 @@ def route_participants_cancels():
     # DELETE -> 指定された参加者を不参加リストから削除する
     elif request.method == 'DELETE':
         
-        # RequestのFormにavailable_dayofが付いているかを確認する
-        if not request.form['ids']:
-            return Response('Requestの「ids」が指定がされていません。', status=400)
-        ids = request.form['ids']
-        if not isinstance(ids, list):
-            return Response('idsはIDリストとして定義してください')
+        # RequestのJsonからIDリストを取得
+        request_payload = request.get_json()
+        if not request_payload:
+            return Response('RequestにIDリストをJSONとして追加してください。', status=400)
+        if not isinstance(request_payload, list):
+            return Response('RequestにIDリストをJSONとして追加してください。', status=400)
         
         success = []
         skipped = []
         nonexistent_ids = []
         
-        for id in ids:
+        for id in request_payload:
             processing_response = participants_manager.remove_cancel(id)
             if processing_response == AttendanceModificationStatus.PROCESSED_SUCCESSFULLY:
                 success.append(id)

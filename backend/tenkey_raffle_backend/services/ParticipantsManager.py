@@ -2,7 +2,7 @@
 from os import path
 import csv
 
-from settings import PARTICIPANT_CSV_FILEPATH
+from settings import CANCELS_TXT_FILEPATH, PARTICIPANT_CSV_FILEPATH
 from typedefs.FunctionReturnTypes import AttendanceModificationStatus
 from util.SingletonMetaclass import Singleton
 from typedefs.RaffleDatatypes import Participant
@@ -43,11 +43,11 @@ class ParticipantsManager(metaclass=Singleton):
             participants_file.close()
         
         # 不参加リスト
-        if not path.exists('./cancels.txt'):
+        if not path.exists(CANCELS_TXT_FILEPATH):
             print('既存のcancels.txtはありません')
         else:
             print('既存のcancels.txtを利用します')
-            cancels_file = open('./cancels.txt', 'rt')
+            cancels_file = open(CANCELS_TXT_FILEPATH, 'rt')
             for line_num, line in enumerate(cancels_file):
                 # キャンセルリストの読み込み
                 # 空欄はスキップ
@@ -104,7 +104,7 @@ class ParticipantsManager(metaclass=Singleton):
         当日不参加リストを書き出す
         self.cancelsを変更後に必ず行うべき
         """
-        cancels_file = open('./cancels.txt', 'wt')
+        cancels_file = open(CANCELS_TXT_FILEPATH, 'wt')
         for entry in self.cancels:
             cancels_file.write(f"{entry}\n")
         cancels_file.close()
