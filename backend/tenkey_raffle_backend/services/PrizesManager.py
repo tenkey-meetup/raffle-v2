@@ -86,7 +86,7 @@ class PrizesManager(metaclass=Singleton):
         lookup_prize = self.get_prize_by_id(prize_id)
         if not lookup_prize:
             return None
-        related_prizes = [prize for prize in self.prizes if (prize.display_name == lookup_prize.display_name and prize.provider == lookup_prize.provider)]
+        related_prizes = [prize.id for prize in self.prizes if (prize.display_name == lookup_prize.display_name and prize.provider == lookup_prize.provider)]
         if len(related_prizes) > 0:
             return related_prizes
         else:
