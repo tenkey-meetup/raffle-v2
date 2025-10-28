@@ -1,4 +1,4 @@
-import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group } from "@mantine/core"
+import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group, Container } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
@@ -37,7 +37,7 @@ export const PrizesView: React.FC<{
           message: `景品${response.parsedPrizes}個分のデータを読み込みました。`,
           autoClose: 7000,
         })
-        queryClient.invalidateQueries({queryKey: ['getPrizes']})
+        queryClient.invalidateQueries({ queryKey: ['getPrizes'] })
       }),
       onError: ((error: Error) => {
         console.log(error)
@@ -73,13 +73,13 @@ export const PrizesView: React.FC<{
         </Modal>
 
         <ConfirmDeletionModal
-            mutationFn={wipeAllPrizes}
-            invalidateQueryKeys={['getPrizes']}
-            modalTitle="景品リストを削除"
-            modalBodyText="現在アップロードされている景品リストを削除します。"
-            modalOpened={wipeModalOpened}
-            closeModal={closeWipeModal}
-            completeNotificationMessage="景品リストを削除しました。"
+          mutationFn={wipeAllPrizes}
+          invalidateQueryKeys={['getPrizes']}
+          modalTitle="景品リストを削除"
+          modalBodyText="現在アップロードされている景品リストを削除します。"
+          modalOpened={wipeModalOpened}
+          closeModal={closeWipeModal}
+          completeNotificationMessage="景品リストを削除しました。"
         />
 
         <Stack align="center">
@@ -95,27 +95,32 @@ export const PrizesView: React.FC<{
               </Button>
             </Group>
           </Tooltip>
-
-          <Table stickyHeader stickyHeaderOffset={60}>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>管理No</Table.Th>
-                <Table.Th>提供元</Table.Th>
-                <Table.Th>景品名</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {prizes.map(prize =>
-                <Table.Tr key={prize.id}>
-                  <Table.Td>{prize.id}</Table.Td>
-                  <Table.Td>{prize.provider}</Table.Td>
-                  <Table.Td>{prize.displayName}</Table.Td>
-                </Table.Tr>
-              )
-              }
-            </Table.Tbody>
-          </Table>
         </Stack>
+
+        <Container>
+          <Table.ScrollContainer minWidth={600} pt={32}>
+            <Table striped>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>管理No</Table.Th>
+                  <Table.Th>提供元</Table.Th>
+                  <Table.Th>景品名</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {prizes.map(prize =>
+                  <Table.Tr key={prize.id}>
+                    <Table.Td>{prize.id}</Table.Td>
+                    <Table.Td>{prize.provider}</Table.Td>
+                    <Table.Td>{prize.displayName}</Table.Td>
+                  </Table.Tr>
+                )
+                }
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
+        </Container>
+
       </>
     )
 

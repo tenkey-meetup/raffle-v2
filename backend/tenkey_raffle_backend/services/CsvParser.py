@@ -197,7 +197,7 @@ def parse_winners_csv(winners_reader: DictReader[str], participants: list[Partic
     elif len(unknown_participant_ids) > 0:
         return {
             "winner_mappings": [],
-            "error": f"当選者リストCSVに存在しない参加者整理番号が含まれてます（{str(set(unknown_participant_ids))}）"
+            "error": f"当選者リストCSVに存在しない参加者受付番号が含まれてます（{str(set(unknown_participant_ids))}）"
         }
         
     return {

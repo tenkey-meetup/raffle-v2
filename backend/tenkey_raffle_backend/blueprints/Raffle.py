@@ -75,7 +75,7 @@ def route_raffle_set():
         
         edit_status = raffle_manager.set_winner_for_prize(prize_id=prize_id, winner_id=winner_id, overwrite=False)
         if edit_status == RaffleModificationStatus.NONEXISTENT_PARTICIPANT_ID:
-            return Response(f"整理番号「{winner_id}」の参加者は存在しません。", status=400)
+            return Response(f"受付番号「{winner_id}」の参加者は存在しません。", status=400)
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         elif edit_status == RaffleModificationStatus.NOT_OVERWRITING:
@@ -96,7 +96,7 @@ def route_raffle_set():
         
         edit_status = raffle_manager.set_winner_for_prize(prize_id=prize_id, winner_id=winner_id, overwrite=True)
         if edit_status == RaffleModificationStatus.NONEXISTENT_PARTICIPANT_ID:
-            return Response(f"整理番号「{winner_id}」の参加者は存在しません。", status=400)
+            return Response(f"受付番号「{winner_id}」の参加者は存在しません。", status=400)
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         

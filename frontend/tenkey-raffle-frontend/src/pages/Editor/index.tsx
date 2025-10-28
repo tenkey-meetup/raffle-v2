@@ -7,11 +7,12 @@ import { ParticipantsView } from './Views/ParticipantsView';
 import { MappingsView } from './Views/MappingsView';
 import { useQuery } from '@tanstack/react-query';
 import { getAllMappings } from '../../requests/Mappings';
-import { getAllParticipants } from '../../requests/Participants';
+import { getAllCancels, getAllParticipants } from '../../requests/Participants';
 import { getAllPrizes } from '../../requests/Prizes';
 import { useEffect } from 'preact/hooks';
 import React from 'preact/compat';
 import { PrizesView } from './Views/PrizesView';
+import { CancelsView } from './Views/CancelsView';
 
 export function Editor() {
 
@@ -41,12 +42,20 @@ export function Editor() {
     }
   )
 
+  // 不参加リスト
+  const getCancelsQuery = useQuery(
+    {
+      queryKey: ['getCancels'],
+      queryFn: getAllCancels
+    }
+  )
+
   useEffect(() => {
     console.log("Mappings changed in parent")
   }, [getMappingsQuery.data])
 
-  const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading
-  const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError
+  const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading || getCancelsQuery.isLoading
+  const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError || getCancelsQuery.isError
 
   return (
     <AppShell
@@ -71,31 +80,29 @@ export function Editor() {
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <Container>
-
           {anyLoading &&
             <Center>
               <Loader />
             </Center>
           }
           {anyError &&
-            <>
+            <Container>
               <Title>エラー</Title>
-              {getParticipantsQuery.isError && <Text>{JSON.stringify(getParticipantsQuery.error)}</Text>}
-              {getPrizesQuery.isError && <Text>{JSON.stringify(getPrizesQuery.error)}</Text>}
-              {getMappingsQuery.isError && <Text>{JSON.stringify(getMappingsQuery.error)}</Text>}
-            </>
+              {getParticipantsQuery.isError && <Text>参加者データ：{JSON.stringify((getParticipantsQuery.error as Error).message)}</Text>}
+              {getPrizesQuery.isError && <Text>景品データ：{JSON.stringify((getPrizesQuery.error as Error).message)}</Text>}
+              {getMappingsQuery.isError && <Text>抽選結果データ：{JSON.stringify((getMappingsQuery.error as Error).message)}</Text>}
+              {getCancelsQuery.isError && <Text>当日不参加データ：{JSON.stringify((getCancelsQuery.error as Error).message)}</Text>}
+            </Container>
           }
           {(!anyLoading && !anyError) &&
             <Router>
               <Route path="/" component={HomeView} />
-              <Route path="/participants" component={ParticipantsView} participants={getParticipantsQuery.data} mappings={getMappingsQuery.data} />
+              <Route path="/participants" component={ParticipantsView} participants={getParticipantsQuery.data} mappings={getMappingsQuery.data} cancels={getCancelsQuery.data} />
               <Route path="/prizes" component={PrizesView} prizes={getPrizesQuery.data} mappings={getMappingsQuery.data} />
-              <Route path="/cancels" component={HomeView} />
+              <Route path="/cancels" component={CancelsView} participants={getParticipantsQuery.data} cancels={getCancelsQuery.data} />
               <Route path="/mappings" component={MappingsView} participants={getParticipantsQuery.data} prizes={getPrizesQuery.data} mappings={getMappingsQuery.data} />
             </Router>
           }
-        </Container>
       </AppShell.Main>
     </AppShell>
   );

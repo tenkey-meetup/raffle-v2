@@ -1,4 +1,4 @@
-import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group } from "@mantine/core"
+import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group, Box, Container } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
@@ -10,9 +10,11 @@ import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
 
 export const ParticipantsView: React.FC<{
   participants: Participant[],
+  cancels: string[]
   mappings: Mapping[]
 }> = ({
   participants,
+  cancels,
   mappings
 }) => {
 
@@ -36,7 +38,7 @@ export const ParticipantsView: React.FC<{
           message: `${response.parsedParticipants}人分のデータを読み込みました。`,
           autoClose: 7000,
         })
-        queryClient.invalidateQueries({queryKey: ['getParticipants']})
+        queryClient.invalidateQueries({ queryKey: ['getParticipants'] })
       }),
       onError: ((error: Error) => {
         console.log(error)
@@ -72,13 +74,13 @@ export const ParticipantsView: React.FC<{
         </Modal>
 
         <ConfirmDeletionModal
-            mutationFn={wipeAllParticipants}
-            invalidateQueryKeys={['getParticipants']}
-            modalTitle="参加者リストを削除"
-            modalBodyText="現在アップロードされている参加者リストを削除します。"
-            modalOpened={wipeModalOpened}
-            closeModal={closeWipeModal}
-            completeNotificationMessage="参加者リストを削除しました。"
+          mutationFn={wipeAllParticipants}
+          invalidateQueryKeys={['getParticipants']}
+          modalTitle="参加者リストを削除"
+          modalBodyText="現在アップロードされている参加者リストを削除します。"
+          modalOpened={wipeModalOpened}
+          closeModal={closeWipeModal}
+          completeNotificationMessage="参加者リストを削除しました。"
         />
 
         <Stack align="center">
@@ -96,14 +98,17 @@ export const ParticipantsView: React.FC<{
               </Button>
             </Group>
           </Tooltip>
-
-          <Table stickyHeader stickyHeaderOffset={60}>
+        </Stack>
+        <Container>
+        <Table.ScrollContainer minWidth={600} pt={32}>
+          <Table striped>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>受付番号</Table.Th>
                 <Table.Th>ユーザー名</Table.Th>
                 <Table.Th>表示名</Table.Th>
                 <Table.Th>参加ステータス（connpass上）</Table.Th>
+                <Table.Th>当日不参加</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -113,12 +118,14 @@ export const ParticipantsView: React.FC<{
                   <Table.Td>{participant.username}</Table.Td>
                   <Table.Td>{participant.displayName}</Table.Td>
                   <Table.Td>{participant.connpassAttending ? <Text c="green">✓</Text> : <Text c="red">✗</Text>}</Table.Td>
+                  <Table.Td>{cancels.includes(participant.registrationId) ? <Text c="red">✓</Text> : <Text c="dimmed">-</Text>}</Table.Td>
                 </Table.Tr>
               )
               }
             </Table.Tbody>
           </Table>
-        </Stack>
+        </Table.ScrollContainer>
+        </Container>
       </>
     )
 

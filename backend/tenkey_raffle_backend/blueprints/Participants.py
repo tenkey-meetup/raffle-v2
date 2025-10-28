@@ -54,30 +54,28 @@ def route_participants():
             return Response('抽選結果が存在する場合は参加者リストの書き換えを行えません。', status=400)
         participants_manager.wipe_participants_list()
         return Response(f"参加者データを削除しました。", status=200)
-
-# 参加者ID指定ルート
-@api_v1_participants.route("/api/v1/participants/by-id/<id>", methods=['GET'])
-def route_participant_by_id(id: str):
     
-    # GET -> 参加者の情報を取得
-    if request.method == "GET":
-        id_safe = escape(id)
-        participant = participants_manager.get_participant_by_id(id_safe)
-        if not participant:
-            return Response(f"ID「{id_safe}」の参加者は見つかりませんでした。", status=404)
-        else:
-            return jsonify(participant._asdict())
         
-# 当日不参加管理ルート
-@api_v1_participants.route("/api/v1/participants/cancels", methods=['GET', 'PUT', 'DELETE'])
-def route_participants_cancels():
+# 全不参加ルート
+@api_v1_participants.route("/api/v1/participants/cancels/all", methods=['GET', 'PUT', 'DELETE'])
+def route_participants_all_cancels():
     
     # GET -> 当日不参加リストを取得
     if request.method == "GET":
         return jsonify(participants_manager.get_all_cancel_ids())
     
+    # DELETE -> 不参加リストを削除
+    elif request.method == 'DELETE':
+        participants_manager.wipe_cancels()
+        return Response(status=200)
+    
+    
+# 不参加編集ルート
+@api_v1_participants.route("/api/v1/participants/cancels/edit", methods=['PUT', 'DELETE'])
+def route_participants_batch_cancels():
+    
     # PUT -> 指定された参加者を不参加リストに加える
-    elif request.method == 'PUT':
+    if request.method == 'PUT':
         
         # RequestのJsonからIDリストを取得
         request_payload = request.get_json()
