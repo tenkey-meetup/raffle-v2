@@ -1,4 +1,6 @@
 from pathlib import Path
+
+from flask_cors import CORS
 from settings import DATA_PATH
 
 Path(DATA_PATH).mkdir(parents=True, exist_ok=True)
@@ -11,6 +13,8 @@ from blueprints.Raffle import api_v1_raffle
 
 
 flask_app = Flask(__name__)
+CORS(flask_app) # ローカル起動しかしないので全ドメイン許可
+
 flask_app.register_blueprint(api_v1_participants)
 flask_app.register_blueprint(api_v1_prizes)
 flask_app.register_blueprint(api_v1_raffle)

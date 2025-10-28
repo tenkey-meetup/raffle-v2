@@ -13,7 +13,7 @@ export function Landing() {
 				<Button onClick={() => location.route('/raffle')}>
 					抽選開始
 				</Button>
-				<Button onClick={() => location.route('/editor')}>
+				<Button onClick={() => location.route('/editor/participants')}>
 					データ編集
 				</Button>
 				<Button onClick={() => location.route('/editor')}>

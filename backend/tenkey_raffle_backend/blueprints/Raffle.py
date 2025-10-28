@@ -36,12 +36,27 @@ def get_next_raffle_return_payload():
     }
 
 
-# 現在の抽選状況を取得
+# =====
+
+
+# 全抽選を取得・削除
+@api_v1_raffle.route("/api/v1/raffle/all-mappings", methods=['GET', 'DELETE'])
+def route_raffle_mappings():
+    if request.method == "GET":
+        return make_response(jsonify([mapping._asdict() for mapping in raffle_manager.get_prize_winner_mappings()]), 200)
+    elif request.method == 'DELETE':
+        raffle_manager.wipe_prize_winner_mappings()
+        return Response(status=200)
+
+
+# =====
+
+
+# 次の抽選状況を取得
 @api_v1_raffle.route("/api/v1/raffle/next", methods=['GET'])
 def route_raffle_next():
     if request.method == "GET":
         return make_response(jsonify(get_next_raffle_return_payload()), 200)
-
 
 # 抽選結果を変更
 @api_v1_raffle.route("/api/v1/raffle/set", methods=['PUT', 'POST', 'DELETE'])

@@ -2,17 +2,18 @@ import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group } from "@manti
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
-import { Mapping, Participant } from "../../../types/BackendTypes";
+import { Mapping, Participant, Prize } from "../../../types/BackendTypes";
 import { useState } from "preact/hooks";
 import { FileUploadBlock } from "../../../components/FileUploadBlock";
 import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
+import { uploadNewPrizesCsv, wipeAllPrizes } from "../../../requests/Prizes";
 
-export const ParticipantsView: React.FC<{
-  participants: Participant[],
+export const PrizesView: React.FC<{
+  prizes: Prize[],
   mappings: Mapping[]
 }> = ({
-  participants,
+  prizes,
   mappings
 }) => {
 
@@ -22,8 +23,8 @@ export const ParticipantsView: React.FC<{
 
     const queryClient = useQueryClient()
 
-    const uploadNewParticipantsCsvMutation = useMutation({
-      mutationFn: uploadNewParticipantsCsv,
+    const uploadNewPrizesCsvMutation = useMutation({
+      mutationFn: uploadNewPrizesCsv,
       onMutate: (() => {
         setUploadModalError(null)
       }),
@@ -33,10 +34,10 @@ export const ParticipantsView: React.FC<{
         notifications.show({
           color: "green",
           title: "アップロード成功",
-          message: `${response.parsedParticipants}人分のデータを読み込みました。`,
+          message: `景品${response.parsedPrizes}個分のデータを読み込みました。`,
           autoClose: 7000,
         })
-        queryClient.invalidateQueries({queryKey: ['getParticipants']})
+        queryClient.invalidateQueries({queryKey: ['getPrizes']})
       }),
       onError: ((error: Error) => {
         console.log(error)
@@ -56,43 +57,41 @@ export const ParticipantsView: React.FC<{
         <Modal
           opened={uploadModalOpened}
           onClose={closeUploadModal}
-          title="参加者CSV読み込み"
+          title="景品CSV読み込み"
           centered
-          closeOnClickOutside={!uploadNewParticipantsCsvMutation.isPending}
-          closeOnEscape={!uploadNewParticipantsCsvMutation.isPending}
-          withCloseButton={!uploadNewParticipantsCsvMutation.isPending}
+          closeOnClickOutside={!uploadNewPrizesCsvMutation.isPending}
+          closeOnEscape={!uploadNewPrizesCsvMutation.isPending}
+          withCloseButton={!uploadNewPrizesCsvMutation.isPending}
         >
           <FileUploadBlock
-            isLoading={uploadNewParticipantsCsvMutation.isPending}
+            isLoading={uploadNewPrizesCsvMutation.isPending}
             isDisabled={editingDisabled}
             errorMsg={uploadModalError}
-            onSubmit={uploadNewParticipantsCsvMutation.mutate}
-            warningText="既存の参加者リストは破棄されます。"
+            onSubmit={uploadNewPrizesCsvMutation.mutate}
+            warningText="既存の景品リストは破棄されます。"
           />
         </Modal>
 
         <ConfirmDeletionModal
-            mutationFn={wipeAllParticipants}
-            invalidateQueryKeys={['getParticipants']}
-            modalTitle="参加者リストを削除"
-            modalBodyText="現在アップロードされている参加者リストを削除します。"
+            mutationFn={wipeAllPrizes}
+            invalidateQueryKeys={['getPrizes']}
+            modalTitle="景品リストを削除"
+            modalBodyText="現在アップロードされている景品リストを削除します。"
             modalOpened={wipeModalOpened}
             closeModal={closeWipeModal}
-            completeNotificationMessage="参加者リストを削除しました。"
+            completeNotificationMessage="景品リストを削除しました。"
         />
 
         <Stack align="center">
-          <Title>参加者</Title>
-
-          <Text>当日不参加リストは「不参加リスト」ページから編集できます。</Text>
+          <Title>景品リスト</Title>
 
           <Tooltip label={"抽選結果が存在する場合は書き換えできません。"} disabled={!editingDisabled}>
             <Group>
               <Button onClick={openUploadModal} disabled={editingDisabled}>
-                参加者CSVを読み込む
+                景品CSVを読み込む
               </Button>
               <Button onClick={openWipeModal} disabled={editingDisabled} bg={editingDisabled ? "" : "red"}>
-                参加者リストを削除
+                景品リストを削除
               </Button>
             </Group>
           </Tooltip>
@@ -100,19 +99,17 @@ export const ParticipantsView: React.FC<{
           <Table stickyHeader stickyHeaderOffset={60}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>受付番号</Table.Th>
-                <Table.Th>ユーザー名</Table.Th>
-                <Table.Th>表示名</Table.Th>
-                <Table.Th>参加ステータス（connpass上）</Table.Th>
+                <Table.Th>管理No</Table.Th>
+                <Table.Th>提供元</Table.Th>
+                <Table.Th>景品名</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {participants.map(participant =>
-                <Table.Tr key={participant.registrationId}>
-                  <Table.Td>{participant.registrationId}</Table.Td>
-                  <Table.Td>{participant.username}</Table.Td>
-                  <Table.Td>{participant.displayName}</Table.Td>
-                  <Table.Td>{participant.connpassAttending ? <Text c="green">✓</Text> : <Text c="red">✗</Text>}</Table.Td>
+              {prizes.map(prize =>
+                <Table.Tr key={prize.id}>
+                  <Table.Td>{prize.id}</Table.Td>
+                  <Table.Td>{prize.provider}</Table.Td>
+                  <Table.Td>{prize.displayName}</Table.Td>
                 </Table.Tr>
               )
               }

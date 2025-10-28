@@ -10,23 +10,27 @@ import '@mantine/notifications/styles.css';
 import { MantineProvider } from '@mantine/core';
 import { Editor } from './pages/Editor/index.js';
 import { Notifications } from '@mantine/notifications';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient()
 
 export function App() {
 	return (
-		<MantineProvider>
-			<Notifications />
-			<LocationProvider>
-				<main>
-					<Router>
-						<Route path="/" component={Landing} />
-						<Route path="/editor" component={Editor} />
-						<Route path="/editor/*" component={Editor} />
-						<Route default component={NotFound} />
-					</Router>
-				</main>
-			</LocationProvider>
-		</MantineProvider>
+		<QueryClientProvider client={queryClient}>
+			<MantineProvider>
+				<Notifications />
+				<LocationProvider>
+					<main>
+						<Router>
+							<Route path="/" component={Landing} />
+							<Route path="/editor" component={Editor} />
+							<Route path="/editor/*" component={Editor} />
+							<Route default component={NotFound} />
+						</Router>
+					</main>
+				</LocationProvider>
+			</MantineProvider>
+		</QueryClientProvider>
 	);
 }
 
