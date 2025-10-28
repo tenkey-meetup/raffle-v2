@@ -67,7 +67,7 @@ export function Editor() {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <Group justify="space-between" style={{ flex: 1 }}>
-            天キー抽選結果システム
+            天キー抽選システム
             <Group ml="xl" gap={0} visibleFrom="sm">
               <NavLinks />
             </Group>
