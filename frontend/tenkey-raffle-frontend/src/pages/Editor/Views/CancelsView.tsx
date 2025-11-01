@@ -1,14 +1,11 @@
-import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group, Container, Radio, MultiSelect, ComboboxItem, TextInput, Paper } from "@mantine/core"
+import { Button, Stack, Table, Title, Text, Modal, Group, Container, Radio, MultiSelect, ComboboxItem, Paper } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { modifyCancelsList, uploadNewParticipantsCsv, wipeAllCancels, wipeAllParticipants } from "../../../requests/Participants";
-import { Mapping, Participant, Prize } from "../../../types/BackendTypes";
+import { modifyCancelsList, wipeAllCancels } from "../../../requests/Participants";
+import { Participant } from "../../../types/BackendTypes";
 import { useMemo, useState } from "preact/hooks";
-import { FileUploadBlock } from "../../../components/FileUploadBlock";
 import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
-import { uploadNewPrizesCsv, wipeAllPrizes } from "../../../requests/Prizes";
-import { useDebounce } from "use-debounce";
 import { BarcodeReaderInput } from "../../../components/BarcodeReaderInput";
 
 

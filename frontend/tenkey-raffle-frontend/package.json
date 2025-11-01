@@ -13,6 +13,7 @@
 		"@mantine/modals": "^8.3.5",
 		"@mantine/notifications": "^8.3.5",
 		"@tanstack/react-query": "4",
+		"motion": "^12.23.24",
 		"preact": "^10.26.9",
 		"preact-iso": "^2.11.0",
 		"react-icons": "^5.5.0",

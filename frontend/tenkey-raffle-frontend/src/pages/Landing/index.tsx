@@ -16,8 +16,8 @@ export function Landing() {
 				<Button onClick={() => location.route('/editor/participants')}>
 					データ編集
 				</Button>
-				<Button onClick={() => location.route('/editor')}>
-					抽選結果
+				<Button onClick={() => location.route('/handoff')}>
+					景品受け渡し
 				</Button>
 
 			</Stack>
