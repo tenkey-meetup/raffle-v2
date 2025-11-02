@@ -12,6 +12,7 @@ import { Editor } from './pages/Editor/index.js';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Handoff } from './pages/Handoff/index.js';
+import { Raffle } from './pages/Raffle/index.js';
 
 const queryClient = new QueryClient()
 
@@ -27,6 +28,7 @@ export function App() {
 							<Route path="/editor" component={Editor} />
 							<Route path="/editor/*" component={Editor} />
 							<Route path="/handoff" component={Handoff} />
+							<Route path="/raffle" component={Raffle} />
 							<Route default component={NotFound} />
 						</Router>
 					</main>
