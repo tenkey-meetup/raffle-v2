@@ -69,7 +69,7 @@ export function Raffle() {
         }
         {(!anyLoading && !anyError) &&
           <Center h="100%">
-            <Box bg="white" h="85%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
+            <Flex direction="column" bg="white" h="85%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
               <Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: "rgb(216, 42, 77)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
                 <Group px="1em" gap="0.75em">
                   <PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
@@ -89,12 +89,14 @@ export function Raffle() {
                   </Center>
                 </Group>
               </Flex>
-              <MainView
-                participants={getParticipantsQuery.data}
-                prizes={getPrizesQuery.data}
-                mappings={getMappingsQuery.data}
-              />
-            </Box>
+              <Box style={{flexGrow: 1}}>
+                <MainView
+                  participants={getParticipantsQuery.data}
+                  prizes={getPrizesQuery.data}
+                  mappings={getMappingsQuery.data}
+                />
+              </Box>
+            </Flex>
           </Center>
         }
       </div>
