@@ -14,8 +14,8 @@ export type Prize = {
 }
 
 export type Mapping = {
-  participantId: string
   prizeId: string
+  winnerId: string | null
 }
 
 export type NextRaffleDetails = {

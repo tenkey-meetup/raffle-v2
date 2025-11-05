@@ -40,6 +40,14 @@ export function Raffle() {
     }
   )
 
+  // 当日不参加リスト
+  const getCancelsQuery = useQuery(
+    {
+      queryKey: ['getCancels'],
+      queryFn: getAllCancels
+    }
+  )
+
   const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading
   const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError
 
@@ -94,6 +102,7 @@ export function Raffle() {
                   participants={getParticipantsQuery.data}
                   prizes={getPrizesQuery.data}
                   mappings={getMappingsQuery.data}
+                  cancels={getCancelsQuery.data}
                 />
               </Box>
             </Flex>

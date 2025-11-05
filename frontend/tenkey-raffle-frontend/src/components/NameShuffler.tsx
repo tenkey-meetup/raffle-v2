@@ -32,6 +32,8 @@ export const NameShuffler: React.FC<{
 
 
     // 表示の自動制御（当選者表示、シャッフル等）
+    // TODO: Deal with race condition between winner and nameIndex leading to duplicate calls 
+    // Maybe separate into two useEffects?
     useEffect(() => {
       if (participantsList.length <= 0) {
         return

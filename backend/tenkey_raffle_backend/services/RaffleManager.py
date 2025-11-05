@@ -78,6 +78,13 @@ class RaffleManager(metaclass=Singleton):
         self.__write_winners()
         return
     
+    def get_winner_for_prize(self, prize_id: str) -> str | None:
+        """
+        景品IDに対して当選者IDを返す
+        当選者がいない場合はNoneを返す
+        """
+        return next((entry.participant_id for entry in self.winner_mappings if entry.prize_id == prize_id), None)
+    
     def set_winner_for_prize(self, prize_id: str, winner_id: str, overwrite: bool) -> RaffleModificationStatus:
         """
         景品に対して当選者IDを書き込む  

@@ -12,54 +12,25 @@ api_v1_raffle = Blueprint('api_v1_raffle', __name__)
 raffle_manager = RaffleManager()
 prizes_manager = PrizesManager()
 
-
-# 次の抽選を行う際に返すペイロード
-def get_next_raffle_return_payload():
-    
-    next_prize = raffle_manager.get_next_prize()
-    prize_group = None
-    
-    if next_prize is not None:
-        prize_group = prizes_manager.get_prize_group(next_prize.id)
-            
-    return {
-        # 現在の当選リスト
-        "current_mappings": [mapping._asdict() for mapping in raffle_manager.get_prize_winner_mappings()], 
-        # 現在当選していない参加者IDリスト（ここから抽選する）
-        "participant_pool_ids": raffle_manager.get_participants_pool_ids(), 
-        # 次の景品
-        "next_prize": next_prize,
-        # 次の景品が同一景品グループのうちの1つである場合はグループのIDリスト
-        # そうでない場合は[]
-        # next_prizeが存在しない場合はNone
-        "prize_group_ids": prize_group
-    }
-
-
 # =====
 
-
-# 全抽選を取得・削除
-@api_v1_raffle.route("/api/v1/raffle/all-mappings", methods=['GET', 'DELETE'])
-def route_raffle_mappings():
-    if request.method == "GET":
-        return make_response(jsonify([mapping._asdict() for mapping in raffle_manager.get_prize_winner_mappings()]), 200)
+# 抽選結果
+@api_v1_raffle.route("/api/v1/mappings", methods=['GET', 'DELETE'])
+def route_mappings():
+        
+    # GET: 現在の抽選状況を取得する
+    # 全景品リストを[{景品ID、当選者IDまたはNone}...]と返す
+    if request.method == 'GET':
+        all_prize_ids = prizes_manager.get_all_prize_ids()
+        response_array = [{"prize_id": prize_id, "winner_id": raffle_manager.get_winner_for_prize(prize_id)} for prize_id in all_prize_ids]
+        return make_response(jsonify(response_array), 200)
+    
     elif request.method == 'DELETE':
         raffle_manager.wipe_prize_winner_mappings()
         return Response(status=200)
 
-
-# =====
-
-
-# 次の抽選状況を取得
-@api_v1_raffle.route("/api/v1/raffle/next", methods=['GET'])
-def route_raffle_next():
-    if request.method == "GET":
-        return make_response(jsonify(get_next_raffle_return_payload()), 200)
-
-# 抽選結果を変更
-@api_v1_raffle.route("/api/v1/raffle/set", methods=['PUT', 'POST', 'DELETE'])
+# 抽選編集
+@api_v1_raffle.route("/api/v1/raffle", methods=['PUT', 'POST', 'DELETE'])
 def route_raffle_set():
     
     # POST: 当選を書き込む
@@ -80,8 +51,7 @@ def route_raffle_set():
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         elif edit_status == RaffleModificationStatus.NOT_OVERWRITING:
             return Response(f"景品「{prize_id}」は既に抽選済みです。", status=400)
-        
-        return make_response(jsonify(get_next_raffle_return_payload()), 200)
+        return Response(status=200)
     
     # PUT: 当選を上書きする
     # 主に抽選ミスの編集用
@@ -99,8 +69,7 @@ def route_raffle_set():
             return Response(f"受付番号「{winner_id}」の参加者は存在しません。", status=400)
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
-        
-        return make_response(jsonify(get_next_raffle_return_payload()), 200)
+        return Response(status=200)
     
     # DELETE: 当選を取り消す
     elif request.method == 'DELETE':
@@ -117,6 +86,6 @@ def route_raffle_set():
         elif edit_status == RaffleModificationStatus.NONEXISTENT_PRIZE_ID:
             return Response(f"管理番号「{prize_id}」の景品は存在しません。", status=400)
         
-        return make_response(jsonify(get_next_raffle_return_payload()), 200)
+        return Response(status=200)
     
     

@@ -34,7 +34,7 @@ export const MappingsView: React.FC<{
     if (currentRow) {
       const currentMapping = mappings.find(entry => entry.prizeId === currentRow.id)
       if (currentMapping) {
-        currentRowWinner = participants.find(participant => participant.registrationId === currentMapping.participantId) || null
+        currentRowWinner = participants.find(participant => participant.registrationId === currentMapping.winnerId) || null
       }
     }
 
@@ -71,17 +71,24 @@ export const MappingsView: React.FC<{
 
 
     // Map prizes to winners if any
-    const tableData: mappingsTableEntries[] = useMemo(() => prizes.map(prize => {
-      const mappingForPrize = mappings.find(mapping => mapping.prizeId == prize.id)
-      if (mappingForPrize) {
-        const participantForMapping = participants.find(participant => participant.registrationId == mappingForPrize.participantId)
+    const tableData: mappingsTableEntries[] = useMemo(() => mappings.map(mapping => {
+      const prizeForMapping = prizes.find(prize => prize.id == mapping.prizeId)
+      if (!prizeForMapping) {
+        // TODO: Error handling - shouldn't happen anyways since mappings list is derived from prizes list in real time in the backend
+        console.error("Invalid prize")
+        return
+      }
+
+      if (mapping.winnerId) {
+        const participantForMapping = participants.find(participant => participant.registrationId == mapping.winnerId)
         return {
-          prize: prize,
-          participant: participantForMapping || mappingForPrize.participantId
+          prize: prizeForMapping,
+          participant: participantForMapping || mapping.winnerId // Display handles errors
         }
+
       } else {
         return {
-          prize: prize,
+          prize: prizeForMapping,
           participant: null
         }
       }

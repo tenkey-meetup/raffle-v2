@@ -48,7 +48,8 @@ class ParticipantsManager(metaclass=Singleton):
         else:
             print('既存のcancels.txtを利用します')
             cancels_file = open(CANCELS_TXT_FILEPATH, 'rt')
-            for line_num, line in enumerate(cancels_file):
+            entries = cancels_file.read().splitlines()
+            for line_num, line in enumerate(entries):
                 # キャンセルリストの読み込み
                 # 空欄はスキップ
                 if line == "" or line.isspace():
