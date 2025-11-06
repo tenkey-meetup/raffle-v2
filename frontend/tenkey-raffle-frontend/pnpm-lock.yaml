@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      '@fontsource-variable/murecho':
+      '@fontsource-variable/m-plus-1':
         specifier: ^5.2.9
         version: 5.2.9
       '@mantine/core':
@@ -417,8 +417,8 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@fontsource-variable/murecho@5.2.9':
-    resolution: {integrity: sha512-3UeHdzDoLULN84fy3sv4GJ93D+Fls2fzkws/Ruv5lf0FIkKjJAAtmAlhXTpDNIAzy+dVM2nOVHoBoy+i3t7plw==}
+  '@fontsource-variable/m-plus-1@5.2.9':
+    resolution: {integrity: sha512-Ywv6bYdJiBa9TCctTQlggsKkI8y6UiHpofVTik8fUJajIS90INYFhL69eK8DUzmcNQJxGUVmGcb5cZr6g7FAxw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1787,7 +1787,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@fontsource-variable/murecho@5.2.9': {}
+  '@fontsource-variable/m-plus-1@5.2.9': {}
 
   '@humanfs/core@0.19.1': {}
 

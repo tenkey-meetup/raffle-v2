@@ -10,6 +10,7 @@ import { AnimatePresence, LayoutGroup, motion, useAnimate } from "motion/react"
 import { AnimatedPrizeDisplay } from "../../../components/AnimatedPrizeDisplay"
 import { TenkeyLogo } from "@components/TenkeyLogo"
 import { submitRaffleWinner } from "@/requests/Raffle"
+import { PiGift } from "react-icons/pi"
 
 
 export const MainView: React.FC<{
@@ -148,7 +149,7 @@ export const MainView: React.FC<{
         setRaffleState(RaffleStates.Initializing)
       }
 
-    }, [nextPrizeDetails])
+    }, [nextPrizeDetails, raffleState])
 
 
     // すべての制御ボタンをオフにする状況
@@ -194,10 +195,45 @@ export const MainView: React.FC<{
     // 抽選完了時
     else if (raffleState === RaffleStates.RafflingComplete) {
       return (
-        <Center w="100%" h="100%">
-          {/* TODO */}
-          <Text>終了</Text>
-        </Center>
+        <motion.div
+          layout
+          initial={{ scale: 0, borderRadius: "90px" }}
+          animate={{ scale: 1, borderRadius: "0px" }}
+          transition={{
+            type: "spring",
+            stiffness: 700,
+            damping: 100,
+            mass: 1
+          }}
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#ed8c8c"
+          }}
+        >
+          <Center w="100%" h="100%">
+            {/* TODO */}
+            <motion.div
+              layout
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{
+                type: "spring",
+                bounce: 0,
+                duration: 0.8,
+                delay: 0.8
+              }}
+            >
+              <Stack align="center">
+                <motion.div layout="position">
+                  <PiGift size="128px" color="white" />
+                </motion.div>
+                <Text component={motion.p} layout="position" size="48px" c="white">抽選終了!</Text>
+                <Box h="48px" />
+              </Stack>
+            </motion.div>
+          </Center>
+        </motion.div>
       )
     }
 
@@ -294,7 +330,7 @@ export const MainView: React.FC<{
                 h="84px"
                 size="28px"
                 style={{ borderWidth: "2px" }}
-                onClick={() => { discardUnavailableWinnerMutation.mutate({action: "ADD", ids: [potentialWinner.registrationId]}) }}
+                onClick={() => { discardUnavailableWinnerMutation.mutate({ action: "ADD", ids: [potentialWinner.registrationId] }) }}
               >
                 再抽選 (取り消し)
               </Button>
@@ -304,7 +340,7 @@ export const MainView: React.FC<{
                 w="300px"
                 h="84px"
                 size="28px"
-                onClick={() => { submitWinnerMutation.mutate({prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId}) }}
+                onClick={() => { submitWinnerMutation.mutate({ prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId }) }}
               >
                 確定
               </Button>

@@ -17,13 +17,13 @@ import { Switch, Route } from 'wouter';
 import ReactDOM from 'react-dom/client'
 import React from 'react';
 
-import '@fontsource-variable/murecho';
+import '@fontsource-variable/m-plus-1';
 
 const queryClient = new QueryClient()
 
 
 const theme = createTheme({
-  fontFamily: 'Murecho Variable, sans-serif',
+  fontFamily: "'M PLUS 1 Variable', sans-serif",
   // fontFamilyMonospace: 'Monaco, Courier, monospace',
   // headings: { fontFamily: 'Outfit, sans-serif' },
 });

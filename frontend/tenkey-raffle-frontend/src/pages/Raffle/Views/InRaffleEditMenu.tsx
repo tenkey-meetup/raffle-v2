@@ -55,7 +55,7 @@ export const InRaffleEditMenu: React.FC<{
           message: `変更を適用しました。`,
           autoClose: 7000,
         })
-        queryClient.invalidateQueries({ queryKey: ['getMappings'] })
+        queryClient.resetQueries({ queryKey: ['getMappings'] })
         closeMenu()
       }),
       onError: ((error: Error) => {

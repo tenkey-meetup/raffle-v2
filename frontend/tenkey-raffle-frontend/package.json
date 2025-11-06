@@ -7,7 +7,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@fontsource-variable/murecho": "^5.2.9",
+		"@fontsource-variable/m-plus-1": "^5.2.9",
 		"@mantine/core": "^8.3.5",
 		"@mantine/dropzone": "^8.3.5",
 		"@mantine/hooks": "^8.3.5",
