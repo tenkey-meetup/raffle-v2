@@ -37,8 +37,8 @@ export default function App() {
 					<main>
 						<Switch>
 							<Route path="/" component={Landing} />
-							<Route path="/editor" component={Editor} />
-							<Route path="/editor/*" component={Editor} />
+							<Route path="/editor" component={Editor} nest />
+							<Route path="/editor/:path" component={Editor} nest />
 							<Route path="/handoff" component={Handoff} />
 							<Route path="/raffle" component={Raffle} />
 							<Route path="/testing" component={Testing} />

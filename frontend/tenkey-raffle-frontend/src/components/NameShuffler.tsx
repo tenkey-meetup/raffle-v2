@@ -50,7 +50,7 @@ export const NameShuffler: React.FC<{
         const animateWinner = async () => {
           // 名前が中央に移動するまで待つ
           await winnerAnimate(winnerScope.current, { top: `-${FONT_SIZE * 1}px` }, { duration: 0 }) // なぜかこれがないと壊れる
-          await winnerAnimate(winnerScope.current, { top: `${FONT_SIZE * 0.5}px` }, { duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring" })
+          await winnerAnimate(winnerScope.current, { top: `${FONT_SIZE * 0.33}px` }, { duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring" })
           await sleep(SETTLE_ANIMATION_DURATION_MS / 2.5)
 
           // 名前が外枠に収まってるかを確認
@@ -208,8 +208,8 @@ export const NameShuffler: React.FC<{
             >
               <Group gap="lg" align="center" justify="center">
                 {duplicateWinnerNames && <PiInfoBold size="1.5em" color="var(--mantine-color-orange-filled)" /> }
-                <Text size="xl" c={duplicateWinnerNames ? "orange" : "dimmed"}>ユーザー名: {winner.username}</Text>
-                <Text size="xl" c={duplicateWinnerNames ? "orange" : "dimmed"}>ID: {winner.registrationId}</Text>
+                <Text fw={450} size="28px" c={duplicateWinnerNames ? "orange" : "dimmed"}>ユーザー名: {winner.username}</Text>
+                <Text fw={450} size="28px" c={duplicateWinnerNames ? "orange" : "dimmed"}>ID: {winner.registrationId}</Text>
               </Group>
             </motion.div>
           </div>

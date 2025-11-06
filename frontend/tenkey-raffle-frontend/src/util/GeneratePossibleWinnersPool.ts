@@ -8,6 +8,10 @@ export const generatePossibleWinnersPool = (
   allMappings: Mapping[]
 ) => {
 
+  if (!allCancels || !allMappings || !allParticipants) {
+    return []
+  }
+
   let availableParticipants = allParticipants.filter(participant => {
     if (allCancels.includes(participant.registrationId)) {
       return false

@@ -41,22 +41,23 @@ export const AnimatedPrizeDisplay: React.FC<{
 
     useEffect(() => {
       if (!titleScope.current || !providerScope.current) return
+      if (!prize) return
 
       if (focused) {
         titleAnimate(titleScope.current, { color: COLOR_TITLE_FOCUSED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        titleAnimate(titleScope.current, { fontSize: "100px", fontWeight: "550" }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        titleAnimate(titleScope.current, { fontSize: "100px", fontWeight: 550 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         providerAnimate(providerScope.current, { color: COLOR_PROVIDER_FOCUSED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        providerAnimate(providerScope.current, { fontSize: "50px", fontWeight: "500" }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        providerAnimate(providerScope.current, { fontSize: "50px", fontWeight: 500 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
         
         bgAnimate(bgScope.current, { backgroundColor: COLOR_BG_FOCUSED }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
         
       } else {
         titleAnimate(titleScope.current, { color: COLOR_TITLE_DIMMED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        titleAnimate(titleScope.current, { fontSize: "50px", fontWeight: "500" }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        titleAnimate(titleScope.current, { fontSize: "48px", fontWeight: 600 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         providerAnimate(providerScope.current, { color: COLOR_PROVIDER_DIMMED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        providerAnimate(providerScope.current, { fontSize: "30px", fontWeight: "450" }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        providerAnimate(providerScope.current, { fontSize: "30px", fontWeight: 500 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         bgAnimate(bgScope.current, { backgroundColor: COLOR_BG_DIMMED }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
       }
@@ -70,20 +71,24 @@ export const AnimatedPrizeDisplay: React.FC<{
         style={{
           display: "flex",
           width: "100%",
-          flexDirection: focused ? "column" : "column",
-          alignItems: focused ? "center" : "start",
+          flexDirection: focused ? "column" : "row",
+          alignItems: focused ? "center" : "center",
           gap: focused ? "32px" : "0em",
           paddingLeft: "20px",
           paddingRight: "20px",
-          paddingTop: focused ? "24px" : "12px",
-          paddingBottom: focused ? "24px" : "28px"
+          paddingTop: focused ? "36px" : "12px",
+          paddingBottom: focused ? "24px" : "24px",
+          backgroundColor: COLOR_BG_FOCUSED
         }}
       >
         <motion.div
           layout="position"
+          style={{
+            flexGrow: focused ? "0" : "1",
+          }}
           transition={{
             type: "spring",
-            bounce: 0,
+            bounce: 0,            
             duration: TEXT_MOTION_TIME
           }}
         >
@@ -93,7 +98,7 @@ export const AnimatedPrizeDisplay: React.FC<{
             id="giveawayTitle"
             pt={0}
             style={{
-              textAlign: "center",
+              textAlign: focused ? "center" : "start",
               display: "block",
               fontSize: focused ? "5em" : "2.5em",
             }}
@@ -117,7 +122,7 @@ export const AnimatedPrizeDisplay: React.FC<{
               display: "block"
             }}
           >
-            by {prize.provider}
+            by {budouxParser(prize.provider.replace(/<\/?[^>]+(>|$)/g, "　"))}
           </Text>
         </motion.div>
       </motion.div>

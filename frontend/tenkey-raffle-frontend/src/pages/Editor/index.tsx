@@ -121,12 +121,12 @@ function NavLinks() {
 
   return (
     <>
-      <UnstyledButton className={classes.control} onClick={() => navigate('/editor/participants')}>参加者</UnstyledButton>
-      <UnstyledButton className={classes.control} onClick={() => navigate('/editor/prizes')}>景品</UnstyledButton>
-      <UnstyledButton className={classes.control} onClick={() => navigate('/editor/cancels')}>不参加リスト</UnstyledButton>
-      <UnstyledButton className={classes.control} onClick={() => navigate('/editor/mappings')}>抽選結果</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/participants')}>参加者</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/prizes')}>景品</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/cancels')}>不参加リスト</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/mappings')}>抽選結果</UnstyledButton>
 
-      <UnstyledButton className={classes.control} onClick={() => navigate('/')}>メニューに戻る</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('~/')}>メニューに戻る</UnstyledButton>
     </>
   )
 }

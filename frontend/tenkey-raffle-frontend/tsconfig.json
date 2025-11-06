@@ -6,19 +6,42 @@
 		"noEmit": true,
 		"allowJs": true,
 		"checkJs": true,
-
 		/* Preact Config */
 		// "jsx": "react-jsx",
 		"jsx": "preserve",
 		"jsxImportSource": "react",
 		"skipLibCheck": true,
-		    "paths": {
-      "@/*": ["./*"]
-    },
+		"baseUrl": "./",
+		"paths": {
+			"@/*": [
+				"./src/*"
+			],
+			"@components/*": [
+				"./src/components/*"
+			],
+			"@pages/*": [
+				"./src/pages/*"
+			],
+			"@requests/*": [
+				"./src/requests/*"
+			],
+			"@styles/*": [
+				"./src/styles/*"
+			],
+			"@types/*": [
+				"./src/types/*"
+			],
+			"@util/*": [
+				"./src/util/*"
+			],
+		},
 		// "paths": {
 		// 	"react": ["./node_modules/preact/compat/"],
 		// 	"react-dom": ["./node_modules/preact/compat/"]
 		// }
 	},
-	"include": ["node_modules/vite/client.d.ts", "**/*"]
+	"include": [
+		"node_modules/vite/client.d.ts",
+		"**/*"
+	]
 }

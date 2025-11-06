@@ -18,9 +18,3 @@ export type Mapping = {
   winnerId: string | null
 }
 
-export type NextRaffleDetails = {
-  currentMappings: Mapping[],
-  participantPoolIds: string[],
-  nextPrize: Prize | null,
-  prizeGroupIds: string[] | null
-}

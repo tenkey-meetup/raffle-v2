@@ -47,7 +47,8 @@ export function Raffle() {
     }
   )
 
-  const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading
+  const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading || getCancelsQuery.isLoading
+  const anyFetching = getParticipantsQuery.isFetching || getPrizesQuery.isFetching || getMappingsQuery.isFetching || getCancelsQuery.isFetching
   const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError
 
   return (
@@ -76,7 +77,7 @@ export function Raffle() {
         }
         {(!anyLoading && !anyError) &&
           <Center h="100%">
-            <Flex direction="column" bg="white" h="85%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
+            <Flex direction="column" bg="white" h="90%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
               <Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: "rgb(216, 42, 77)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
                 <Group px="1em" gap="0.75em">
                   <PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
@@ -102,6 +103,7 @@ export function Raffle() {
                   prizes={getPrizesQuery.data}
                   mappings={getMappingsQuery.data}
                   cancels={getCancelsQuery.data}
+                  anyFetching={anyFetching}
                 />
               </Box>
             </Flex>
