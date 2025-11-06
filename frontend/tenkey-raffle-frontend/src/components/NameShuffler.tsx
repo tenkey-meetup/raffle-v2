@@ -1,12 +1,12 @@
 import { Text, Box, Center, Stack, Group } from "@mantine/core"
 import { AnimatePresence, LayoutGroup, motion, useAnimate } from "motion/react"
-import { useEffect, useMemo, useRef, useState } from "preact/hooks"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Participant } from "../types/BackendTypes"
 import { sleep } from "../util/util"
 import { PiInfoBold, PiWarningBold } from "react-icons/pi"
 
 const SHUFFLE_DELAY_MS = 20
-const SHUFFLE_ANIMATION_DURATION_MS = 125
+const SHUFFLE_ANIMATION_DURATION_MS = 150
 const SETTLE_ANIMATION_DURATION_MS = 150
 const SIMULTANEOUS_TEXT_ELEMENTS = Math.ceil(SHUFFLE_ANIMATION_DURATION_MS / SHUFFLE_DELAY_MS)
 const FONT_SIZE = 120 // Framer-Motionが正しくAbsolute・Relativeを考慮しないため、フォントサイズを変更すると壊れます
@@ -49,22 +49,23 @@ export const NameShuffler: React.FC<{
         }
         const animateWinner = async () => {
           // 名前が中央に移動するまで待つ
-          await winnerAnimate(winnerScope.current, { top: `${FONT_SIZE * 0.5}px` }, { duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 })
-          await sleep(SETTLE_ANIMATION_DURATION_MS / 3)
+          await winnerAnimate(winnerScope.current, { top: `-${FONT_SIZE * 1}px` }, { duration: 0 }) // なぜかこれがないと壊れる
+          await winnerAnimate(winnerScope.current, { top: `${FONT_SIZE * 0.5}px` }, { duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring" })
+          await sleep(SETTLE_ANIMATION_DURATION_MS / 2.5)
 
           // 名前が外枠に収まってるかを確認
-          let winnerTextWidth = winnerTextRef.current?.getBoundingClientRect().width
-          let outerDivWidth = outerDivRef.current?.getBoundingClientRect().width
+          let winnerTextWidth = winnerTextRef.current.getBoundingClientRect().width
+          let outerDivWidth = outerDivRef.current.getBoundingClientRect().width
 
           // 収まってない場合は縮小する
           if (winnerTextWidth && outerDivWidth && winnerTextWidth > outerDivWidth) {
-            await winnerAnimate(winnerScope.current, { scale: Math.abs(outerDivWidth / winnerTextWidth) - 0.01 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 })
+            await winnerAnimate(winnerScope.current, { scale: Math.abs(outerDivWidth / winnerTextWidth) - 0.01 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring", })
           }
 
           // 収まっている場合は大きさのアニメーションを行う
           else {
-            await winnerAnimate(winnerScope.current, { scale: 1.125 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 / 1.5 })
-            await winnerAnimate(winnerScope.current, { scale: 1 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 / 1.5 })
+            await winnerAnimate(winnerScope.current, { scale: 1.125 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 / 1.5, })
+            await winnerAnimate(winnerScope.current, { scale: 1 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 / 1.5, })
           }
 
         }
@@ -119,22 +120,25 @@ export const NameShuffler: React.FC<{
 
 
             <AnimatePresence
-              mode="popLayout"
+              // mode="popLayout"
             >
 
               {/* シャッフル */}
-              {!winner && currentNames.current.map((name, index) => (
+              {currentNames.current.map((name, index) => (
                 <motion.div
                   style={{ position: "absolute", left: 0, right: 0, height: 0, textAlign: "center" }}
                   key={`animated-text-${name}-${index}`}
                   initial={{ top: `-${FONT_SIZE * 1}px` }}
                   animate={{ top: `${FONT_SIZE * 2}px`, visibility: "hidden" }}
-                  transition={{ duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 }}
+                  transition={{ duration: SHUFFLE_ANIMATION_DURATION_MS / 1000, ease: "easeInOut" }}
                 >
 
                   <Text
                     size={`${FONT_SIZE}px`}
-                    style={{ height: 0 }}
+                    style={{ 
+                      height: 0,
+                      fontWeight: 450
+                    }}
                   >
                     {name}
                   </Text>
@@ -146,16 +150,20 @@ export const NameShuffler: React.FC<{
               {winner &&
                 <motion.div
                   ref={winnerScope}
-                  style={{ position: "absolute", top: "50%", left: 0, right: 0, textAlign: "center" }}
+                  style={{ position: "absolute", left: 0, right: 0, textAlign: "center" }}
                   key={`animated-text-winner`}
-                  initial={{ top: `calc(-100% - 1em)` }}
-                // animate={{ top: `-${FONT_SIZE * 0.25}em`}}
-                // transition={{ duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 }}
+                  initial={{ top: `-${FONT_SIZE * 1}px` }}
+                  // animate={{ top: `${FONT_SIZE * 0.5}px`}}
+                  // transition={{ duration: SETTLE_ANIMATION_DURATION_MS / 1000 }}
                 >
                   <Center>
                     <Text
                       size={`${FONT_SIZE}px`}
-                      style={{ whiteSpace: "nowrap", width: "fit-content" }}
+                      style={{ 
+                        whiteSpace: "nowrap", 
+                        width: "fit-content",
+                        fontWeight: 450
+                      }}
                       ref={winnerTextRef}
                     >
                       {winner.displayName}

@@ -8,13 +8,17 @@
 		"checkJs": true,
 
 		/* Preact Config */
-		"jsx": "react-jsx",
-		"jsxImportSource": "preact",
+		// "jsx": "react-jsx",
+		"jsx": "preserve",
+		"jsxImportSource": "react",
 		"skipLibCheck": true,
-		"paths": {
-			"react": ["./node_modules/preact/compat/"],
-			"react-dom": ["./node_modules/preact/compat/"]
-		}
+		    "paths": {
+      "@/*": ["./*"]
+    },
+		// "paths": {
+		// 	"react": ["./node_modules/preact/compat/"],
+		// 	"react-dom": ["./node_modules/preact/compat/"]
+		// }
 	},
 	"include": ["node_modules/vite/client.d.ts", "**/*"]
 }

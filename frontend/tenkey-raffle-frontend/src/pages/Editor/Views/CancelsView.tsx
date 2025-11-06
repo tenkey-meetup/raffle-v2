@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { modifyCancelsList, wipeAllCancels } from "../../../requests/Participants";
 import { Participant } from "../../../types/BackendTypes";
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useState } from "react";
 import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
 import { BarcodeReaderInput } from "../../../components/BarcodeReaderInput";

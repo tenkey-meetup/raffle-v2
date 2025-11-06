@@ -2,9 +2,12 @@ import { Button, Center, Group, Loader, Stack, Title, Text } from "@mantine/core
 import { NameShuffler } from "../../../components/NameShuffler"
 import { Mapping, NextRaffleDetails, Participant, Prize } from "../../../types/BackendTypes"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useMemo, useState } from "preact/hooks"
+import { useState, useMemo, useEffect } from "react"
 import { modifyCancelsList } from "../../../requests/Participants"
 import { generatePossibleWinnersPool } from "../../../util/GeneratePossibleWinnersPool"
+import { useBudoux } from "../../../util/BudouxParse"
+import { AnimatePresence, LayoutGroup, motion, useAnimate } from "motion/react"
+import { AnimatedPrizeDisplay } from "../../../components/AnimatedPrizeDisplay"
 
 
 export const MainView: React.FC<{
@@ -19,6 +22,7 @@ export const MainView: React.FC<{
   cancels
 }) => {
 
+    const { budouxParser } = useBudoux()
     const [potentialWinner, setPotentialWinner] = useState<Participant | null>(null)
     const queryClient = useQueryClient()
 
@@ -27,18 +31,22 @@ export const MainView: React.FC<{
       PrizeIntroduction,
       Rolling,
       PossibleWinnerChosen,
-
-
+      PendingWinnerDiscard,
+      PendingWinnerWrite,
+      PendingQueriesRefresh,
       EditMenuOpen,
-
+      PendingEditMutation,
+      RafflingComplete,
     }
+
+    const [raffleState, setRaffleState] = useState<RaffleStates>(RaffleStates.Initializing)
 
     const discardUnavailableWinnerMutation = useMutation({
       mutationFn: modifyCancelsList,
       onMutate: ((test) => {
 
       }),
-      onSuccess: (response => {
+      onSuccess: (() => {
         queryClient.invalidateQueries({ queryKey: ['getCancels'] })
       }),
       onError: ((error: Error, params) => {
@@ -69,6 +77,7 @@ export const MainView: React.FC<{
     type NextPrizeDetailsType = {
       nextPrize: Prize | null,
       prizeGroup: Prize[] | null
+      prizeIndex: number
     }
 
     const nextPrizeDetails: NextPrizeDetailsType = useMemo(() => {
@@ -76,7 +85,8 @@ export const MainView: React.FC<{
       if (nextMappingIndex === -1) {
         return {
           nextPrize: null,
-          prizeGroup: null
+          prizeGroup: null,
+          prizeIndex: -1
         }
       }
       const nextPrize = prizes.find(prize => prize.id === mappings[nextMappingIndex].prizeId)
@@ -88,25 +98,38 @@ export const MainView: React.FC<{
       if (prizeGroup.length > 1) {
         return {
           nextPrize: nextPrize,
-          prizeGroup: prizeGroup
+          prizeGroup: prizeGroup,
+          prizeIndex: nextMappingIndex
         }
       } else {
         return {
           nextPrize: nextPrize,
-          prizeGroup: null
+          prizeGroup: null,
+          prizeIndex: nextMappingIndex
         }
       }
 
     }, [mappings, prizes])
 
 
+    // 次の景品が存在しない場合、raffleStateを終了に変更
+    // または完了後に次の景品が復活した場合（当選者削除など）、Initializingに戻して対応する
+    useEffect(() => {
+      if (raffleState !== RaffleStates.RafflingComplete && !nextPrizeDetails.nextPrize) {
+        setRaffleState(RaffleStates.RafflingComplete)
+      }
+      else if (raffleState === RaffleStates.RafflingComplete && nextPrizeDetails.nextPrize) {
+        setRaffleState(RaffleStates.Initializing)
+      }
+
+    }, [nextPrizeDetails])
 
 
-    // Processing -> 表示は変えずにデータ変更を待つ
-    const processing = discardUnavailableWinnerMutation.isPending
-
-
-    if (!nextPrizeDetails) {
+    // State別レンダー
+    // Initializing -> 最初に起動後、準備が完了するまで待つ
+    // 現状は必要なし
+    if (raffleState === RaffleStates.Initializing) {
+      setRaffleState(RaffleStates.PrizeIntroduction)
       return (
         <Center w="100%" h="100%">
           <Loader />
@@ -114,34 +137,68 @@ export const MainView: React.FC<{
       )
     }
 
+    else if (raffleState === RaffleStates.RafflingComplete) {
+      return (
+        <Center w="100%" h="100%">
+          {/* TODO */}
+          <Text>終了</Text>
+        </Center>
+      )
+    }
+
+    console.log("rerender")
+
     return (
-      <Stack w="100%" h="100%" align="center">
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <Stack w="100%" h="100%" align="center" style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}>
 
-        <Title size="4em">
-          景品名
-        </Title>
-        <NameShuffler
-          participantsList={participants}
-          winner={potentialWinner}
-        />
-        <Group>
-          {potentialWinner ?
-            <>
-              <Button onClick={() => setPotentialWinner(null)}>
-                取り消し・再抽選
-              </Button>
-              <Button>
-                確定
-              </Button>
-            </>
-            :
-            <Button onClick={() => pickPotentialWinner()}>
-              抽選
-            </Button>
-          }
+          <AnimatedPrizeDisplay
+            prize={nextPrizeDetails.nextPrize}
+            focused={!!potentialWinner}
+          />
 
-        </Group>
-      </Stack>
+          {/* <NameShuffler
+            participantsList={participants}
+            winner={potentialWinner}
+          /> */}
+          <AnimatePresence mode="popLayout">
+            {!potentialWinner &&
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeOut",
+                  bounce: 0
+                }}
+              >
+                <Text py="120px" size="120px">
+                  名前部分
+                </Text>
+              </motion.div>
+
+            }
+          </AnimatePresence>
+          <Group>
+            {potentialWinner ?
+              <>
+                <Button onClick={() => setPotentialWinner(null)}>
+                  取り消し・再抽選
+                </Button>
+                <Button>
+                  確定
+                </Button>
+              </>
+              :
+              <Button onClick={() => pickPotentialWinner()}>
+                抽選
+              </Button>
+            }
+
+          </Group>
+        </Stack>
+      </div >
 
     )
   }

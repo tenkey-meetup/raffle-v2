@@ -1,7 +1,7 @@
 import { Modal, Stack, Group, Button, Text, ButtonProps } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "preact/hooks";
+import { useState } from "react";
 import { notifications } from '@mantine/notifications';
 
 interface DeleteModalProps {

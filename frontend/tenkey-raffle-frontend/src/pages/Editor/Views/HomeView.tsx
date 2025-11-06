@@ -1,9 +1,10 @@
-import { useLocation } from "preact-iso"
+import { useLocation } from "wouter"
+
 
 export function HomeView() {
 
-  const location = useLocation()
-  location.route('/editor/participants')
+  const [location, navigate] = useLocation()
+  navigate('/editor/participants')
 
   return (
     <></>

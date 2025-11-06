@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes";
-import { useState } from "preact/hooks";
+import { useState } from "react";
 import { FileUploadBlock } from "../../../components/FileUploadBlock";
 import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";

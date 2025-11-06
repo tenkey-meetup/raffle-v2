@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks"
+import { useState } from "react"
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes"
 import { AwaitingWinnerBarcode } from "./AwaitingWinnerBarcode"
 import { Stepper, Group, Button, Container } from "@mantine/core"

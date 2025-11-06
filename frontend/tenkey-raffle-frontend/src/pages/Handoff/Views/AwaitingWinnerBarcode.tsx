@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks"
+import { useEffect, useRef, useState } from "react"
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes"
 import { Stack, Title, Text, Group, Paper, } from "@mantine/core"
 import { BarcodeReaderInput } from "../../../components/BarcodeReaderInput"

@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { editMappings, wipeMappings } from "../../../requests/Mappings";
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes";
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 

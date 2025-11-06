@@ -1,18 +1,17 @@
 import { AppShell, Burger, Button, Container, Group, Loader, Stack, Title, UnstyledButton, Text, Center } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Route, Router, useLocation } from 'preact-iso';
 import classes from '../../styles/MobileNavbar.module.css';
 import { useQuery } from '@tanstack/react-query';
 import { getAllMappings } from '../../requests/Mappings';
 import { getAllCancels, getAllParticipants } from '../../requests/Participants';
 import { getAllPrizes } from '../../requests/Prizes';
-import { useEffect } from 'preact/hooks';
-import React from 'preact/compat';
+import { useEffect } from 'react';
 import { MainView } from './Views/MainView';
+import { useLocation } from 'wouter';
 
 export function Handoff() {
 
-  const location = useLocation()
+  const [location, navigate] = useLocation()
   const [opened, { toggle }] = useDisclosure();
 
   // 参加者リスト
@@ -93,11 +92,11 @@ export function Handoff() {
 
 function NavLinks() {
 
-  const location = useLocation()
+  const [location, navigate] = useLocation()
 
   return (
     <>
-      <UnstyledButton className={classes.control} onClick={() => location.route('/')}>メニューに戻る</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('/')}>メニューに戻る</UnstyledButton>
     </>
   )
 }

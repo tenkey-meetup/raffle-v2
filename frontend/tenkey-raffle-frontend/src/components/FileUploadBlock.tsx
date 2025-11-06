@@ -1,6 +1,6 @@
 import { Stack, Button, Text } from "@mantine/core";
 import { CsvDropzone } from "./CsvDropzone";
-import { useState } from "preact/hooks";
+import { useState } from "react";
 
 export const FileUploadBlock: React.FC<{
   isLoading: boolean,

@@ -2,7 +2,7 @@ import { Stack, Title, Text, Group, Paper, Container, Flex, Grid, SimpleGrid, Bu
 import { BarcodeReaderInput } from "../../../components/BarcodeReaderInput"
 import { Participant, Prize, Mapping } from "../../../types/BackendTypes"
 import { useFocusTrap } from "@mantine/hooks"
-import { useRef, useEffect } from "preact/hooks"
+import { useRef, useEffect } from "react"
 import { PiGift, PiUser, PiUserLight } from "react-icons/pi";
 
 

@@ -1,20 +1,19 @@
 import { AppShell, Burger, Button, Container, Group, Loader, Stack, Title, UnstyledButton, Text, Center, ActionIcon, Popover, Box, Flex } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Route, Router, useLocation } from 'preact-iso';
 import classes from '../../styles/MobileNavbar.module.css';
 import { useQuery } from '@tanstack/react-query';
 import { getAllMappings } from '../../requests/Mappings';
 import { getAllCancels, getAllParticipants } from '../../requests/Participants';
 import { getAllPrizes } from '../../requests/Prizes';
-import { useEffect } from 'preact/hooks';
-import React from 'preact/compat';
+import { useEffect } from 'react';
 import { PiAppWindowBold, PiArrowClockwise, PiArrowClockwiseBold, PiArrowLeft, PiArrowLeftBold, PiArrowRight, PiArrowRightBold, PiList, PiPenBold, PiPencil, PiPencilBold, PiX, PiXBold } from 'react-icons/pi';
 import { motion } from "motion/react"
 import { MainView } from './Views/MainView';
+import { useLocation } from 'wouter';
 
 export function Raffle() {
 
-  const location = useLocation()
+  const [location, navigate] = useLocation()
 
   // 参加者リスト
   const getParticipantsQuery = useQuery(
@@ -124,7 +123,7 @@ export function Raffle() {
               <Button leftSection={<PiPencilBold size="1em" />}>
                 当選者の編集
               </Button>
-              <Button leftSection={<PiXBold size="1em" />} onClick={() => location.route("/")}>
+              <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("/")}>
                 抽選を中断
               </Button>
             </Stack>
