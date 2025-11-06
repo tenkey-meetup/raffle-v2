@@ -47,13 +47,15 @@ export const wipeMappings: () => Promise<boolean> = async () => {
 export type SetMappingsParams = {
   action: "SET" | "OVERWRITE" | "DELETE"
   prizeId: string
-  winnerId: string
+  winnerId: string | null
 }
 export const editMappings: (params: SetMappingsParams) => Promise<boolean> = async ({action, prizeId, winnerId}) => {
 
     const data = new FormData()
     data.append('prize_id', prizeId)
-    data.append('winner_id', winnerId)
+    if (winnerId) {
+      data.append('winner_id', winnerId)
+    }
 
     let method: string;
     switch(action) {

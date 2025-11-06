@@ -70,7 +70,7 @@ export const MappingsView: React.FC<{
     })
 
 
-    // Map prizes to winners if any
+    // Mappingsに対応する参加者と景品データを検索
     const tableData: mappingsTableEntries[] = useMemo(() => mappings.map(mapping => {
       const prizeForMapping = prizes.find(prize => prize.id == mapping.prizeId)
       if (!prizeForMapping) {
@@ -119,10 +119,10 @@ export const MappingsView: React.FC<{
           <Modal.Body>
             <Stack>
               以下の景品の当選者を編集します。
-              <Paper shadow="xs" p="xl" bg="gray.1">
+              <Paper shadow="xs" p="xl" withBorder>
                 {currentRow &&
-                  <Stack gap="xs" align="center">
-                    <Text size="xl" dangerouslySetInnerHTML={{ __html: currentRow.displayName }} />
+                  <Stack gap="xs" align="center" ta="center">
+                    <Text size="xl" ta="center" dangerouslySetInnerHTML={{ __html: currentRow.displayName }} />
                     <Text size="sm" c="dimmed">{currentRow.id}</Text>
                     <Text size="sm" c="dimmed">{currentRow.provider}</Text>
                   </Stack>
@@ -133,7 +133,7 @@ export const MappingsView: React.FC<{
                   <Text>
                     現在の当選者は以下の参加者です。
                   </Text>
-                  <Paper shadow="xs" p="xl" bg="gray.1">
+                  <Paper shadow="xs" p="xl" withBorder>
                     <Stack gap="xs" align="center">
                       <Text size="xl">{currentRowWinner.displayName}</Text>
                       <Text size="sm" c="dimmed">{currentRowWinner.username}</Text>
