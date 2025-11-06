@@ -1,5 +1,4 @@
 import { Button, Container, Stack, Title } from '@mantine/core';
-import TestButton from '../../components/TestButton';
 import { useLocation } from 'wouter';
 
 export function Landing() {
@@ -12,13 +11,13 @@ export function Landing() {
 				<Title order={1}>天キー抽選システム</Title>
 				
 				<Title order={3}>動作確認</Title>
-				<Button onClick={() => navigate('/raffle')}>
+				<Button onClick={() => navigate('~/raffle')}>
 					抽選開始
 				</Button>
-				<Button onClick={() => navigate('/editor/participants')}>
+				<Button onClick={() => navigate('~/editor/participants')}>
 					データ編集
 				</Button>
-				<Button onClick={() => navigate('/handoff')}>
+				<Button onClick={() => navigate('~/handoff')}>
 					景品受け渡し
 				</Button>
 

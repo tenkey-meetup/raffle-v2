@@ -13,10 +13,12 @@ const FONT_SIZE = 120 // Framer-Motionが正しくAbsolute・Relativeを考慮�
 
 export const NameShuffler: React.FC<{
   participantsList: Participant[],
-  winner: Participant | null
+  winner: Participant | null,
+  overrideDisableRolling: boolean
 }> = ({
   participantsList,
-  winner
+  winner,
+  overrideDisableRolling
 }) => {
 
 
@@ -73,7 +75,7 @@ export const NameShuffler: React.FC<{
       }
 
       // 当選者が指定されてない場合はシャッフル
-      else {
+      else if (!overrideDisableRolling) {
         const timer = setTimeout(() => {
 
           // 名前プールが空の場合、再作成する
@@ -98,7 +100,7 @@ export const NameShuffler: React.FC<{
           clearTimeout(timer)
         }
       }
-    }, [nameIndex, winner])
+    }, [nameIndex, winner, overrideDisableRolling])
 
     // 重複する表示名の参加者が存在する場合、ユーザー名とIDをオレンジに表示する
 

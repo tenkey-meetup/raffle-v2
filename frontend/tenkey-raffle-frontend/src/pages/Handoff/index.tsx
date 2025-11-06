@@ -96,7 +96,7 @@ function NavLinks() {
 
   return (
     <>
-      <UnstyledButton className={classes.control} onClick={() => navigate('/')}>メニューに戻る</UnstyledButton>
+      <UnstyledButton className={classes.control} onClick={() => navigate('~/')}>メニューに戻る</UnstyledButton>
     </>
   )
 }

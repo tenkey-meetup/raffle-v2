@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { PrizesView } from './Views/PrizesView';
 import { CancelsView } from './Views/CancelsView';
 import { useLocation, Switch, Route } from 'wouter';
+import { motion } from 'motion/react';
 
 export function Editor() {
 
@@ -68,20 +69,26 @@ export function Editor() {
           <Group justify="space-between" style={{ flex: 1 }}>
             天キー抽選システム
             <Group ml="xl" gap={0} visibleFrom="sm">
-              <NavLinks />
+              <NavLinks disableLinks={anyLoading} />
             </Group>
           </Group>
         </Group>
       </AppShell.Header>
 
       <AppShell.Navbar py="md" px={4}>
-        <NavLinks />
+        <NavLinks disableLinks={anyLoading} />
       </AppShell.Navbar>
 
       <AppShell.Main>
         {anyLoading &&
           <Center>
-            <Loader />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 }}
+            >
+              <Loader />
+            </motion.div>
           </Center>
         }
         {anyError &&
@@ -115,16 +122,20 @@ export function Editor() {
   );
 }
 
-function NavLinks() {
+function NavLinks({ disableLinks }) {
 
   const [location, navigate] = useLocation()
 
   return (
     <>
-      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/participants')}>参加者</UnstyledButton>
-      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/prizes')}>景品</UnstyledButton>
-      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/cancels')}>不参加リスト</UnstyledButton>
-      <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/mappings')}>抽選結果</UnstyledButton>
+      {!disableLinks &&
+        <>
+          <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/participants')}>参加者</UnstyledButton>
+          <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/prizes')}>景品</UnstyledButton>
+          <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/cancels')}>不参加リスト</UnstyledButton>
+          <UnstyledButton className={classes.control} onClick={() => navigate('~/editor/mappings')}>抽選結果</UnstyledButton>
+        </>
+      }
 
       <UnstyledButton className={classes.control} onClick={() => navigate('~/')}>メニューに戻る</UnstyledButton>
     </>

@@ -1,16 +1,9 @@
-import { useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes"
-import { AwaitingWinnerBarcode } from "./AwaitingWinnerBarcode"
-import { Stepper, Group, Button, Container } from "@mantine/core"
-import { AwaitingPrizeConfirmation } from "./AwaitingPrizeConfirmation"
-
-
-enum HandoffStates {
-  AwaitingWinnerBarcode = 0,
-  AwaitingPrizeConfirmation,
-}
-
-const HandoffStateNames = Object.getOwnPropertyNames(HandoffStates).filter(entry => isNaN(Number(entry)))
+import { Stepper, Group, Button, Container, Stack, Title, Text, Paper, Space } from "@mantine/core"
+import { BarcodeReaderInput } from "@/components/BarcodeReaderInput"
+import { sanitizePrizeName } from "@/util/SanitizePrizeName"
+import { WordWrapSpan } from "@/components/WordWrapSpan"
 
 export const MainView: React.FC<{
   participants: Participant[],
@@ -22,52 +15,103 @@ export const MainView: React.FC<{
   mappings
 }) => {
 
-    const [handoffState, setHandoffState] = useState<HandoffStates>(HandoffStates.AwaitingWinnerBarcode)
-    const [pendingPrizeId, setPendingPrizeId] = useState<string | null>(null)
-    const [pendingParticipantId, setPendingParticipantId] = useState<string | null>(null)
-    
-    const setPendingPrizeDetails = (prizeId: string, participantId: string) => {
-      setPendingPrizeId(prizeId)
-      setPendingParticipantId(participantId)
-      setHandoffState(HandoffStates.AwaitingPrizeConfirmation)
-    } 
+    const [currentLookupId, setCurrentLookupId] = useState<string | null>(null)
+    const inputRef = useRef(null);
 
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+      }
+    }, [inputRef.current])
+
+
+    const matchingParticipant: Participant | null = useMemo(() => {
+      if (!currentLookupId) { return null }
+      return participants.find(entry => entry.registrationId === currentLookupId)
+    }, [currentLookupId])
+
+    const matchingMapping: Mapping | null = useMemo(() => {
+      if (!currentLookupId) { return null }
+      return mappings.find(entry => entry.winnerId === currentLookupId)
+    }, [currentLookupId])
+
+    const matchingPrize: Prize | null = useMemo(() => {
+      if (!matchingMapping) { return null }
+      return prizes.find(entry => entry.id === matchingMapping.prizeId)
+    }, [matchingMapping])
 
 
     return (
-      <>
-        <Container>
-          <Stepper active={handoffState} allowNextStepsSelect={false} pt={8} pb={24}>
-            <Stepper.Step label="ステップ１" description="当選者のバーコード読み取り">
-              
-            </Stepper.Step>
-            <Stepper.Step label="ステップ２" description="景品の確認">
-              
-            </Stepper.Step>
-            <Stepper.Step label="ステップ３" description="景品の受け渡し">
-              
-            </Stepper.Step>
-            <Stepper.Completed>
-              Completed, click back button to get to previous step
-            </Stepper.Completed>
-          </Stepper>
-        </Container>
-        {handoffState == HandoffStates.AwaitingWinnerBarcode &&
-          <AwaitingWinnerBarcode
-            participants={participants}
-            prizes={prizes}
-            mappings={mappings}
-            setPendingPrizeDetails={setPendingPrizeDetails}
-          />
+      <Stack w="100%" align="center">
+        <Title order={1}>受け渡し</Title>
+        <Text>当選者のバーコードをスキャンしてください。</Text>
+
+        <BarcodeReaderInput
+          inputRef={inputRef}
+          onSettled={setCurrentLookupId}
+          onClear={() => setCurrentLookupId(null)}
+          clearOnSettled
+          label="受付番号"
+          description="手入力の場合は入力後にエンターを押してください"
+          placeholder="..."
+        />
+
+        {/* 検索した参加者が存在しない場合 */}
+        {currentLookupId &&
+          <Group justify="center" align="stretch" grow>
+            {matchingParticipant ?
+              <Paper shadow="xs" p="xl" withBorder>
+                <Stack align="center" ta="center" h="100%">
+                  <Title>参加者</Title>
+                  <Space />
+                  <Text size="xl" fw={650}>{matchingParticipant.displayName}</Text>
+                  <Text>受付番号：{matchingParticipant.registrationId}</Text>
+                  <Text c="dimmed">ユーザー名：{matchingParticipant.username}</Text>
+                </Stack>
+              </Paper>
+              :
+              <Paper shadow="xs" p="xl" withBorder h="100%">
+                <Stack align="center" ta="center">
+                  <Title c="red">参加者</Title>
+                  <Space />
+                  <Text c="red" fw="bold">ID: {currentLookupId}</Text>
+                  <Text>読み込まれたIDに対応する参加者データが見つかりませんでした。</Text>
+                </Stack>
+              </Paper>
+            }
+            {matchingMapping ?
+              <Paper shadow="xs" p="xl" withBorder h="100%">
+                <Stack align="center" ta="center">
+                  <Title>当選した景品</Title>
+                  <Space />
+                  {matchingPrize ?
+                    <>
+                      <Text size="xl" fw={650}><WordWrapSpan>{sanitizePrizeName(matchingPrize.displayName)}</WordWrapSpan></Text>
+                      <Text>提供者：{matchingPrize.provider}</Text>
+                      <Text>管理番号：{matchingPrize.id}</Text>
+                    </>
+                    :
+                    <>
+                      <Text c="red" fw="bold">ID: {matchingMapping.prizeId}</Text>
+                      <Text>対応する景品データが見つかりませんでした。</Text>
+                      <Text>お手数ですが、景品の管理番号から景品を探してください。</Text>
+                    </>
+                  }
+
+                </Stack>
+              </Paper>
+              :
+              <Paper shadow="xs" p="xl" withBorder h="100%">
+                <Stack align="center" ta="center">
+                  <Title c="red">当選した景品</Title>
+                  <Text c="red" fw="bold">なし</Text>
+                  <Text>読み込まれた当選者に対応する当選記録が見つかりませんでした。</Text>
+                </Stack>
+              </Paper>
+            }
+          </Group>
         }
-        {handoffState == HandoffStates.AwaitingPrizeConfirmation &&
-          <AwaitingPrizeConfirmation
-            participants={participants}
-            prizes={prizes}
-            pendingParticipantId={pendingParticipantId}
-            pendingPrizeId={pendingPrizeId}
-          />
-        }
-      </>
+
+      </Stack>
     )
   }

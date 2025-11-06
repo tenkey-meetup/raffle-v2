@@ -186,9 +186,19 @@ export const MainView: React.FC<{
     if (raffleState === RaffleStates.Initializing) {
       setRaffleState(RaffleStates.PrizeIntroduction)
       return (
+
         <Center w="100%" h="100%">
-          <Loader />
+          <motion.div
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          transition={{
+            delay: 1
+          }}
+          >
+            <Loader />
+          </motion.div>
         </Center>
+
       )
     }
 
@@ -270,6 +280,7 @@ export const MainView: React.FC<{
                 <NameShuffler
                   participantsList={participants}
                   winner={potentialWinner}
+                  overrideDisableRolling={raffleState !== RaffleStates.Rolling}
                 />
               </motion.div>
 

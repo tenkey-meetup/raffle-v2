@@ -63,7 +63,7 @@ export function Raffle() {
         opened={editPaneOpened}
         onClose={closeEditPane}
         position="right"
-        size={drawerFullWidth ? "100%" : "66.7%" }
+        size={drawerFullWidth ? "100%" : "66.7%"}
         title="抽選状況の編集"
       >
         <InRaffleEditMenu
@@ -116,9 +116,23 @@ export function Raffle() {
                     <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
                       <PiAppWindowBold size="1.5em" color="rgb(91, 69, 46)" />
                     </Center>
-                    <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-                      <PiXBold size="1.5em" color="rgb(91, 69, 46)" />
-                    </Center>
+                    <Popover width={200} position="bottom" withArrow shadow="md">
+                      <Popover.Target>
+                        <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px", cursor: "pointer" }}>
+                          <PiXBold size="1.5em" color="rgb(91, 69, 46)" />
+                        </Center>
+                      </Popover.Target>
+                      <Popover.Dropdown>
+                        <Stack>
+                          <Button leftSection={<PiPencilBold size="1em" />} onClick={() => { setControlPopoverOpened(false); openEditPane() }}>
+                            当選者の編集
+                          </Button>
+                          <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/")}>
+                            抽選を中断
+                          </Button>
+                        </Stack>
+                      </Popover.Dropdown>
+                    </Popover>
                   </Group>
                 </Flex>
                 <Box style={{ flexGrow: 1 }}>
@@ -138,7 +152,7 @@ export function Raffle() {
         {/* 編集メニュー */}
 
         <div style={{ position: "absolute", right: 32, bottom: 32 }}>
-          <Popover width={200} position="bottom" withArrow shadow="md" opened={controlPopoverOpened} onDismiss={() => setControlPopoverOpened(false)}>
+          <Popover width={200} position="top" withArrow shadow="md" opened={controlPopoverOpened} onDismiss={() => setControlPopoverOpened(false)}>
             <Popover.Target>
               <ActionIcon variant="filled" color="rgb(216, 42, 77)" size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
                 <PiList size="1.5em" />
