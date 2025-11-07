@@ -5,6 +5,7 @@ import { BarcodeReaderInput } from "@/components/BarcodeReaderInput"
 import { sanitizePrizeName } from "@/util/SanitizePrizeName"
 import { WordWrapSpan } from "@/components/WordWrapSpan"
 import { AnimatePresence } from "motion/react"
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, BUTTON_SECONDARY_BACKGROUND_COLOR, BUTTON_SECONDARY_BORDER_COLOR, SECONDARY_CONTAINER_BACKGROUND_COLOR } from "@/settings"
 
 export const MainView: React.FC<{
   participants: Participant[],
@@ -72,33 +73,36 @@ export const MainView: React.FC<{
 
               {/* 参加者情報 */}
               {matchingParticipant ?
-                <Paper shadow="xs" p="xl" withBorder>
-                  {/* 検索した参加者が存在しない場合 */}
+                <Paper shadow="xs" p="xl" withBorder bg={BUTTON_PRIMARY_BACKGROUND_COLOR}>
+                  {/* 一般の場合 */}
                   <Stack align="center" ta="center" h="100%">
-                    <Title order={3} c="dimmed">参加者情報</Title>
+                    <Title order={3} c={BUTTON_PRIMARY_BORDER_COLOR}>参加者情報</Title>
                     <Title order={1} fw={650}>{matchingParticipant.displayName}</Title>
                     {duplicateNameExists ?
                       <>
+                        <Space />
                         <Text c="orange.7" fw={550} size="lg">受付番号：{matchingParticipant.registrationId}</Text>
                         <Text c="orange.7" fw={550} size="lg">ユーザー名：{matchingParticipant.username}</Text>
+                        <Space />
                         <Text>同じ表示名の参加者が複数存在します。</Text>
                         <Text>ユーザー名と受付番号も確認してください。</Text>
                       </>
                       :
                       <>
-                        <Text size="lg">受付番号：{matchingParticipant.registrationId}</Text>
-                        <Text size="lg" c="dimmed">ユーザー名：{matchingParticipant.username}</Text>
+                        <Space />
+                        <Text size="lg" fw={450} c={BUTTON_PRIMARY_BORDER_COLOR}>受付番号：{matchingParticipant.registrationId}</Text>
+                        <Text size="lg" fw={450} c={BUTTON_PRIMARY_BORDER_COLOR}>ユーザー名：{matchingParticipant.username}</Text>
                       </>
                     }
 
                   </Stack>
                 </Paper>
                 :
-                <Paper shadow="xs" p="xl" withBorder h="100%">
+                <Paper shadow="xs" p="xl" withBorder h="100%" bg={BUTTON_PRIMARY_BACKGROUND_COLOR}>
                   {/* 検索した参加者が存在しない場合 */}
                   <Stack align="center" ta="center">
-                    <Title order={3} c="red">参加者</Title>
-                    <Title order={1} c="red" fw="bold">ID: {currentLookupId}</Title>
+                    <Title order={3} c="red">参加者情報</Title>
+                    <Title order={1}  fw={650} c="red">ID: {currentLookupId}</Title>
                     <Text>読み込まれたIDに対応する参加者データが見つかりませんでした。</Text>
                   </Stack>
                 </Paper>
@@ -108,15 +112,16 @@ export const MainView: React.FC<{
               {matchingMappings ? matchingMappings.map((mapping, index) => {
                 const matchingPrize = prizes.find(prize => prize.id === mapping.prizeId)
                 return (
-                  <Paper shadow="xs" p="xl" withBorder h="100%" key={mapping.prizeId}>
+                  <Paper shadow="xs" p="xl" withBorder h="100%" key={mapping.prizeId} bg={SECONDARY_CONTAINER_BACKGROUND_COLOR}>
                     {/* 当選している場合（万が一のために複数当選に対応） */}
                     <Stack align="center" ta="center">
-                      <Title order={3} c="dimmed">当選した景品{matchingMappings.length > 1 && `（その${index + 1}）`}</Title>
+                      <Title order={3} c={BUTTON_SECONDARY_BORDER_COLOR}>当選した景品{matchingMappings.length > 1 && `（その${index + 1}）`}</Title>
                       {matchingPrize ?
                         <>
                           <Title order={1} fw={650}><WordWrapSpan>{sanitizePrizeName(matchingPrize.displayName)}</WordWrapSpan></Title>
-                          <Text size="lg" fw={450}>提供者：{matchingPrize.provider}</Text>
-                          <Text size="xl" fw={400}>管理番号：<strong>{matchingPrize.id}</strong></Text>
+                          <Space />
+                          <Title order={1} fw={400}>管理番号：<strong>{matchingPrize.id}</strong></Title>
+                          <Text size="lg" c={BUTTON_SECONDARY_BORDER_COLOR} fw={450}>提供者：{matchingPrize.provider}</Text>
                         </>
                         :
                         <>
@@ -131,11 +136,11 @@ export const MainView: React.FC<{
                 )
               })
                 :
-                <Paper shadow="xs" p="xl" withBorder h="100%">
+                <Paper shadow="xs" p="xl" withBorder h="100%" bg={SECONDARY_CONTAINER_BACKGROUND_COLOR}>
                   {/* 当選結果が存在しない場合 */}
                   <Stack align="center" ta="center">
-                    <Title c="red">当選した景品</Title>
-                    <Text c="red" fw="bold">なし</Text>
+                    <Title order={3} c="red">当選した景品</Title>
+                    <Title order={1} fw={650} c="red">なし</Title>
                     <Text>読み込まれた当選者に対応する当選記録が見つかりませんでした。</Text>
                   </Stack>
                 </Paper>

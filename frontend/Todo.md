@@ -3,7 +3,6 @@ Todo
 絶対に終わらせること
 - できる限りのテスト（実機を含む）
 - Debug errors seen during upload of prize CSV
-- Text sizes on handoff screen for nonexistent prizes
 
 できればやりたいこと
 - より精密なエラーハンドリング
@@ -13,6 +12,7 @@ Todo
 - 見た目を細部まで配信素材に合わせる
 
 Done
+- Text sizes on handoff screen for nonexistent prizes
 - 他デバイスから接続できるように、ドメインを自動設定するようにする
 - キー入力で抽選操作（nで次、rで再抽選）
 - Docker化
