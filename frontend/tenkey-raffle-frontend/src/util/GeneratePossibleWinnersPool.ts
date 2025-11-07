@@ -16,11 +16,11 @@ export const generatePossibleWinnersPool = (
     if (allCancels.includes(participant.registrationId)) {
       return false
     }
-    return participant.connpassAttending
+    return !!participant.connpassAttending
   })
 
   let pool = [...availableParticipants]
-
+  
 
   for (const mapping of allMappings) {
     // 当選者がいない景品の場合はスキップ
@@ -28,7 +28,7 @@ export const generatePossibleWinnersPool = (
       continue
     }
     // 当選者がいる場合はプールから削除
-    pool.filter(participant => participant.registrationId !== mapping.winnerId)
+    pool = pool.filter(participant => participant.registrationId !== mapping.winnerId)
     // 削除後にプールが0人の場合（参加者数＞景品数の場合にありえる）、プールに全員を戻してループを続ける
     // 景品リストの順序が変わらない限り、同じ結果が生成されるはず
     if (pool.length == 0) {

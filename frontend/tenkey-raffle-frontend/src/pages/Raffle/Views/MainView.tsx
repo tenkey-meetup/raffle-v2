@@ -97,6 +97,9 @@ export const MainView: React.FC<{
       return generatePossibleWinnersPool(participants, cancels, mappings)
     }, [participants, cancels, mappings])
 
+    // console.log(`Pool length: ${rafflePool.length}`)
+    // console.log(rafflePool.map(entry => entry.displayName))
+
 
     // 当選者を選ぶ関数（確定ではなく表示用、その後確定Mutationなどで対応）
     const pickPotentialWinner = () => {
