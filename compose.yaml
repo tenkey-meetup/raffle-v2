@@ -1,0 +1,20 @@
+# ================
+# 必要なDockerイメージは./build-docker-images.shから作製できます
+# ================
+services:
+  tenkey-raffle-v2-frontend:
+    image: tenkey-raffle-v2-frontend:latest
+    container_name: raffle-frontend
+    ports:
+      - 9001:80
+    restart: unless-stopped
+  tenkey-raffle-v2-backend:
+    image: tenkey-raffle-v2-backend:latest
+    container_name: raffle-backend
+    volumes:
+      - ./production-data:/app/data:Z
+    ports:
+      - 6001:6001
+    restart: unless-stopped
+    user: "${USER_INFO}"
+networks: {}

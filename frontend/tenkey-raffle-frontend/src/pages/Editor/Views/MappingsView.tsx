@@ -109,7 +109,7 @@ export const MappingsView: React.FC<{
       <>
         <ConfirmDeletionModal
           mutationFn={wipeMappings}
-          invalidateQueryKeys={['getMappings']}
+          invalidateQueryKeys={[['getMappings']]}
           modalTitle="抽選結果を全削除"
           modalBodyText="現在存在する抽選結果をすべて削除してリセットします。"
           modalOpened={wipeModalOpen}
@@ -249,8 +249,8 @@ export const MappingsView: React.FC<{
           <Text>こちらはデータ管理・編集メニューです。</Text>
           <Text>抽選後の景品受け渡し用のページはメニューに別途あります。</Text>
 
-          <Tooltip label={"抽選結果が存在しません。"} disabled={mappings.length > 0}>
-            <Button bg={mappings.length > 0 ? "red" : ""} onClick={openWipeModal} disabled={mappings.length <= 0}>
+          <Tooltip label={"抽選結果が存在しません。"} disabled={mappings.filter(entry => entry.winnerId).length > 0}>
+            <Button color="red" onClick={openWipeModal} disabled={mappings.filter(entry => entry.winnerId).length <= 0}>
               抽選結果を全削除（リセット）
             </Button>
 

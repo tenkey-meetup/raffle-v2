@@ -3,11 +3,12 @@ import { PiArrowLeftBold, PiArrowRightBold, PiArrowClockwiseBold, PiAppWindowBol
 import { useLocation } from 'wouter';
 import { MainView } from '../Handoff/Views/MainView';
 import { TenkeyLogo } from '@/components/TenkeyLogo';
-import { motion, useAnimate } from 'motion/react';
-import { useEffect } from 'react';
+import { AnimatePresence, motion, useAnimate } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { sleep } from '@/util/util';
 import { useWindowSize } from '@react-hook/window-size';
-import { TRANSITION_PANE_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { StylizedWindow } from '@/components/StylizedWindow';
 
 // 抽選開始時にアニメーションを表示するだけのやつ
 export function EnterRaffleTransition() {
@@ -16,15 +17,18 @@ export function EnterRaffleTransition() {
 	const [location, navigate] = useLocation();
 	const [windowScope, windowAnimate] = useAnimate()
 	const [backdropScope, backdropAnimate] = useAnimate()
+	const [displayContents, setDisplayContents] = useState(true)
 
 	useEffect(() => {
 		const animateWinner = async () => {
-			
+
 			const targetWidth = viewportWidth * 0.75
 			const targetHeight = viewportHeight * 0.9
 			await windowAnimate(windowScope.current, { width: `${targetWidth}px`, height: `${targetHeight}px` }, { duration: 1.0, type: "spring", bounce: 0 })
 			await sleep(1.1 * 1000)
-			await backdropAnimate(backdropScope.current, { backgroundColor: "#ffffff" }, { duration: 0.6, type: "spring", bounce: 0 })
+			setDisplayContents(false)
+			await sleep(0.8 * 1000)
+
 			navigate('~/raffle')
 
 		}
@@ -33,46 +37,30 @@ export function EnterRaffleTransition() {
 	}, [])
 
 	return (
-		<>
+		<div style={{ width: "100vw", height: "100vh", position: "relative" }}>
 
-			{/* 表示画面 */}
-			<div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+			{/* 背景 */}
+			<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0, overflow: "hidden" }}>
+				<img src="/bg.avif" width="100%" height="100%" style={{ overflow: "hidden", objectPosition: "center", objectFit: "cover" }} />
 
-				{/* 背景 */}
-				<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0, overflow: "hidden" }}>
-					<img src="/bg.avif" width="100%" height="100%" style={{ overflow: "hidden", objectPosition: "center", objectFit: "cover" }} />
+			</div>
 
-				</div>
+			{/* メイン画面 */}
+			<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0 }}>
 
-				{/* メイン画面 */}
-				<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0 }}>
-
-					<Center h="100%">
-						<Flex direction="column" bg="white" ref={windowScope} bdrs="md" style={{ height: "400px", width: "500px", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
-							<Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: WINDOW_HEADER_COLOR, borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
-								<Group px="1em" gap="0.75em">
-									<PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
-									<PiArrowRightBold size="1.6em" color="rgb(91, 69, 46)" />
-									<PiArrowClockwiseBold size="1.6em" color="rgb(91, 69, 46)" />
-								</Group>
-								<Box style={{ flexGrow: 1 }} />
-								<Group px="0.5em" gap="0.1em">
-									<Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-										<Text size="2em" color="rgb(91, 69, 46)" pb="0.6em">_</Text>
-									</Center>
-									<Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-										<PiAppWindowBold size="1.5em" color="rgb(91, 69, 46)" />
-									</Center>
-									<Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-										<PiXBold size="1.5em" color="rgb(91, 69, 46)" />
-									</Center>
-								</Group>
-							</Flex>
-							<Box style={{ flexGrow: 1 }}>
+				<Center h="100%">
+					<StylizedWindow
+						width={500}
+						height={400}
+						windowRef={windowScope}
+					>
+						<AnimatePresence>
+							{displayContents &&
 								<motion.div
 									layout
 									initial={{ opacity: 0, }}
 									animate={{ opacity: 1, }}
+									exit={{ opacity: 0 }}
 									transition={{
 										type: "spring",
 										stiffness: 700,
@@ -99,19 +87,19 @@ export function EnterRaffleTransition() {
 											}}
 										>
 											<Stack align="center">
-												<Text component={motion.p} layout="position" size="48px" c="white">Ready</Text>
+												<Text component={motion.p} layout="position" size="48px" c={TRANSITION_OVERLAY_TEXT_COLOR}>Ready</Text>
 												<Box h="48px" />
 											</Stack>
 										</motion.div>
 									</Center>
 								</motion.div>
-							</Box>
-						</Flex>
-					</Center>
+							}
+						</AnimatePresence>
+					</StylizedWindow>
+				</Center >
 
-				</div>
 			</div >
-		</>
+		</div >
 	);
 }
 

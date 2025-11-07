@@ -79,7 +79,7 @@ export const ParticipantsView: React.FC<{
 
         <ConfirmDeletionModal
           mutationFn={wipeAllParticipants}
-          invalidateQueryKeys={['getParticipants']}
+          invalidateQueryKeys={[['getParticipants']]}
           modalTitle="参加者リストを削除"
           modalBodyText="現在アップロードされている参加者リストを削除します。"
           modalOpened={wipeModalOpened}

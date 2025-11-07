@@ -11,9 +11,11 @@ import { AnimatedPrizeDisplay } from "../../../components/AnimatedPrizeDisplay"
 import { TenkeyLogo } from "@components/TenkeyLogo"
 import { submitRaffleWinner } from "@/requests/Raffle"
 import { PiGift } from "react-icons/pi"
-import { TRANSITION_PANE_COLOR } from "@/settings"
+import { TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
+import { DelayedDisplayLoader } from "@/components/DelayedDisplayLoader"
 
 
+// 抽選のウィンドウ内部部分
 export const MainView: React.FC<{
   participants: Participant[],
   prizes: Prize[],
@@ -195,15 +197,7 @@ export const MainView: React.FC<{
       return (
 
         <Center w="100%" h="100%">
-          <motion.div
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          transition={{
-            delay: 0.15
-          }}
-          >
-            <Loader />
-          </motion.div>
+          <DelayedDisplayLoader />
         </Center>
 
       )
@@ -240,11 +234,11 @@ export const MainView: React.FC<{
                 delay: 0.8
               }}
             >
-              <Stack align="center">
+              <Stack align="center" c={TRANSITION_OVERLAY_TEXT_COLOR}>
                 <motion.div layout="position">
-                  <PiGift size="128px" color="white" />
+                  <PiGift size="128px" style={{color: TRANSITION_OVERLAY_TEXT_COLOR}} />
                 </motion.div>
-                <Text component={motion.p} layout="position" size="48px" c="white">抽選終了!</Text>
+                <Text component={motion.p} layout="position" size="48px" style={{color: TRANSITION_OVERLAY_TEXT_COLOR}}>抽選終了!</Text>
                 <Box h="48px" />
               </Stack>
             </motion.div>

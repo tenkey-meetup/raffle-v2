@@ -4,77 +4,60 @@ import { useLocation } from 'wouter';
 import { MainView } from '../Handoff/Views/MainView';
 import { TenkeyLogo } from '@/components/TenkeyLogo';
 import { motion } from 'motion/react';
-import { WINDOW_HEADER_COLOR } from '@/settings';
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { StylizedWindow } from '@/components/StylizedWindow';
 
 export function Landing() {
 
 	const [location, navigate] = useLocation();
 
 	return (
-		<>
 
-			{/* 表示画面 */}
-			<div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+		<div style={{ width: "100vw", height: "100vh", position: "relative" }}>
 
-				{/* 背景 */}
-				<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0, overflow: "hidden" }}>
-					<img src="/bg.avif" width="100%" height="100%" style={{ overflow: "hidden", objectPosition: "center", objectFit: "cover" }} />
+			{/* 背景 */}
+			<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0, overflow: "hidden" }}>
+				<img src="/bg.avif" width="100%" height="100%" style={{ overflow: "hidden", objectPosition: "center", objectFit: "cover" }} />
 
-				</div>
+			</div>
 
-				{/* メイン画面 */}
-				<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0 }}>
+			{/* メイン画面 */}
+			<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0 }}>
 
-					<Center h="100%">
-						<Flex direction="column" bg="white" h="400px" w="500px" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
-							<Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: WINDOW_HEADER_COLOR, borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
-								<Group px="1em" gap="0.75em">
-									<PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
-									<PiArrowRightBold size="1.6em" color="rgb(91, 69, 46)" />
-									<PiArrowClockwiseBold size="1.6em" color="rgb(91, 69, 46)" />
-								</Group>
-								<Box style={{ flexGrow: 1 }} />
-								<Group px="0.5em" gap="0.1em">
-									<Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-										<Text size="2em" color="rgb(91, 69, 46)" pb="0.6em">_</Text>
-									</Center>
-									<Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-										<PiAppWindowBold size="1.5em" color="rgb(91, 69, 46)" />
-									</Center>
-									<Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-										<PiXBold size="1.5em" color="rgb(91, 69, 46)" />
-									</Center>
-								</Group>
-							</Flex>
-							<motion.div style={{flexGrow: 1}} initial={{opacity: 0}} animate={{opacity: 1}} transition={{type: "spring", bounce: 0, duration: 0.8}}>
-								<Center px="24px" py="24px" h="100%">
-									<Stack gap="24px" justify="center" align="center">
-										<Group>
-											<Center c="black" h="115px" w="150px">
-												<TenkeyLogo />
-											</Center>
-											<Title order={3}>抽選システム</Title>
-										</Group>
-										<Button size="xl" onClick={() => navigate('~/transition/enter')}>
-											抽選開始
+				<Center h="100%">
+					<StylizedWindow
+						width={500}
+						height={400}
+					>
+						<motion.div style={{ width: "100%", height: "100%" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ type: "spring", bounce: 0, duration: 0.8 }}>
+							<Center px="24px" py="24px" h="100%">
+								<Stack gap="24px" justify="center" align="center">
+									<Group c={FOREGROUND_TEXT_COLOR} pb="12px">
+										<Center h="115px" w="150px">
+											<TenkeyLogo />
+										</Center>
+										<Title order={3}>抽選システム</Title>
+									</Group>
+									<Button size="xl" onClick={() => navigate('~/transition/enter')} color={BUTTON_PRIMARY_BACKGROUND_COLOR} bd={`solid 2px ${BUTTON_PRIMARY_BORDER_COLOR}`} c={BUTTON_PRIMARY_BORDER_COLOR}>
+										抽選開始
+									</Button>
+									<Group>
+										<Button variant="outline" color="orange" onClick={() => navigate('~/editor/participants')}>
+											データ編集
 										</Button>
-										<Group>
-											<Button variant="outline" color="orange" onClick={() => navigate('~/editor/participants')}>
-												データ編集
-											</Button>
-											<Button variant="outline" color="cyan" onClick={() => navigate('~/handoff')}>
-												景品受け渡し
-											</Button>
-										</Group>
-									</Stack>
-								</Center>
-							</motion.div>
-						</Flex>
-					</Center>
+										<Button variant="outline" color="cyan" onClick={() => navigate('~/handoff')}>
+											景品受け渡し
+										</Button>
+									</Group>
+								</Stack>
+							</Center>
+						</motion.div>
+					</StylizedWindow>
+				</Center>
 
-				</div>
-			</div >
-		</>
+			</div>
+		</div >
+
 	);
 }
 

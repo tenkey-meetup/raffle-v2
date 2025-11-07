@@ -105,7 +105,7 @@ class PrizesManager(metaclass=Singleton):
         self.__write_prizes()
         return
     
-    def wipe_prizes_list(self, new_prizes: list[Prize]) -> None:
+    def wipe_prizes_list(self) -> None:
         """
         景品リストの削除
         """

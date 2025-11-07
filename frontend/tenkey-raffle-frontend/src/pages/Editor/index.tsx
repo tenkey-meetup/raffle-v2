@@ -14,6 +14,7 @@ import { CancelsView } from './Views/CancelsView';
 import { useLocation, Switch, Route } from 'wouter';
 import { motion } from 'motion/react';
 import { notifications } from '@mantine/notifications';
+import { DelayedDisplayLoader } from '@/components/DelayedDisplayLoader';
 
 export function Editor() {
 
@@ -132,13 +133,7 @@ export function Editor() {
       <AppShell.Main>
         {anyLoading &&
           <Center>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.15 }}
-            >
-              <Loader />
-            </motion.div>
+            <DelayedDisplayLoader />
           </Center>
         }
         {anyError &&

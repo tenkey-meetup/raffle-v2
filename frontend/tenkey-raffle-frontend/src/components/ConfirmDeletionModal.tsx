@@ -6,7 +6,7 @@ import { notifications } from '@mantine/notifications';
 
 interface DeleteModalProps {
   mutationFn: () => Promise<boolean>,
-  invalidateQueryKeys: string[],
+  invalidateQueryKeys: string[][],
   modalTitle: string,
   modalBodyText: string,
   modalOpened: boolean,
@@ -42,9 +42,12 @@ export const ConfirmDeletionModal: React.FC<DeleteModalProps> = ({
         message: completeNotificationMessage,
         autoClose: 7000,
       })
-      queryClient.invalidateQueries({
-        queryKey: invalidateQueryKeys
+      for (const queryKeyList of invalidateQueryKeys) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeyList
       })
+      }
+      
     }),
     onError: ((error: Error) => {
       console.error(JSON.stringify(error.message))

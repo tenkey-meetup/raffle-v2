@@ -11,7 +11,10 @@ import { motion } from "motion/react"
 import { MainView } from './Views/MainView';
 import { useLocation } from 'wouter';
 import { InRaffleEditMenu } from './Views/InRaffleEditMenu';
-import { WINDOW_HEADER_COLOR } from '@/settings';
+import { FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { DelayedDisplayLoader } from '@/components/DelayedDisplayLoader';
+import { useWindowSize } from '@react-hook/window-size';
+import { StylizedWindow } from '@/components/StylizedWindow';
 
 export function Raffle() {
 
@@ -19,6 +22,9 @@ export function Raffle() {
   const [controlPopoverOpened, setControlPopoverOpened] = useState(false)
   const [editPaneOpened, { open: openEditPane, close: closeEditPane }] = useDisclosure(false);
   const drawerFullWidth = useMediaQuery(`(max-width: 1000px)`);
+  const [viewportWidth, viewportHeight] = useWindowSize()
+  const windowWidth = viewportWidth * 0.75
+  const windowHeight = viewportHeight * 0.9
 
   // 参加者リスト
   const getParticipantsQuery = useQuery(
@@ -62,7 +68,7 @@ export function Raffle() {
     if (anyLoading) { return [] }
 
     const rejects = []
-    
+
     for (const mapping of getMappingsQuery.data) {
       if (!getPrizesQuery.data.find(entry => entry.id === mapping.prizeId)) {
         rejects.push(mapping)
@@ -115,44 +121,14 @@ export function Raffle() {
 
 
           <Center h="100%">
-            <Flex direction="column" bg="white" h="90%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
-              <Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: WINDOW_HEADER_COLOR, borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
-                <Group px="1em" gap="0.75em">
-                  <PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
-                  <PiArrowRightBold size="1.6em" color="rgb(91, 69, 46)" />
-                  <PiArrowClockwiseBold size="1.6em" color="rgb(91, 69, 46)" />
-                </Group>
-                <Box style={{ flexGrow: 1 }} />
-                <Group px="0.5em" gap="0.1em">
-                  <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-                    <Text size="2em" color="rgb(91, 69, 46)" pb="0.6em">_</Text>
-                  </Center>
-                  <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-                    <PiAppWindowBold size="1.5em" color="rgb(91, 69, 46)" />
-                  </Center>
-                  <Popover width={200} position="bottom" withArrow shadow="md">
-                    <Popover.Target>
-                      <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px", cursor: "pointer" }}>
-                        <PiXBold size="1.5em" color="rgb(91, 69, 46)" />
-                      </Center>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <Stack>
-                        <Button leftSection={<PiPencilBold size="1em" />} onClick={() => { setControlPopoverOpened(false); openEditPane() }}>
-                          当選者の編集
-                        </Button>
-                        <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/transition/exit")}>
-                          抽選を中断
-                        </Button>
-                      </Stack>
-                    </Popover.Dropdown>
-                  </Popover>
-                </Group>
-              </Flex>
-              <Box style={{ flexGrow: 1 }}>
+            <StylizedWindow
+              width={windowWidth}
+              height={windowHeight}
+            >
+              <>
                 {anyLoading &&
                   <Center h="100vh">
-                    <Loader />
+                    <DelayedDisplayLoader />
                   </Center>
                 }
                 {anyError &&
@@ -172,8 +148,8 @@ export function Raffle() {
                     anyFetching={anyFetching}
                   />
                 }
-              </Box>
-            </Flex>
+              </>
+            </StylizedWindow>
           </Center>
 
         </div>
@@ -183,7 +159,7 @@ export function Raffle() {
         <div style={{ position: "absolute", right: 32, bottom: 32 }}>
           <Popover width={200} position="top" withArrow shadow="md" opened={controlPopoverOpened} onDismiss={() => setControlPopoverOpened(false)}>
             <Popover.Target>
-              <ActionIcon variant="filled" color={WINDOW_HEADER_COLOR} size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
+              <ActionIcon variant="filled" color={FOREGROUND_TEXT_COLOR} size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
                 <PiList size="1.5em" />
               </ActionIcon>
             </Popover.Target>

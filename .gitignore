@@ -1,5 +1,6 @@
 # テストデータ
 testing/
+production-data/
 
 # General
 .DS_Store

@@ -1,7 +1,22 @@
+# Usual stuff
+**/node_modules
+dist
+data
+.env
+.git
+.gitignore
+.gitattributes
+.dockerignore
+.nvmrc
+dockerfile
+README.md
+
+
+# Rest is from .gitignore
+
 # 抽選データ
 data/
 data-backup/
-
 
 
 # Byte-compiled / optimized / DLL files

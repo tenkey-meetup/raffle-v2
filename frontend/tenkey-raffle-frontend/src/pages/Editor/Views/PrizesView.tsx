@@ -43,6 +43,7 @@ export const PrizesView: React.FC<{
           autoClose: 7000,
         })
         queryClient.invalidateQueries({ queryKey: ['getPrizes'] })
+        queryClient.invalidateQueries({ queryKey: ['getMappings'] })
       }),
       onError: ((error: Error) => {
         console.log(error)
@@ -82,7 +83,7 @@ export const PrizesView: React.FC<{
 
         <ConfirmDeletionModal
           mutationFn={wipeAllPrizes}
-          invalidateQueryKeys={['getPrizes']}
+          invalidateQueryKeys={[['getPrizes'], ['getMappings']]}
           modalTitle="景品リストを削除"
           modalBodyText="現在アップロードされている景品リストを削除します。"
           modalOpened={wipeModalOpened}

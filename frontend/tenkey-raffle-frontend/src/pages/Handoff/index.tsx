@@ -8,6 +8,8 @@ import { getAllPrizes } from '../../requests/Prizes';
 import { useEffect } from 'react';
 import { MainView } from './Views/MainView';
 import { useLocation } from 'wouter';
+import { motion } from 'motion/react';
+import { DelayedDisplayLoader } from '@/components/DelayedDisplayLoader';
 
 export function Handoff() {
 
@@ -64,22 +66,22 @@ export function Handoff() {
       </AppShell.Navbar>
 
       <AppShell.Main>
-          {anyLoading &&
-            <Center>
-              <Loader />
-            </Center>
-          }
-          {anyError &&
-            <Container>
-              <Title>エラー</Title>
-              {getParticipantsQuery.isError && <Text>参加者データ：{JSON.stringify((getParticipantsQuery.error as Error).message)}</Text>}
-              {getPrizesQuery.isError && <Text>景品データ：{JSON.stringify((getPrizesQuery.error as Error).message)}</Text>}
-              {getMappingsQuery.isError && <Text>抽選結果データ：{JSON.stringify((getMappingsQuery.error as Error).message)}</Text>}
-            </Container>
-          }
-          {(!anyLoading && !anyError) &&
-            <MainView participants={getParticipantsQuery.data} prizes={getPrizesQuery.data} mappings={getMappingsQuery.data}/>
-          }
+        {anyLoading &&
+          <Center>
+            <DelayedDisplayLoader />
+          </Center>
+        }
+        {anyError &&
+          <Container>
+            <Title>エラー</Title>
+            {getParticipantsQuery.isError && <Text>参加者データ：{JSON.stringify((getParticipantsQuery.error as Error).message)}</Text>}
+            {getPrizesQuery.isError && <Text>景品データ：{JSON.stringify((getPrizesQuery.error as Error).message)}</Text>}
+            {getMappingsQuery.isError && <Text>抽選結果データ：{JSON.stringify((getMappingsQuery.error as Error).message)}</Text>}
+          </Container>
+        }
+        {(!anyLoading && !anyError) &&
+          <MainView participants={getParticipantsQuery.data} prizes={getPrizesQuery.data} mappings={getMappingsQuery.data} />
+        }
       </AppShell.Main>
     </AppShell>
   );

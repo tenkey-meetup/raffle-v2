@@ -73,6 +73,9 @@ export const AnimatedPrizeDisplay: React.FC<{
       }
     }, [focused])
 
+    // 準備ができてない場合は無をレンダーしてエラーを防ぐ
+    if (!prize) { return null }
+
     // 景品グループが存在する場合、同一が存在する・次の景品へ移行していることをわかりやすくする
     let prizeDisplayName = prize.displayName
     if (prizeGroup && prizeGroup.length > 1) {
@@ -87,10 +90,6 @@ export const AnimatedPrizeDisplay: React.FC<{
         prizeDisplayName += `（${prizeGroupIndex + 1} / ${prizeGroup.length}）`
       }
     }
-
-
-    // 準備ができてない場合は無をレンダーしてエラーを防ぐ
-    if (!prize) { return null }
 
     return (
       <motion.div layout layoutRoot

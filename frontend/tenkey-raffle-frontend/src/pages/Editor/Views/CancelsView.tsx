@@ -264,7 +264,7 @@ export const CancelsView: React.FC<{
 
         <ConfirmDeletionModal
           mutationFn={wipeAllCancels}
-          invalidateQueryKeys={['getCancels']}
+          invalidateQueryKeys={[['getCancels']]}
           modalTitle="不参加リストを削除"
           modalBodyText="現在記録されている不参加リストを削除します。"
           modalOpened={wipeModalOpened}
