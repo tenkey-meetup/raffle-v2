@@ -6,16 +6,17 @@ import { useBudoux } from "../util/BudouxParse"
 import { p } from "motion/react-client"
 import { WordWrapSpan } from "./WordWrapSpan"
 import { sanitizePrizeName } from "@/util/SanitizePrizeName"
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR } from "@/settings"
 
 
 const COLOR_TITLE_FOCUSED = "#000000"
-const COLOR_TITLE_DIMMED = "#495057"
+const COLOR_TITLE_DIMMED = BUTTON_PRIMARY_BORDER_COLOR
 
-const COLOR_PROVIDER_FOCUSED = "#495057"
-const COLOR_PROVIDER_DIMMED = "#868e96"
+const COLOR_PROVIDER_FOCUSED = BUTTON_PRIMARY_BORDER_COLOR
+const COLOR_PROVIDER_DIMMED = BUTTON_PRIMARY_BORDER_COLOR
 
 const COLOR_BG_FOCUSED = "#FFFFFF"
-const COLOR_BG_DIMMED = "#e9ecef"
+const COLOR_BG_DIMMED = BUTTON_PRIMARY_BACKGROUND_COLOR
 
 const COLOR_TRANSITION_TIME = 0.6
 const TEXT_MOTION_TIME = 0.4

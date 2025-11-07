@@ -53,7 +53,7 @@ export const InRaffleEditMenu: React.FC<{
           color: "green",
           title: "成功",
           message: `変更を適用しました。`,
-          autoClose: 7000,
+          autoClose: 5000,
         })
         queryClient.resetQueries({ queryKey: ['getMappings'] })
         closeMenu()

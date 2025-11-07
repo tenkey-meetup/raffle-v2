@@ -2,6 +2,7 @@ import { Participant, Mapping, Prize } from "@/types/BackendTypes"
 import { EditorData } from "../InRaffleEditMenu"
 import { Stack, Paper, Select, ComboboxItem, Button, Text } from "@mantine/core"
 import { useMemo, useState } from "react"
+import { BUTTON_SECONDARY_BORDER_COLOR } from "@/settings"
 
 export const SelectWinner: React.FC<{
   participants: Participant[],
@@ -87,6 +88,7 @@ export const SelectWinner: React.FC<{
         <Button
           disabled={!selectedParticipant}
           onClick={() => onSelectWinner(selectedParticipant)}
+          bg={BUTTON_SECONDARY_BORDER_COLOR}
         >
           当選者を変更
         </Button>

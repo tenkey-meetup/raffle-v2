@@ -1,4 +1,5 @@
 import { WordWrapSpan } from "@/components/WordWrapSpan"
+import { BUTTON_SECONDARY_BORDER_COLOR } from "@/settings"
 import { Participant, Prize, Mapping } from "@/types/BackendTypes"
 import { sanitizePrizeName } from "@/util/SanitizePrizeName"
 import { Table, Stack, Code, Button, Text } from "@mantine/core"
@@ -103,6 +104,7 @@ export const DisplayMappingsList: React.FC<{
                     <Stack>
                       <Button
                         onClick={() => onRowEdit(entry.mapping, true)}
+                        bg={BUTTON_SECONDARY_BORDER_COLOR}
                       >
                         当選者の変更
                       </Button>

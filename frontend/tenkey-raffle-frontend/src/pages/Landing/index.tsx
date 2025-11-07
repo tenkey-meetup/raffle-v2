@@ -42,7 +42,7 @@ export function Landing() {
 										抽選開始
 									</Button>
 									<Group>
-										<Button variant="outline" color="orange" onClick={() => navigate('~/editor/participants')}>
+										<Button variant="outline" color="green" onClick={() => navigate('~/editor/participants')}>
 											データ編集
 										</Button>
 										<Button variant="outline" color="cyan" onClick={() => navigate('~/handoff')}>

@@ -2,6 +2,7 @@ import { Participant, Prize } from "@/types/BackendTypes";
 import { EditorData } from "../InRaffleEditMenu";
 import { Button, Paper, Stack, Text, } from "@mantine/core";
 import { sanitizePrizeName } from "@/util/SanitizePrizeName";
+import { BUTTON_SECONDARY_BORDER_COLOR } from "@/settings";
 
 export const ConfirmSelectWinner: React.FC<{
   participants: Participant[],
@@ -35,6 +36,7 @@ export const ConfirmSelectWinner: React.FC<{
 
         <Button
           onClick={() => onConfirm()}
+          bg={BUTTON_SECONDARY_BORDER_COLOR}
         >
           確定
         </Button>

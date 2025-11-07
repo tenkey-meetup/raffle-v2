@@ -11,7 +11,7 @@ import { motion } from "motion/react"
 import { MainView } from './Views/MainView';
 import { useLocation } from 'wouter';
 import { InRaffleEditMenu } from './Views/InRaffleEditMenu';
-import { FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { BUTTON_SECONDARY_BACKGROUND_COLOR, BUTTON_SECONDARY_BORDER_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
 import { DelayedDisplayLoader } from '@/components/DelayedDisplayLoader';
 import { useWindowSize } from '@react-hook/window-size';
 import { StylizedWindow } from '@/components/StylizedWindow';
@@ -159,16 +159,36 @@ export function Raffle() {
         <div style={{ position: "absolute", right: 32, bottom: 32 }}>
           <Popover width={200} position="top" withArrow shadow="md" opened={controlPopoverOpened} onDismiss={() => setControlPopoverOpened(false)}>
             <Popover.Target>
-              <ActionIcon variant="filled" color={FOREGROUND_TEXT_COLOR} size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
+              <ActionIcon variant="filled" color={BUTTON_SECONDARY_BORDER_COLOR} size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
                 <PiList size="1.5em" />
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
               <Stack>
-                <Button leftSection={<PiPencilBold size="1em" />} onClick={() => { setControlPopoverOpened(false); openEditPane() }}>
+                <Button
+                  leftSection={<PiPencilBold size="1em" />}
+                  onClick={() => { setControlPopoverOpened(false); openEditPane() }}
+                  bg={BUTTON_SECONDARY_BACKGROUND_COLOR}
+                  c={BUTTON_SECONDARY_BORDER_COLOR}
+                  style={{
+                    outlineColor: BUTTON_SECONDARY_BORDER_COLOR,
+                    outlineWidth: "2px",
+                    outlineStyle: "solid"
+                  }}
+                >
                   当選者の編集
                 </Button>
-                <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/transition/exit")}>
+                <Button
+                  leftSection={<PiXBold size="1em" />}
+                  onClick={() => navigate("~/transition/exit")}
+                  bg={BUTTON_SECONDARY_BACKGROUND_COLOR}
+                  c={BUTTON_SECONDARY_BORDER_COLOR}
+                  style={{
+                    outlineColor: BUTTON_SECONDARY_BORDER_COLOR,
+                    outlineWidth: "2px",
+                    outlineStyle: "solid"
+                  }}
+                >
                   抽選を中断
                 </Button>
               </Stack>

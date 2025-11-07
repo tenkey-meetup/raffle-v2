@@ -11,7 +11,7 @@ import { AnimatedPrizeDisplay } from "../../../components/AnimatedPrizeDisplay"
 import { TenkeyLogo } from "@components/TenkeyLogo"
 import { submitRaffleWinner } from "@/requests/Raffle"
 import { PiGift } from "react-icons/pi"
-import { TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
 import { DelayedDisplayLoader } from "@/components/DelayedDisplayLoader"
 
 
@@ -293,7 +293,7 @@ export const MainView: React.FC<{
         </Stack>
 
         {/* ロゴ */}
-        <div style={{ position: "absolute", bottom: 10, right: 40, width: "150px", height: "150px", color: "#000", opacity: 0.625 }}>
+        <div style={{ position: "absolute", bottom: 10, right: 40, width: "150px", height: "150px", color: BUTTON_PRIMARY_BORDER_COLOR, opacity: 0.625 }}>
           <TenkeyLogo />
 
         </div>
@@ -306,11 +306,16 @@ export const MainView: React.FC<{
             <Button
               disabled={allButtonsDisabled}
               onClick={() => setRaffleState(RaffleStates.Rolling)}
-              w="600px"
+              w="616px"
               h="84px"
               size="28px"
               variant="outline"
-              style={{ borderWidth: "2px" }}
+              bg={BUTTON_PRIMARY_BACKGROUND_COLOR}
+              c={BUTTON_PRIMARY_BORDER_COLOR}
+              style={{
+                borderColor: BUTTON_PRIMARY_BORDER_COLOR,
+                borderWidth: "2px" 
+              }}
             >
               抽選開始
             </Button>
@@ -320,9 +325,10 @@ export const MainView: React.FC<{
             <Button
               disabled={allButtonsDisabled}
               onClick={() => pickPotentialWinner()}
-              w="600px"
+              w="616px"
               h="84px"
               size="28px"
+              bg={BUTTON_PRIMARY_BORDER_COLOR}
             >
               抽選
             </Button>
