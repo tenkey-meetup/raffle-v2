@@ -113,14 +113,6 @@ class ParticipantsManager(metaclass=Singleton):
     
     # === 参加者情報取得 ===
     
-    def is_attending(self, id: str) -> bool:
-        """
-        参加者が会場にいるかを確認  
-        （Connpassでキャンセルされてない＋当日不参加リストに含まれてない）
-        """
-        # 当日参加リスト（self.attending_participants）に入ってるかチェック
-        return any(participant.registration_id == id for participant in self.attending_participants)
-    
     def get_all_participants(self) -> list[Participant]:
         """
         参加者リストを取得（不参加を含む）
@@ -132,18 +124,6 @@ class ParticipantsManager(metaclass=Singleton):
         全参加者のIDだけを取得
         """
         return [participant.registration_id for participant in self.all_participants]
-    
-    def get_available_participants(self) -> list[Participant]:
-        """
-        会場に居る参加者リストを取得（Connpass不参加、当日不参加を省く）
-        """
-        return self.attending_participants
-    
-    def get_available_participant_ids(self) -> list[str]:
-        """
-        会場にいる参加者のIDリストを取得（Connpass不参加、当日不参加を省く）
-        """
-        return [participant.registration_id for participant in self.attending_participants]
     
     def get_participant_by_id(self, id: str) -> Participant | None:
         """

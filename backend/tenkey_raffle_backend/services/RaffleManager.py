@@ -137,39 +137,3 @@ class RaffleManager(metaclass=Singleton):
         self.__write_winners()
         return RaffleModificationStatus.PROCESSED_SUCCESSFULLY
         
-        
-    
-    # === 抽選関連情報の取得 ===
-    
-    def get_participants_pool(self) -> list[Participant]:
-        """
-        現在当選していない参加者を取得  
-        ここから抽選を行う  
-        TODO: 抽選プール＜景品数の場合に対応
-        """
-        return [
-            participant for participant in self.participants_manager.get_available_participants()
-            if participant.registration_id not in [mapping.participant_id for mapping in self.winner_mappings]
-        ]
-        
-    def get_participants_pool_ids(self) -> list[str]:
-        """
-        現在当選していない参加者のIDのみを取得  
-        """
-        return [participant.registration_id for participant in self.get_participants_pool()]
-    
-    def get_next_prize(self) -> Prize | None:
-        """
-        次に抽選する景品を取得  
-        Noneの場合は全景品が抽選済み
-        """
-        return next(
-            (
-                prize for prize in self.prizes_manager.get_all_prizes() 
-                if prize.id not in [mapping.prize_id for mapping in self.winner_mappings]
-            ),
-            None
-        )
-        
-
-        
