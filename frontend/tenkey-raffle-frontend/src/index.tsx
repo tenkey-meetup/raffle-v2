@@ -18,6 +18,8 @@ import ReactDOM from 'react-dom/client'
 import React from 'react';
 
 import '@fontsource-variable/m-plus-1';
+import { EnterRaffleTransition } from './pages/Transition/EnterRaffle.jsx';
+import { ExitRaffleTransition } from './pages/Transition/ExitRaffle.jsx';
 
 const queryClient = new QueryClient()
 
@@ -41,6 +43,8 @@ export default function App() {
 							<Route path="/editor/:path" component={Editor} nest />
 							<Route path="/handoff" component={Handoff} />
 							<Route path="/raffle" component={Raffle} />
+							<Route path="/transition/enter" component={EnterRaffleTransition} />
+							<Route path="/transition/exit" component={ExitRaffleTransition} />
 							<Route path="/testing" component={Testing} />
 							<Route component={NotFound} />
 						</Switch>

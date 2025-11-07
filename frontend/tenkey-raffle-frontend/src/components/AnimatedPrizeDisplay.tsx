@@ -47,19 +47,19 @@ export const AnimatedPrizeDisplay: React.FC<{
 
       if (focused) {
         titleAnimate(titleScope.current, { color: COLOR_TITLE_FOCUSED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        titleAnimate(titleScope.current, { fontSize: "100px", fontWeight: 600 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        titleAnimate(titleScope.current, { fontSize: "90px", fontWeight: 600 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         providerAnimate(providerScope.current, { color: COLOR_PROVIDER_FOCUSED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        providerAnimate(providerScope.current, { fontSize: "50px", fontWeight: 350 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        providerAnimate(providerScope.current, { fontSize: "50px", fontWeight: 375 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         bgAnimate(bgScope.current, { backgroundColor: COLOR_BG_FOCUSED }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
       } else {
         titleAnimate(titleScope.current, { color: COLOR_TITLE_DIMMED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        titleAnimate(titleScope.current, { fontSize: "48px", fontWeight: 650 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        titleAnimate(titleScope.current, { fontSize: "48px", fontWeight: 600 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         providerAnimate(providerScope.current, { color: COLOR_PROVIDER_DIMMED }, { duration: COLOR_TRANSITION_TIME, ...DEFAULT_TRANSITIONS })
-        providerAnimate(providerScope.current, { fontSize: "30px", fontWeight: 500 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
+        providerAnimate(providerScope.current, { fontSize: "30px", fontWeight: 475 }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
 
         bgAnimate(bgScope.current, { backgroundColor: COLOR_BG_DIMMED }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
       }

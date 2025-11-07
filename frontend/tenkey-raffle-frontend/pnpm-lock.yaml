@@ -26,6 +26,9 @@ importers:
       '@mantine/notifications':
         specifier: ^8.3.5
         version: 8.3.5(@mantine/core@8.3.5(@mantine/hooks@8.3.5(react@19.2.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@mantine/hooks@8.3.5(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@react-hook/window-size':
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.2.0)
       '@tanstack/react-query':
         specifier: '4'
         version: 4.42.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -492,6 +495,31 @@ packages:
     resolution: {integrity: sha512-qN4fFsDMy86IV9oh1gZlDTv41RAsO0grjx90FGyT5QCv7NTgcavwxB74GBkhp45W8xn+Ms/awKy+6NxnmLmW1w==}
     peerDependencies:
       react: ^18.x || ^19.x
+
+  '@react-hook/debounce@3.0.0':
+    resolution: {integrity: sha512-ir/kPrSfAzY12Gre0sOHkZ2rkEmM4fS5M5zFxCi4BnCeXh2nvx9Ujd+U4IGpKCuPA+EQD0pg1eK2NGLvfWejag==}
+    peerDependencies:
+      react: '>=16.8'
+
+  '@react-hook/event@1.2.6':
+    resolution: {integrity: sha512-JUL5IluaOdn5w5Afpe/puPa1rj8X6udMlQ9dt4hvMuKmTrBS1Ya6sb4sVgvfe2eU4yDuOfAhik8xhbcCekbg9Q==}
+    peerDependencies:
+      react: '>=16.8'
+
+  '@react-hook/latest@1.0.3':
+    resolution: {integrity: sha512-dy6duzl+JnAZcDbNTfmaP3xHiKtbXYOaz3G51MGVljh548Y8MWzTr+PHLOfvpypEVW9zwvl+VyKjbWKEVbV1Rg==}
+    peerDependencies:
+      react: '>=16.8'
+
+  '@react-hook/throttle@2.2.0':
+    resolution: {integrity: sha512-LJ5eg+yMV8lXtqK3lR+OtOZ2WH/EfWvuiEEu0M3bhR7dZRfTyEJKxH1oK9uyBxiXPtWXiQggWbZirMCXam51tg==}
+    peerDependencies:
+      react: '>=16.8'
+
+  '@react-hook/window-size@3.1.1':
+    resolution: {integrity: sha512-yWnVS5LKnOUIrEsI44oz3bIIUYqflamPL27n+k/PC//PsX/YeWBky09oPeAoc9As6jSH16Wgo8plI+ECZaHk3g==}
+    peerDependencies:
+      react: '>=16.8'
 
   '@rolldown/pluginutils@1.0.0-beta.43':
     resolution: {integrity: sha512-5Uxg7fQUCmfhax7FJke2+8B6cqgeUJUD9o2uXIKXhD+mG0mL6NObmVoi9wXEU1tY89mZKgAYA6fTbftx3q2ZPQ==}
@@ -1863,6 +1891,31 @@ snapshots:
 
   '@mantine/store@8.3.5(react@19.2.0)':
     dependencies:
+      react: 19.2.0
+
+  '@react-hook/debounce@3.0.0(react@19.2.0)':
+    dependencies:
+      '@react-hook/latest': 1.0.3(react@19.2.0)
+      react: 19.2.0
+
+  '@react-hook/event@1.2.6(react@19.2.0)':
+    dependencies:
+      react: 19.2.0
+
+  '@react-hook/latest@1.0.3(react@19.2.0)':
+    dependencies:
+      react: 19.2.0
+
+  '@react-hook/throttle@2.2.0(react@19.2.0)':
+    dependencies:
+      '@react-hook/latest': 1.0.3(react@19.2.0)
+      react: 19.2.0
+
+  '@react-hook/window-size@3.1.1(react@19.2.0)':
+    dependencies:
+      '@react-hook/debounce': 3.0.0(react@19.2.0)
+      '@react-hook/event': 1.2.6(react@19.2.0)
+      '@react-hook/throttle': 2.2.0(react@19.2.0)
       react: 19.2.0
 
   '@rolldown/pluginutils@1.0.0-beta.43': {}

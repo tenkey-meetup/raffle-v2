@@ -3,12 +3,33 @@ import { PiArrowLeftBold, PiArrowRightBold, PiArrowClockwiseBold, PiAppWindowBol
 import { useLocation } from 'wouter';
 import { MainView } from '../Handoff/Views/MainView';
 import { TenkeyLogo } from '@/components/TenkeyLogo';
-import { motion } from 'motion/react';
-import { WINDOW_HEADER_COLOR } from '@/settings';
+import { motion, useAnimate } from 'motion/react';
+import { useEffect } from 'react';
+import { sleep } from '@/util/util';
+import { useWindowSize } from '@react-hook/window-size';
+import { TRANSITION_PANE_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
 
-export function Landing() {
+export function EnterRaffleTransition() {
 
+	const [viewportWidth, viewportHeight] = useWindowSize()
 	const [location, navigate] = useLocation();
+	const [windowScope, windowAnimate] = useAnimate()
+	const [backdropScope, backdropAnimate] = useAnimate()
+
+	useEffect(() => {
+		const animateWinner = async () => {
+			
+			const targetWidth = viewportWidth * 0.75
+			const targetHeight = viewportHeight * 0.9
+			await windowAnimate(windowScope.current, { width: `${targetWidth}px`, height: `${targetHeight}px` }, { duration: 1.0, type: "spring", bounce: 0 })
+			await sleep(1.1 * 1000)
+			await backdropAnimate(backdropScope.current, { backgroundColor: "#ffffff" }, { duration: 0.6, type: "spring", bounce: 0 })
+			navigate('~/raffle')
+
+		}
+		animateWinner()
+
+	}, [])
 
 	return (
 		<>
@@ -26,7 +47,7 @@ export function Landing() {
 				<div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0 }}>
 
 					<Center h="100%">
-						<Flex direction="column" bg="white" h="400px" w="500px" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
+						<Flex direction="column" bg="white" ref={windowScope} bdrs="md" style={{ height: "400px", width: "500px", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
 							<Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: WINDOW_HEADER_COLOR, borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
 								<Group px="1em" gap="0.75em">
 									<PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
@@ -46,29 +67,45 @@ export function Landing() {
 									</Center>
 								</Group>
 							</Flex>
-							<motion.div style={{flexGrow: 1}} initial={{opacity: 0}} animate={{opacity: 1}} transition={{type: "spring", bounce: 0, duration: 0.8}}>
-								<Center px="24px" py="24px" h="100%">
-									<Stack gap="24px" justify="center" align="center">
-										<Group>
-											<Center c="black" h="115px" w="150px">
-												<TenkeyLogo />
-											</Center>
-											<Title order={3}>抽選システム</Title>
-										</Group>
-										<Button size="xl" onClick={() => navigate('~/transition/enter')}>
-											抽選開始
-										</Button>
-										<Group>
-											<Button variant="outline" color="orange" onClick={() => navigate('~/editor/participants')}>
-												データ編集
-											</Button>
-											<Button variant="outline" color="cyan" onClick={() => navigate('~/handoff')}>
-												景品受け渡し
-											</Button>
-										</Group>
-									</Stack>
-								</Center>
-							</motion.div>
+							<Box style={{ flexGrow: 1 }}>
+								<motion.div
+									layout
+									initial={{ opacity: 0, }}
+									animate={{ opacity: 1, }}
+									transition={{
+										type: "spring",
+										stiffness: 700,
+										damping: 100,
+										mass: 1
+									}}
+									style={{
+										width: "100%",
+										height: "100%",
+										backgroundColor: TRANSITION_PANE_COLOR
+									}}
+									ref={backdropScope}
+								>
+									<Center w="100%" h="100%">
+										{/* TODO */}
+										<motion.div
+											layout
+											initial={{ y: 50, opacity: 0 }}
+											animate={{ y: 0, opacity: 1 }}
+											transition={{
+												type: "spring",
+												bounce: 0,
+												duration: 0.6,
+												delay: 1.0
+											}}
+										>
+											<Stack align="center">
+												<Text component={motion.p} layout="position" size="48px" c="white">Ready</Text>
+												<Box h="48px" />
+											</Stack>
+										</motion.div>
+									</Center>
+								</motion.div>
+							</Box>
 						</Flex>
 					</Center>
 

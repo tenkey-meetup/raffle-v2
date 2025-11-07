@@ -11,6 +11,7 @@ import { motion } from "motion/react"
 import { MainView } from './Views/MainView';
 import { useLocation } from 'wouter';
 import { InRaffleEditMenu } from './Views/InRaffleEditMenu';
+import { WINDOW_HEADER_COLOR } from '@/settings';
 
 export function Raffle() {
 
@@ -86,56 +87,58 @@ export function Raffle() {
 
         {/* メイン画面 */}
         <div style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0 }}>
-          {anyLoading &&
-            <Center h="100vh">
-              <Loader />
-            </Center>
-          }
-          {anyError &&
-            <Container>
-              <Title>エラー</Title>
-              {getParticipantsQuery.isError && <Text>参加者データ：{JSON.stringify((getParticipantsQuery.error as Error).message)}</Text>}
-              {getPrizesQuery.isError && <Text>景品データ：{JSON.stringify((getPrizesQuery.error as Error).message)}</Text>}
-              {getMappingsQuery.isError && <Text>抽選結果データ：{JSON.stringify((getMappingsQuery.error as Error).message)}</Text>}
-            </Container>
-          }
-          {(!anyLoading && !anyError) &&
-            <Center h="100%">
-              <Flex direction="column" bg="white" h="90%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
-                <Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: "rgb(216, 42, 77)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
-                  <Group px="1em" gap="0.75em">
-                    <PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
-                    <PiArrowRightBold size="1.6em" color="rgb(91, 69, 46)" />
-                    <PiArrowClockwiseBold size="1.6em" color="rgb(91, 69, 46)" />
-                  </Group>
-                  <Box style={{ flexGrow: 1 }} />
-                  <Group px="0.5em" gap="0.1em">
-                    <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-                      <Text size="2em" color="rgb(91, 69, 46)" pb="0.6em">_</Text>
-                    </Center>
-                    <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
-                      <PiAppWindowBold size="1.5em" color="rgb(91, 69, 46)" />
-                    </Center>
-                    <Popover width={200} position="bottom" withArrow shadow="md">
-                      <Popover.Target>
-                        <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px", cursor: "pointer" }}>
-                          <PiXBold size="1.5em" color="rgb(91, 69, 46)" />
-                        </Center>
-                      </Popover.Target>
-                      <Popover.Dropdown>
-                        <Stack>
-                          <Button leftSection={<PiPencilBold size="1em" />} onClick={() => { setControlPopoverOpened(false); openEditPane() }}>
-                            当選者の編集
-                          </Button>
-                          <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/")}>
-                            抽選を中断
-                          </Button>
-                        </Stack>
-                      </Popover.Dropdown>
-                    </Popover>
-                  </Group>
-                </Flex>
-                <Box style={{ flexGrow: 1 }}>
+
+
+          <Center h="100%">
+            <Flex direction="column" bg="white" h="90%" w="75%" bdrs="md" style={{ borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "2px 6px 6px 2px", overflow: "hidden" }}>
+              <Flex direction="row" align="center" w="100%" h="3em" style={{ backgroundColor: WINDOW_HEADER_COLOR, borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "0px 0px 2.5px 0px" }}>
+                <Group px="1em" gap="0.75em">
+                  <PiArrowLeftBold size="1.6em" color="rgb(91, 69, 46)" />
+                  <PiArrowRightBold size="1.6em" color="rgb(91, 69, 46)" />
+                  <PiArrowClockwiseBold size="1.6em" color="rgb(91, 69, 46)" />
+                </Group>
+                <Box style={{ flexGrow: 1 }} />
+                <Group px="0.5em" gap="0.1em">
+                  <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
+                    <Text size="2em" color="rgb(91, 69, 46)" pb="0.6em">_</Text>
+                  </Center>
+                  <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px" }}>
+                    <PiAppWindowBold size="1.5em" color="rgb(91, 69, 46)" />
+                  </Center>
+                  <Popover width={200} position="bottom" withArrow shadow="md">
+                    <Popover.Target>
+                      <Center w="2em" h="1.5em" bdrs="0.3em" style={{ backgroundColor: "rgb(242, 214, 184)", borderStyle: "solid", borderColor: "rgb(91, 69, 46)", borderWidth: "1.5px", cursor: "pointer" }}>
+                        <PiXBold size="1.5em" color="rgb(91, 69, 46)" />
+                      </Center>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <Stack>
+                        <Button leftSection={<PiPencilBold size="1em" />} onClick={() => { setControlPopoverOpened(false); openEditPane() }}>
+                          当選者の編集
+                        </Button>
+                        <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/transition/exit")}>
+                          抽選を中断
+                        </Button>
+                      </Stack>
+                    </Popover.Dropdown>
+                  </Popover>
+                </Group>
+              </Flex>
+              <Box style={{ flexGrow: 1 }}>
+                {anyLoading &&
+                  <Center h="100vh">
+                    <Loader />
+                  </Center>
+                }
+                {anyError &&
+                  <Container>
+                    <Title>エラー</Title>
+                    {getParticipantsQuery.isError && <Text>参加者データ：{JSON.stringify((getParticipantsQuery.error as Error).message)}</Text>}
+                    {getPrizesQuery.isError && <Text>景品データ：{JSON.stringify((getPrizesQuery.error as Error).message)}</Text>}
+                    {getMappingsQuery.isError && <Text>抽選結果データ：{JSON.stringify((getMappingsQuery.error as Error).message)}</Text>}
+                  </Container>
+                }
+                {(!anyLoading && !anyError) &&
                   <MainView
                     participants={getParticipantsQuery.data}
                     prizes={getPrizesQuery.data}
@@ -143,10 +146,11 @@ export function Raffle() {
                     cancels={getCancelsQuery.data}
                     anyFetching={anyFetching}
                   />
-                </Box>
-              </Flex>
-            </Center>
-          }
+                }
+              </Box>
+            </Flex>
+          </Center>
+
         </div>
 
         {/* 編集メニュー */}
@@ -154,7 +158,7 @@ export function Raffle() {
         <div style={{ position: "absolute", right: 32, bottom: 32 }}>
           <Popover width={200} position="top" withArrow shadow="md" opened={controlPopoverOpened} onDismiss={() => setControlPopoverOpened(false)}>
             <Popover.Target>
-              <ActionIcon variant="filled" color="rgb(216, 42, 77)" size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
+              <ActionIcon variant="filled" color={WINDOW_HEADER_COLOR} size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
                 <PiList size="1.5em" />
               </ActionIcon>
             </Popover.Target>
@@ -163,7 +167,7 @@ export function Raffle() {
                 <Button leftSection={<PiPencilBold size="1em" />} onClick={() => { setControlPopoverOpened(false); openEditPane() }}>
                   当選者の編集
                 </Button>
-                <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/")}>
+                <Button leftSection={<PiXBold size="1em" />} onClick={() => navigate("~/transition/exit")}>
                   抽選を中断
                 </Button>
               </Stack>

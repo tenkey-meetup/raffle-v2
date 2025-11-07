@@ -30,15 +30,23 @@ export const MainView: React.FC<{
       return participants.find(entry => entry.registrationId === currentLookupId)
     }, [currentLookupId])
 
-    const matchingMapping: Mapping | null = useMemo(() => {
+    const matchingMappings: Mapping[] | null = useMemo(() => {
       if (!currentLookupId) { return null }
-      return mappings.find(entry => entry.winnerId === currentLookupId)
+      const matchingMappings = mappings.filter(entry => entry.winnerId === currentLookupId)
+      if (matchingMappings.length === 0) {
+        return null
+      } else {
+        return matchingMappings
+      }
     }, [currentLookupId])
 
-    const matchingPrize: Prize | null = useMemo(() => {
-      if (!matchingMapping) { return null }
-      return prizes.find(entry => entry.id === matchingMapping.prizeId)
-    }, [matchingMapping])
+    // もし同一の名前の参加者が存在する場合、注意喚起をする
+    const duplicateNameExists: boolean = useMemo(() => {
+      if (!matchingParticipant) { return false }
+
+      return (participants.filter(entry => entry.displayName === matchingParticipant.displayName).length > 1)
+
+    }, [matchingParticipant])
 
 
     return (
@@ -58,41 +66,52 @@ export const MainView: React.FC<{
 
         {/* 検索した参加者が存在しない場合 */}
         {currentLookupId &&
-          <Group justify="center" align="stretch" grow>
+          <Group justify="center" align="stretch" grow pt="24px">
             {matchingParticipant ?
               <Paper shadow="xs" p="xl" withBorder>
                 <Stack align="center" ta="center" h="100%">
-                  <Title>参加者</Title>
-                  <Space />
-                  <Text size="xl" fw={650}>{matchingParticipant.displayName}</Text>
-                  <Text>受付番号：{matchingParticipant.registrationId}</Text>
-                  <Text c="dimmed">ユーザー名：{matchingParticipant.username}</Text>
+                  <Title order={3} c="dimmed">参加者情報</Title>
+                  <Title order={1} fw={650}>{matchingParticipant.displayName}</Title>
+                  {duplicateNameExists ?
+                    <>
+                      <Text c="orange.7" fw={550} size="lg">受付番号：{matchingParticipant.registrationId}</Text>
+                      <Text c="orange.7" fw={550} size="lg">ユーザー名：{matchingParticipant.username}</Text>
+                      <Text>同じ表示名の参加者が複数存在します。</Text>
+                      <Text>ユーザー名と受付番号も確認してください。</Text>
+                    </>
+                    :
+                    <>
+                      <Text size="lg">受付番号：{matchingParticipant.registrationId}</Text>
+                      <Text size="lg" c="dimmed">ユーザー名：{matchingParticipant.username}</Text>
+                    </>
+                  }
+
                 </Stack>
               </Paper>
               :
               <Paper shadow="xs" p="xl" withBorder h="100%">
                 <Stack align="center" ta="center">
-                  <Title c="red">参加者</Title>
-                  <Space />
-                  <Text c="red" fw="bold">ID: {currentLookupId}</Text>
+                  <Title order={3} c="red">参加者</Title>
+                  <Title order={1} c="red" fw="bold">ID: {currentLookupId}</Title>
                   <Text>読み込まれたIDに対応する参加者データが見つかりませんでした。</Text>
                 </Stack>
               </Paper>
             }
-            {matchingMapping ?
-              <Paper shadow="xs" p="xl" withBorder h="100%">
+            {matchingMappings ? matchingMappings.map((mapping, index) => { 
+              const matchingPrize = prizes.find(prize => prize.id === mapping.prizeId)
+              return (
+              <Paper shadow="xs" p="xl" withBorder h="100%" key={mapping.prizeId}>
                 <Stack align="center" ta="center">
-                  <Title>当選した景品</Title>
-                  <Space />
+                  <Title order={3} c="dimmed">当選した景品{matchingMappings.length > 1 && `（その${index + 1}）`}</Title>
                   {matchingPrize ?
                     <>
-                      <Text size="xl" fw={650}><WordWrapSpan>{sanitizePrizeName(matchingPrize.displayName)}</WordWrapSpan></Text>
-                      <Text>提供者：{matchingPrize.provider}</Text>
-                      <Text>管理番号：{matchingPrize.id}</Text>
+                      <Title order={1} fw={650}><WordWrapSpan>{sanitizePrizeName(matchingPrize.displayName)}</WordWrapSpan></Title>
+                      <Text size="lg" fw={450}>提供者：{matchingPrize.provider}</Text>
+                      <Text size="xl" fw={400}>管理番号：<strong>{matchingPrize.id}</strong></Text>
                     </>
                     :
                     <>
-                      <Text c="red" fw="bold">ID: {matchingMapping.prizeId}</Text>
+                      <Title order={1} fw={650} c="red">ID: {mapping.prizeId}</Title>
                       <Text>対応する景品データが見つかりませんでした。</Text>
                       <Text>お手数ですが、景品の管理番号から景品を探してください。</Text>
                     </>
@@ -100,6 +119,8 @@ export const MainView: React.FC<{
 
                 </Stack>
               </Paper>
+            )})
+
               :
               <Paper shadow="xs" p="xl" withBorder h="100%">
                 <Stack align="center" ta="center">

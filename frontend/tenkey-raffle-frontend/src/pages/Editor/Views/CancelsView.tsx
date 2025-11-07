@@ -221,7 +221,8 @@ export const CancelsView: React.FC<{
                                 <Text size="sm" c="dimmed">{pendingParticipant.registrationId}</Text>
                               </Stack>
                             </Group>
-                          }})
+                          }
+                        })
                         }
                       </>
                     }
@@ -296,7 +297,7 @@ export const CancelsView: React.FC<{
                 <Table.Tr>
                   <Table.Th>受付番号</Table.Th>
                   <Table.Th>参加者名</Table.Th>
-                  <Table.Th>参加者情報</Table.Th>
+                  <Table.Th>ユーザー名</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -314,14 +315,9 @@ export const CancelsView: React.FC<{
                     </Table.Td>
                     <Table.Td>
                       {entry.correspondingParticipant ?
-                        <Stack gap="xs">
-                          <Text size="sm" c="dimmed">ユーザー名：{entry.correspondingParticipant.username}</Text>
-                          <Text size="sm" c="dimmed">受付番号：{entry.correspondingParticipant.registrationId}</Text>
-                        </Stack>
+                        <Text size="sm" c="dimmed">ユーザー名：{entry.correspondingParticipant.username}</Text>
                         :
-                        <Group>
-                          <Text size="sm">この受付番号の参加者は参加者リストに存在しません。</Text>
-                        </Group>
+                        <Text size="sm">この受付番号の参加者は参加者リストに存在しません。</Text>
                       }
 
                     </Table.Td>

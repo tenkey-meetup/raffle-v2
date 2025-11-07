@@ -117,8 +117,8 @@ export const ParticipantsView: React.FC<{
                   <Table.Td>{participant.registrationId}</Table.Td>
                   <Table.Td>{participant.username}</Table.Td>
                   <Table.Td>{participant.displayName}</Table.Td>
-                  <Table.Td>{participant.connpassAttending ? <Text c="green">✓</Text> : <Text c="red">✗</Text>}</Table.Td>
-                  <Table.Td>{cancels.includes(participant.registrationId) ? <Text c="red">✓</Text> : <Text c="dimmed">-</Text>}</Table.Td>
+                  <Table.Td>{participant.connpassAttending ? <Text fw={500} c="green">✓</Text> : <Text fw={500} c="red">✗</Text>}</Table.Td>
+                  <Table.Td>{cancels.includes(participant.registrationId) ? <Text fw={500} c="red">✓</Text> : <Text c="dimmed">-</Text>}</Table.Td>
                 </Table.Tr>
               )
               }

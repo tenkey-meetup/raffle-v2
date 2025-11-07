@@ -11,6 +11,7 @@ import { AnimatedPrizeDisplay } from "../../../components/AnimatedPrizeDisplay"
 import { TenkeyLogo } from "@components/TenkeyLogo"
 import { submitRaffleWinner } from "@/requests/Raffle"
 import { PiGift } from "react-icons/pi"
+import { TRANSITION_PANE_COLOR } from "@/settings"
 
 
 export const MainView: React.FC<{
@@ -218,7 +219,7 @@ export const MainView: React.FC<{
           style={{
             width: "100%",
             height: "100%",
-            backgroundColor: "#ed8c8c"
+            backgroundColor: TRANSITION_PANE_COLOR
           }}
         >
           <Center w="100%" h="100%">

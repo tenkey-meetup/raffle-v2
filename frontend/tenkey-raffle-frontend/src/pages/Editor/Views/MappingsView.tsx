@@ -296,11 +296,14 @@ export const MappingsView: React.FC<{
                             setCurrentEditorValue(null)
                             openEditMappingModal();
                           }}
+                          color={entry.participant ? "blue" : "green"}
+                          variant={entry.participant ? "solid" : "outline"}
                         >
                           当選者を{entry.participant ? "変更" : "指定"}
                         </Button>
                         <Button
-                          bg={entry.participant ? "red" : ""}
+                          color={entry.participant ? "red" : ""}
+                          variant="outline"
                           disabled={entry.participant ? false : true}
                           onClick={() => {
                             setCurrentRow(entry.prize);
