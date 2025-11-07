@@ -28,9 +28,11 @@ export const MainView: React.FC<{
   anyFetching
 }) => {
 
+    // シャッフルから選ばれた参加者
     const [potentialWinner, setPotentialWinner] = useState<Participant | null>(null)
     const queryClient = useQueryClient()
 
+    // 抽選State
     enum RaffleStates {
       Initializing = 0,      // 初期化中
       PrizeIntroduction,     // 景品紹介中（大きく表示する画面）
@@ -45,6 +47,7 @@ export const MainView: React.FC<{
       RafflingComplete,      // 抽選終了
     }
     const [raffleState, setRaffleState] = useState<RaffleStates>(RaffleStates.Initializing)
+
 
     // 参加者を再抽選する際、再度抽選されないように不参加としておく関数
     const discardUnavailableWinnerMutation = useMutation({
@@ -94,7 +97,7 @@ export const MainView: React.FC<{
     }, [participants, cancels, mappings])
 
 
-    // 当選者を選ぶ関数（確定ではなく表示用）
+    // 当選者を選ぶ関数（確定ではなく表示用、その後確定Mutationなどで対応）
     const pickPotentialWinner = () => {
       setPotentialWinner(rafflePool[Math.floor(Math.random() * rafflePool.length)])
       setRaffleState(RaffleStates.PossibleWinnerChosen)
@@ -104,17 +107,20 @@ export const MainView: React.FC<{
     // 次の抽選景品を選ぶ関数
     // mappingsリストで最初に当選者がいないもの
     type NextPrizeDetailsType = {
-      nextPrize: Prize | null,
-      prizeGroup: Prize[] | null
-      prizeIndex: number
+      nextPrize: Prize | null,          // 次の景品（ない場合はNull）
+      prizeIndex: number,               // 次の景品のIndex（+1で表示用）
+      prizeGroup: Prize[] | null,       // 同一の名前の景品が複数ある場合、グループとして返す
+      prizeIndexInGroup: number | null  // 現在の景品がグループ内でいくつ目かのIndex
+      
     }
     const nextPrizeDetails: NextPrizeDetailsType = useMemo(() => {
       const nextMappingIndex = mappings.findIndex(entry => !entry.winnerId)
       if (nextMappingIndex === -1) {
         return {
           nextPrize: null,
+          prizeIndex: -1,
           prizeGroup: null,
-          prizeIndex: -1
+          prizeIndexInGroup: null
         }
       }
       const nextPrize = prizes.find(prize => prize.id === mappings[nextMappingIndex].prizeId)
@@ -126,14 +132,16 @@ export const MainView: React.FC<{
       if (prizeGroup.length > 1) {
         return {
           nextPrize: nextPrize,
+          prizeIndex: nextMappingIndex,
           prizeGroup: prizeGroup,
-          prizeIndex: nextMappingIndex
+          prizeIndexInGroup: prizeGroup.findIndex(entry => entry.id === nextPrize.id)
         }
       } else {
         return {
           nextPrize: nextPrize,
+          prizeIndex: nextMappingIndex,
           prizeGroup: null,
-          prizeIndex: nextMappingIndex
+          prizeIndexInGroup: null
         }
       }
 
@@ -193,7 +201,7 @@ export const MainView: React.FC<{
           initial={{opacity: 0}}
           animate={{opacity: 1}}
           transition={{
-            delay: 1
+            delay: 0.15
           }}
           >
             <Loader />
@@ -257,8 +265,11 @@ export const MainView: React.FC<{
 
           {/* 景品表示 */}
           <AnimatedPrizeDisplay
-            prize={nextPrizeDetails.nextPrize}
             focused={raffleState === RaffleStates.PrizeIntroduction}
+            prize={nextPrizeDetails.nextPrize}
+            prizeIndex={nextPrizeDetails.prizeIndex}
+            prizeGroup={nextPrizeDetails.prizeGroup}
+            prizeGroupIndex={nextPrizeDetails.prizeIndexInGroup}
           />
 
           {/* 当選者表示 */}

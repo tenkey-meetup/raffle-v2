@@ -24,9 +24,15 @@ const TEXT_MOTION_TIME = 0.4
 // いい感じに景品を表示するやつ
 export const AnimatedPrizeDisplay: React.FC<{
   prize: Prize | null,
+  prizeIndex: number,
+  prizeGroup: Prize[] | null,
+  prizeGroupIndex: number | null,
   focused: boolean
 }> = ({
   prize,
+  prizeIndex,
+  prizeGroup,
+  prizeGroupIndex,
   focused
 }) => {
     const [titleScope, titleAnimate] = useAnimate()
@@ -38,6 +44,8 @@ export const AnimatedPrizeDisplay: React.FC<{
       type: "spring",
       bounce: 0
     }
+
+    const { budouxParser } = useBudoux()
 
 
     // focused（表示設定）が変更された場合、アニメーションを稼働する
@@ -64,6 +72,22 @@ export const AnimatedPrizeDisplay: React.FC<{
         bgAnimate(bgScope.current, { backgroundColor: COLOR_BG_DIMMED }, { duration: TEXT_MOTION_TIME, ...DEFAULT_TRANSITIONS })
       }
     }, [focused])
+
+    // 景品グループが存在する場合、同一が存在する・次の景品へ移行していることをわかりやすくする
+    let prizeDisplayName = prize.displayName
+    if (prizeGroup && prizeGroup.length > 1) {
+      if (focused) {
+        // TODO: グループの場合はFocusedをスキップ
+        if (prizeGroupIndex === 0) {
+          prizeDisplayName += `（${prizeGroup.length}名分）`
+        } else {
+          prizeDisplayName += `（その${prizeGroupIndex+1}）`
+        }
+      } else {
+        prizeDisplayName += `（${prizeGroupIndex + 1} / ${prizeGroup.length}）`
+      }
+    }
+
 
     // 準備ができてない場合は無をレンダーしてエラーを防ぐ
     if (!prize) { return null }
@@ -107,9 +131,7 @@ export const AnimatedPrizeDisplay: React.FC<{
             }}
           >
             {/* {budouxParser(prize.displayName.replace(/<\/?[^>]+(>|$)/g, "　​"))} */}
-            <WordWrapSpan>
-              {sanitizePrizeName(prize.displayName)}
-            </WordWrapSpan>
+            <WordWrapSpan>{budouxParser(sanitizePrizeName(prizeDisplayName))}</WordWrapSpan>
           </Text>
         </motion.div>
         <motion.div
