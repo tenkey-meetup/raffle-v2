@@ -12,7 +12,6 @@ import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Handoff } from './pages/Handoff/index.js';
 import { Raffle } from './pages/Raffle/index.js';
-import { Testing } from './pages/Testing/index.js';
 import { Switch, Route } from 'wouter';
 import ReactDOM from 'react-dom/client'
 import React from 'react';
@@ -45,7 +44,6 @@ export default function App() {
 							<Route path="/raffle" component={Raffle} />
 							<Route path="/transition/enter" component={EnterRaffleTransition} />
 							<Route path="/transition/exit" component={ExitRaffleTransition} />
-							<Route path="/testing" component={Testing} />
 							<Route component={NotFound} />
 						</Switch>
 					</main>

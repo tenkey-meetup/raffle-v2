@@ -8,13 +8,12 @@ import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
 import { BarcodeReaderInput } from "../../../components/BarcodeReaderInput";
 
-
 type CancelTableEntry = {
   cancelId: string,
   correspondingParticipant: Participant | null
 }
 
-
+// 当日不参加リストを管理するメニュー
 export const CancelsView: React.FC<{
   participants: Participant[],
   cancels: string[]
@@ -30,12 +29,11 @@ export const CancelsView: React.FC<{
     const [editorMode, setEditorMode] = useState<'SCANNER' | 'MANUAL'>('MANUAL');
     const [editorList, setEditorList] = useState<string[]>([])
     const [editorTextfieldRejects, setEditorTextfieldRejects] = useState<string[]>([])
-
     const [editError, setEditError] = useState<string | null>(null)
-
-
     const queryClient = useQueryClient()
 
+
+    // 当日不参加を追加・削除する関数
     const modifyCancelsMutation = useMutation({
       mutationFn: modifyCancelsList,
       onMutate: (() => {
@@ -81,19 +79,23 @@ export const CancelsView: React.FC<{
       })
     })
 
-    const cancelsTableEntries: CancelTableEntry[] = cancels.map(cancelId => {
-      const correspondingParticipant = participants.find(participant => participant.registrationId === cancelId)
+
+    // 各キャンセルに対応する参加者データを表示用にマッピングしておく
+    const cancelsTableEntries: CancelTableEntry[] = useMemo(() => cancels.map(cancelId => {
       return {
         cancelId: cancelId,
-        correspondingParticipant: correspondingParticipant || null
+        correspondingParticipant: participants.find(participant => participant.registrationId === cancelId) || null
       }
-    })
+    }), [cancels, participants])
+
 
     // 参加者IDリストは便利なのでキャッシュしておく
     const participantsIdList = useMemo(() => {
       return participants.map(participant => participant.registrationId)
     }, [participants])
 
+
+    // バーコードの読み取りを処理する関数（不参加追加・削除用）
     const onBarcodeRead = (code: string) => {
       // 読み取ったバーコードに対応する参加者IDが存在する場合はeditorListに追加
       if (participantsIdList.includes(code)) {
@@ -107,6 +109,7 @@ export const CancelsView: React.FC<{
 
     return (
       <>
+        {/* 編集用Modal */}
         <Modal
           opened={editModalOpen}
           onClose={closeEditModal}
@@ -189,8 +192,6 @@ export const CancelsView: React.FC<{
                     clearOnSettled={true}
                   />
 
-
-
                   <Stack gap="sm">
                     {editorList.length > 0 &&
                       <>
@@ -218,8 +219,7 @@ export const CancelsView: React.FC<{
                               </Stack>
                             </Group>
                           }
-                        })
-                        }
+                        })}
                       </>
                     }
                   </Stack>
@@ -228,7 +228,6 @@ export const CancelsView: React.FC<{
                     <Stack gap="sm">
                       <Text>読み取れなかったバーコード</Text>
                       <Text size="xs" c="dimmed">以下の受付番号に対応する参加者は存在しません。</Text>
-
                       {editorTextfieldRejects.map(rejectId => (
                         <Paper shadow="xs" p="md" bg="red.1">
                           <Group grow>
@@ -237,12 +236,9 @@ export const CancelsView: React.FC<{
                         </Paper>
                       ))}
                     </Stack>
-
                   }
                 </>
-
               }
-
             </Stack>
 
             <Stack align="center" gap="xs" mt="lg">
@@ -262,6 +258,7 @@ export const CancelsView: React.FC<{
 
         </Modal>
 
+        {/* 全削除用Modal */}
         <ConfirmDeletionModal
           mutationFn={wipeAllCancels}
           invalidateQueryKeys={[['getCancels']]}
@@ -272,9 +269,9 @@ export const CancelsView: React.FC<{
           completeNotificationMessage="不参加リストを削除しました。"
         />
 
+        {/* 表示テーブル */}
         <Stack align="center">
           <Title>不参加リスト</Title>
-
 
           <Group>
             <Button onClick={() => { setEditorTextfieldRejects([]); openEditModal(); }}>
@@ -302,12 +299,10 @@ export const CancelsView: React.FC<{
                     <Table.Td>{entry.cancelId}</Table.Td>
                     <Table.Td>
                       {entry.correspondingParticipant ?
-
                         <Text>{entry.correspondingParticipant.displayName}</Text>
                         :
                         <Text size="lg" c="red">???</Text>
                       }
-
                     </Table.Td>
                     <Table.Td>
                       {entry.correspondingParticipant ?
@@ -315,7 +310,6 @@ export const CancelsView: React.FC<{
                         :
                         <Text size="sm">この受付番号の参加者は参加者リストに存在しません。</Text>
                       }
-
                     </Table.Td>
                   </Table.Tr>
                 )

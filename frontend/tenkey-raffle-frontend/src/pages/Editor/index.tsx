@@ -19,7 +19,7 @@ import { DelayedDisplayLoader } from '@/components/DelayedDisplayLoader';
 export function Editor() {
 
   const [location, navigate] = useLocation()
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle }] = useDisclosure(); // モバイルNavバーの開いてる状況の管理
 
   // 参加者リスト
   const getParticipantsQuery = useQuery(
@@ -29,6 +29,7 @@ export function Editor() {
     }
   )
 
+  // 景品リスト
   const getPrizesQuery = useQuery(
     {
       queryKey: ['getPrizes'],
