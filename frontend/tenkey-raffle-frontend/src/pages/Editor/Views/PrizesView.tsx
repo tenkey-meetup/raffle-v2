@@ -3,11 +3,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FileUploadBlock } from "../../../components/FileUploadBlock";
 import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
 import { uploadNewPrizesCsv, wipeAllPrizes } from "../../../requests/Prizes";
+import { useBudoux } from "@/util/BudouxParse";
+import { WordWrapSpan } from "@/components/WordWrapSpan";
+import { sanitizePrizeName } from "@/util/SanitizePrizeName";
 
 export const PrizesView: React.FC<{
   prizes: Prize[],
@@ -22,7 +25,9 @@ export const PrizesView: React.FC<{
     const [uploadModalError, setUploadModalError] = useState<string | null>(null)
 
     const queryClient = useQueryClient()
+    const {budouxParser} = useBudoux()
 
+    // 新たな景品CSVをアップロードする関数
     const uploadNewPrizesCsvMutation = useMutation({
       mutationFn: uploadNewPrizesCsv,
       onMutate: (() => {
@@ -50,7 +55,10 @@ export const PrizesView: React.FC<{
       })
     })
 
-    const editingDisabled = mappings.length > 0
+    // 抽選結果が存在する場合は書き換え機能を切る
+    const editingDisabled = useMemo(() => {
+      return mappings.filter(entry => entry.winnerId).length > 0
+    }, [mappings])
 
     return (
       <>
@@ -112,7 +120,7 @@ export const PrizesView: React.FC<{
                   <Table.Tr key={prize.id}>
                     <Table.Td>{prize.id}</Table.Td>
                     <Table.Td>{prize.provider}</Table.Td>
-                    <Table.Td>{prize.displayName}</Table.Td>
+                    <Table.Td><WordWrapSpan>{budouxParser(sanitizePrizeName(prize.displayName))}</WordWrapSpan></Table.Td>
                   </Table.Tr>
                 )
                 }

@@ -14,14 +14,15 @@ interface DeleteModalProps {
   completeNotificationMessage: string
 }
 
+// 「削除しますか？」と確認するModal
 export const ConfirmDeletionModal: React.FC<DeleteModalProps> = ({
-  mutationFn,
-  invalidateQueryKeys,
-  modalTitle,
+  mutationFn,          // 削除を承認した際に実行する関数
+  invalidateQueryKeys, // 成功後にどのqueryKeyを無効化するか
+  modalTitle,          
   modalBodyText,
-  modalOpened,
-  closeModal,
-  completeNotificationMessage
+  modalOpened, // Modalが開いてるかのBool（useDisclosureから）
+  closeModal,  // Modalを閉じる関数（useDisclosureから）
+  completeNotificationMessage // 成功後の通知に表示するメッセージ
 }) => {
 
   const [modalError, setModalError] = useState<string | null>(null)

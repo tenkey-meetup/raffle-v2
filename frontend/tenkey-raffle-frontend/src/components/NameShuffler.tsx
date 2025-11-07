@@ -5,41 +5,69 @@ import { Participant } from "../types/BackendTypes"
 import { sleep } from "../util/util"
 import { PiInfoBold, PiWarningBold } from "react-icons/pi"
 
+// アニメーション関連色々
 const SHUFFLE_DELAY_MS = 20
 const SHUFFLE_ANIMATION_DURATION_MS = 150
-const SETTLE_ANIMATION_DURATION_MS = 150
+const SETTLE_ANIMATION_DURATION_MS = 125
+const SETTLE_BUMP_ANIMATION_DURATION_MS = 150
 const SIMULTANEOUS_TEXT_ELEMENTS = Math.ceil(SHUFFLE_ANIMATION_DURATION_MS / SHUFFLE_DELAY_MS)
-const FONT_SIZE = 120 // Framer-Motionが正しくAbsolute・Relativeを考慮しないため、フォントサイズを変更すると壊れます
 
+// フォントサイズ
+// 変更した場合は色々直してください
+const FONT_SIZE = 120 
+
+// 抽選中に名前をシャッフル表示するやつ
 export const NameShuffler: React.FC<{
   participantsList: Participant[],
   winner: Participant | null,
-  overrideDisableRolling: boolean
+  overrideDisableRolling: boolean  // 強制的にシャッフル表示を無効にする
 }> = ({
   participantsList,
   winner,
   overrideDisableRolling
 }) => {
 
-
-
     const participantsPool = useRef<Participant[]>([])
-    const [nameIndex, setNameIndex] = useState<number>(0)
     const currentNames = useRef<string[]>([])
-
+    const [nameIndex, setNameIndex] = useState<number>(0)
+    
     // アニメーション・表示用
     const [winnerScope, winnerAnimate] = useAnimate()
     const outerDivRef = useRef(null)
     const winnerTextRef = useRef(null)
 
-
-    // 表示の自動制御（当選者表示、シャッフル等）
-    // TODO: Deal with race condition between winner and nameIndex leading to duplicate calls 
-    // Maybe separate into two useEffects?
+    // シャッフルアニメーションの作製
     useEffect(() => {
-      if (participantsList.length <= 0) {
-        return
+      if (participantsList.length <= 0) { return  }
+
+      if (!winner && !overrideDisableRolling) {
+        const timer = setTimeout(() => {
+
+          // 名前プールが空の場合、再作成する
+          if (participantsPool.current.length <= 0) {
+            participantsPool.current = [
+              ...participantsList
+                .map(entry => ({ participant: entry, sortValue: Math.random() }))
+                .sort((a, b) => a.sortValue - b.sortValue)
+                .map(entry => entry.participant)
+            ]
+          }
+
+          // 現在指定のIndexに新たな名前を書き込む
+          currentNames.current[nameIndex] = participantsPool.current.pop().displayName
+
+          // namesIndexを移動、Stateの更新によって際レンダー
+          setNameIndex((nameIndex + 1) % SIMULTANEOUS_TEXT_ELEMENTS)
+        }, SHUFFLE_DELAY_MS)
+        return () => {
+          clearTimeout(timer)
+        }
       }
+    }, [nameIndex, winner, overrideDisableRolling])
+
+    // 当選者のアニメーション
+    useEffect(() => {
+      if (participantsList.length <= 0) { return  }
 
       // 当選者が指定された場合はそれを表示
       if (winner) {
@@ -61,55 +89,25 @@ export const NameShuffler: React.FC<{
 
           // 収まってない場合は縮小する
           if (winnerTextWidth && outerDivWidth && winnerTextWidth > outerDivWidth) {
-            await winnerAnimate(winnerScope.current, { scale: Math.abs(outerDivWidth / winnerTextWidth) - 0.01 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring", })
+            await winnerAnimate(winnerScope.current, { scale: Math.abs(outerDivWidth / winnerTextWidth) - 0.01 }, { duration: SETTLE_BUMP_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring" })
           }
 
           // 収まっている場合は大きさのアニメーションを行う
           else {
-            await winnerAnimate(winnerScope.current, { scale: 1.125 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 / 1.5, })
-            await winnerAnimate(winnerScope.current, { scale: 1 }, { duration: SETTLE_ANIMATION_DURATION_MS / 1000 / 1.5, })
+            await winnerAnimate(winnerScope.current, { scale: 1.125 }, { duration: SETTLE_BUMP_ANIMATION_DURATION_MS / 1000 / 1.5, })
+            await winnerAnimate(winnerScope.current, { scale: 1 }, { duration: SETTLE_BUMP_ANIMATION_DURATION_MS / 1000 / 1.5, })
           }
 
         }
         animateWinner()
       }
 
-      // 当選者が指定されてない場合はシャッフル
-      else if (!overrideDisableRolling) {
-        const timer = setTimeout(() => {
-
-          // 名前プールが空の場合、再作成する
-          if (participantsPool.current.length <= 0) {
-            // console.log("Regenerating pool")
-            participantsPool.current = [
-              ...participantsList
-                .map(entry => ({ participant: entry, sortValue: Math.random() }))
-                .sort((a, b) => a.sortValue - b.sortValue)
-                .map(entry => entry.participant)
-            ]
-            // console.log(namesPool.current)
-          }
-
-          // 現在指定のIndexに新たな名前を書き込む
-          currentNames.current[nameIndex] = participantsPool.current.pop().displayName
-
-          // namesIndexを移動、Stateの更新によって際レンダー
-          setNameIndex((nameIndex + 1) % SIMULTANEOUS_TEXT_ELEMENTS)
-        }, SHUFFLE_DELAY_MS)
-        return () => {
-          clearTimeout(timer)
-        }
-      }
-    }, [nameIndex, winner, overrideDisableRolling])
+    }, [winner])
 
     // 重複する表示名の参加者が存在する場合、ユーザー名とIDをオレンジに表示する
-
     const duplicateWinnerNames = useMemo(() => {
-      if (!winner) {
-        return
-      }
-      const usersWithSameName = participantsList.filter(entry => entry.displayName === winner.displayName)
-      return usersWithSameName.length > 1 ? true : false
+      if (!winner) { return }
+      return participantsList.filter(entry => entry.displayName === winner.displayName).length > 1
     }, [winner])
 
     return (
@@ -177,7 +175,7 @@ export const NameShuffler: React.FC<{
           </div>
         </div>
 
-        {/* フェード部分 */}
+        {/* 上下のフェード部分 */}
         <div style={{
           position: "absolute",
           paddingBottom: `${FONT_SIZE * 0.5}px`,

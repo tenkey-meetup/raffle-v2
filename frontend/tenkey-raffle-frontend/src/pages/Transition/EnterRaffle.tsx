@@ -9,6 +9,7 @@ import { sleep } from '@/util/util';
 import { useWindowSize } from '@react-hook/window-size';
 import { TRANSITION_PANE_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
 
+// 抽選開始時にアニメーションを表示するだけのやつ
 export function EnterRaffleTransition() {
 
 	const [viewportWidth, viewportHeight] = useWindowSize()

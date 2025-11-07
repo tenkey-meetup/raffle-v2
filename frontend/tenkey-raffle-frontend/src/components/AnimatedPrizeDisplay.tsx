@@ -21,7 +21,7 @@ const COLOR_TRANSITION_TIME = 0.6
 const TEXT_MOTION_TIME = 0.4
 
 
-
+// いい感じに景品を表示するやつ
 export const AnimatedPrizeDisplay: React.FC<{
   prize: Prize | null,
   focused: boolean
@@ -29,18 +29,18 @@ export const AnimatedPrizeDisplay: React.FC<{
   prize,
   focused
 }) => {
-    p
-    const { budouxParser } = useBudoux()
     const [titleScope, titleAnimate] = useAnimate()
     const [providerScope, providerAnimate] = useAnimate()
     const [bgScope, bgAnimate] = useAnimate()
 
+    // アニメーションのデフォルト設定
     const DEFAULT_TRANSITIONS: AnimationOptions = {
       type: "spring",
       bounce: 0
     }
 
 
+    // focused（表示設定）が変更された場合、アニメーションを稼働する
     useEffect(() => {
       if (!titleScope.current || !providerScope.current) return
       if (!prize) return
@@ -65,6 +65,7 @@ export const AnimatedPrizeDisplay: React.FC<{
       }
     }, [focused])
 
+    // 準備ができてない場合は無をレンダーしてエラーを防ぐ
     if (!prize) { return null }
 
     return (

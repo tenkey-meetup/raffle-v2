@@ -11,11 +11,11 @@ interface BarcodeReaderTextInputProps extends TextInputProps {
   clearOnSettled?: boolean | undefined,
 }
 
+// バーコードリーダーに最適化された入力欄
 export const BarcodeReaderInput: React.FC<BarcodeReaderTextInputProps> = ({ settleTime, onSettled, clearOnSettled, inputRef, onClear, ...rest }) => {
 
   const [currentText, setCurrentText] = useState<string>("")
   // const [debouncedText] = useDebounce(currentText, settleTime || 1000);
-
 
   const handleOnSettled = (text) => {
     if (text !== "") {
@@ -24,10 +24,14 @@ export const BarcodeReaderInput: React.FC<BarcodeReaderTextInputProps> = ({ sett
     }
   }
 
+  // 過去は文字の打ち込みが一定時間無かったら自動確定していた
+  // 今は手動入力にも対応するために切っている
   // useEffect(() => {
   //   handleOnSettled(debouncedText)
   // }, [debouncedText])
 
+  // Deleteが押された場合は欄を削除する
+  // Enterが押された場合はonSettledを実行する
   const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Delete") {
       e.preventDefault()
@@ -38,6 +42,8 @@ export const BarcodeReaderInput: React.FC<BarcodeReaderTextInputProps> = ({ sett
     }
   }
 
+  // 入力データが変更された場合
+  // 0~1文字＋onClearが指定されている場合はonClearを呼ぶ
   const onChangeWrapper = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.value.length <= 1) {
       onClear && onClear()

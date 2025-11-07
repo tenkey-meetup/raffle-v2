@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
 import { Mapping, Participant } from "../../../types/BackendTypes";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FileUploadBlock } from "../../../components/FileUploadBlock";
 import { notifications } from '@mantine/notifications';
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
@@ -24,6 +24,7 @@ export const ParticipantsView: React.FC<{
 
     const queryClient = useQueryClient()
 
+    // 新たな参加者CSVをアップロードする関数
     const uploadNewParticipantsCsvMutation = useMutation({
       mutationFn: uploadNewParticipantsCsv,
       onMutate: (() => {
@@ -51,7 +52,10 @@ export const ParticipantsView: React.FC<{
       })
     })
 
-    const editingDisabled = mappings.length > 0
+    // 抽選結果が存在する場合は書き換え機能を切る
+    const editingDisabled = useMemo(() => {
+      return mappings.filter(entry => entry.winnerId).length > 0
+    }, [mappings])
 
     return (
       <>

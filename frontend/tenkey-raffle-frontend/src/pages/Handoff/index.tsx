@@ -38,11 +38,6 @@ export function Handoff() {
     }
   )
 
-
-  useEffect(() => {
-    console.log("Mappings changed in parent")
-  }, [getMappingsQuery.data])
-
   const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading
   const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError
 
@@ -91,9 +86,7 @@ export function Handoff() {
 }
 
 function NavLinks() {
-
   const [location, navigate] = useLocation()
-
   return (
     <>
       <UnstyledButton className={classes.control} onClick={() => navigate('~/')}>メニューに戻る</UnstyledButton>

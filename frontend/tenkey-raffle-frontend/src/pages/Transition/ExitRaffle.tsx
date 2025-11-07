@@ -9,6 +9,7 @@ import { sleep } from '@/util/util';
 import { useWindowSize } from '@react-hook/window-size';
 import { WINDOW_HEADER_COLOR } from '@/settings';
 
+// 抽選中断時にアニメーションを表示するだけのやつ
 export function ExitRaffleTransition() {
 
 	const [viewportWidth, viewportHeight] = useWindowSize()

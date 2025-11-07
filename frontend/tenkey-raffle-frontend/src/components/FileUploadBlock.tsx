@@ -2,6 +2,7 @@ import { Stack, Button, Text } from "@mantine/core";
 import { CsvDropzone } from "./CsvDropzone";
 import { useState } from "react";
 
+// Modal内とかでファイルアップロードに対応する部分
 export const FileUploadBlock: React.FC<{
   isLoading: boolean,
   isDisabled: boolean,

@@ -6,6 +6,9 @@ import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
 import { useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
+import { WordWrapSpan } from "@/components/WordWrapSpan";
+import { sanitizePrizeName } from "@/util/SanitizePrizeName";
+import { useBudoux } from "@/util/BudouxParse";
 
 
 type mappingsTableEntries = {
@@ -39,6 +42,7 @@ export const MappingsView: React.FC<{
     }
 
     const queryClient = useQueryClient()
+    const {budouxParser} = useBudoux()
 
     const editMappingMutation = useMutation({
       mutationFn: editMappings,
@@ -122,7 +126,7 @@ export const MappingsView: React.FC<{
               <Paper shadow="xs" p="xl" withBorder>
                 {currentRow &&
                   <Stack gap="xs" align="center" ta="center">
-                    <Text size="xl" ta="center" dangerouslySetInnerHTML={{ __html: currentRow.displayName }} />
+                    <Text size="xl" ta="center"><WordWrapSpan>{budouxParser(sanitizePrizeName(currentRow.displayName))}</WordWrapSpan></Text>
                     <Text size="sm" c="dimmed">{currentRow.id}</Text>
                     <Text size="sm" c="dimmed">{currentRow.provider}</Text>
                   </Stack>
