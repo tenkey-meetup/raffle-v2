@@ -34,10 +34,6 @@ export const CancelsView: React.FC<{
     const [editError, setEditError] = useState<string | null>(null)
 
 
-    // debouncedEditorTextfield（Debounceされたバーコード入力欄）
-
-
-
     const queryClient = useQueryClient()
 
     const modifyCancelsMutation = useMutation({
@@ -233,16 +229,13 @@ export const CancelsView: React.FC<{
                       <Text>読み取れなかったバーコード</Text>
                       <Text size="xs" c="dimmed">以下の受付番号に対応する参加者は存在しません。</Text>
 
-                      {editorTextfieldRejects.map(rejectId =>
-                      (
+                      {editorTextfieldRejects.map(rejectId => (
                         <Paper shadow="xs" p="md" bg="red.1">
                           <Group grow>
                             <Text>{rejectId}</Text>
                           </Group>
                         </Paper>
-                      )
-                      )
-                      }
+                      ))}
                     </Stack>
 
                   }
@@ -260,6 +253,9 @@ export const CancelsView: React.FC<{
               >
                 送信
               </Button>
+              {editError && 
+                <Text c="red">{editError}</Text>
+              }
             </Stack>
 
           </Modal.Body>

@@ -61,11 +61,10 @@ export const MainView: React.FC<{
         setRaffleState(RaffleStates.PendingQueriesRefreshToRolling)
       }),
       onError: ((error: Error, params) => {
-        // TODO: Better retry handling
         console.error(error)
         setTimeout(() => {
           discardUnavailableWinnerMutation.mutate(params)
-        }, 200)
+        }, 1000)
       })
     })
 
@@ -82,11 +81,10 @@ export const MainView: React.FC<{
         setRaffleState(RaffleStates.PendingQueriesRefreshToPrizeIntroduction)
       }),
       onError: ((error: Error, params) => {
-        // TODO: Better retry handling
         console.error(error)
         setTimeout(() => {
           submitWinnerMutation.mutate(params)
-        }, 200)
+        }, 1000)
       })
     })
 
@@ -125,8 +123,8 @@ export const MainView: React.FC<{
       }
       const nextPrize = prizes.find(prize => prize.id === mappings[nextMappingIndex].prizeId)
       if (!nextPrize) {
-        // TODO: Handle error
-        throw new Error("Invalid prize")
+        // 起こらないはず（別途対応済み）
+        return undefined
       }
       const prizeGroup = prizes.filter(prize => prize.displayName === nextPrize.displayName && prize.provider === nextPrize.provider)
       if (prizeGroup.length > 1) {
@@ -231,7 +229,6 @@ export const MainView: React.FC<{
           }}
         >
           <Center w="100%" h="100%">
-            {/* TODO */}
             <motion.div
               layout
               initial={{ y: 50, opacity: 0 }}

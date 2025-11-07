@@ -87,7 +87,6 @@ export function EnterRaffleTransition() {
 									ref={backdropScope}
 								>
 									<Center w="100%" h="100%">
-										{/* TODO */}
 										<motion.div
 											layout
 											initial={{ y: 50, opacity: 0 }}

@@ -30,10 +30,6 @@ export const DisplayMappingsList: React.FC<{
       for (const mapping of mappings) {
         // 景品をIDから取得
         const correspondingPrize = prizes.find(prize => prize.id === mapping.prizeId)
-        if (!correspondingPrize) {
-          // TODO
-          continue
-        }
         // 当選者が設定されてない場合、Nullを入れる
         if (!mapping.winnerId) {
           tableData.push({
@@ -45,10 +41,6 @@ export const DisplayMappingsList: React.FC<{
         // 当選者が設定されている場合、参加者を入れる
         else {
           const correspondingParticipant = participants.find(participant => participant.registrationId === mapping.winnerId)
-          if (!correspondingParticipant) {
-            // TODO
-            continue
-          }
           tableData.push({
             mapping: mapping,
             prize: correspondingPrize,

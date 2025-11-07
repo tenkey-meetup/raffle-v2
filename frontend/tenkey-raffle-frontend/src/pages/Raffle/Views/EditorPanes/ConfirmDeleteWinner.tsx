@@ -16,10 +16,6 @@ export const ConfirmDeleteWinner: React.FC<{
 }) => {
 
     const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping.prizeId)
-    if (!prizeBeingEdited) {
-      // TODO: Error handling
-      return
-    }
 
     const existingWinner = currentEditorData.mapping.winnerId 
       ? participants.find(participant => participant.registrationId === currentEditorData.mapping.winnerId) 

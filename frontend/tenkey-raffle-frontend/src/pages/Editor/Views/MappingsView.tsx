@@ -42,7 +42,7 @@ export const MappingsView: React.FC<{
     }
 
     const queryClient = useQueryClient()
-    const {budouxParser} = useBudoux()
+    const { budouxParser } = useBudoux()
 
     const editMappingMutation = useMutation({
       mutationFn: editMappings,
@@ -78,9 +78,15 @@ export const MappingsView: React.FC<{
     const tableData: mappingsTableEntries[] = useMemo(() => mappings.map(mapping => {
       const prizeForMapping = prizes.find(prize => prize.id == mapping.prizeId)
       if (!prizeForMapping) {
-        // TODO: Error handling - shouldn't happen anyways since mappings list is derived from prizes list in real time in the backend
         console.error("Invalid prize")
-        return
+        console.error(mapping)
+        notifications.show({
+          color: "red",
+          title: "エラー",
+          message: `ID ${mapping.prizeId}の景品が景品リストに見つかりませんでした。（MappingsView）`,
+          autoClose: 7000,
+        })
+        return undefined
       }
 
       if (mapping.winnerId) {
@@ -177,7 +183,7 @@ export const MappingsView: React.FC<{
               />
               <Button
                 disabled={!currentEditorValue}
-                onClick={() => editMappingMutation.mutate({action: 'OVERWRITE', prizeId: currentRow.id, winnerId: currentEditorValue})}
+                onClick={() => editMappingMutation.mutate({ action: 'OVERWRITE', prizeId: currentRow.id, winnerId: currentEditorValue })}
               >
                 当選者を変更
               </Button>
@@ -226,10 +232,13 @@ export const MappingsView: React.FC<{
               }
               <Button
                 bg="red"
-                onClick={() => editMappingMutation.mutate({action: 'DELETE', prizeId: currentRow.id, winnerId: currentEditorValue})}
+                onClick={() => editMappingMutation.mutate({ action: 'DELETE', prizeId: currentRow.id, winnerId: currentEditorValue })}
               >
                 当選者を削除
               </Button>
+              {editError && 
+                <Text c="red">{editError}</Text>
+              }
             </Stack>
           </Modal.Body>
         </Modal>

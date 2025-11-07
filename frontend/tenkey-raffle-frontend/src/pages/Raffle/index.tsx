@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllMappings } from '../../requests/Mappings';
 import { getAllCancels, getAllParticipants } from '../../requests/Participants';
 import { getAllPrizes } from '../../requests/Prizes';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PiAppWindowBold, PiArrowClockwise, PiArrowClockwiseBold, PiArrowLeft, PiArrowLeftBold, PiArrowRight, PiArrowRightBold, PiList, PiPenBold, PiPencil, PiPencilBold, PiX, PiXBold } from 'react-icons/pi';
 import { motion } from "motion/react"
 import { MainView } from './Views/MainView';
@@ -18,6 +18,7 @@ export function Raffle() {
   const [location, navigate] = useLocation()
   const [controlPopoverOpened, setControlPopoverOpened] = useState(false)
   const [editPaneOpened, { open: openEditPane, close: closeEditPane }] = useDisclosure(false);
+  const drawerFullWidth = useMediaQuery(`(max-width: 1000px)`);
 
   // 参加者リスト
   const getParticipantsQuery = useQuery(
@@ -55,7 +56,31 @@ export function Raffle() {
   const anyFetching = getParticipantsQuery.isFetching || getPrizesQuery.isFetching || getMappingsQuery.isFetching || getCancelsQuery.isFetching
   const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError
 
-  const drawerFullWidth = useMediaQuery(`(max-width: 1000px)`);
+
+  // すべてのMappingsに利用されている景品IDと参加者IDが景品・参加者リストに存在することを確認
+  const mappingsSanityCheckRejects = useMemo(() => {
+    if (anyLoading) { return [] }
+
+    const rejects = []
+    
+    for (const mapping of getMappingsQuery.data) {
+      if (!getPrizesQuery.data.find(entry => entry.id === mapping.prizeId)) {
+        rejects.push(mapping)
+      }
+      else if (mapping.winnerId && !getParticipantsQuery.data.find(entry => entry.registrationId === mapping.winnerId)) {
+        rejects.push(mapping)
+      }
+    }
+
+    return rejects
+
+  }, [anyLoading])
+
+  if (mappingsSanityCheckRejects.length > 0) {
+    console.error("Mappings mismatch to prize/participants data!")
+    console.error(mappingsSanityCheckRejects)
+    return null
+  }
 
   return (
     <>
