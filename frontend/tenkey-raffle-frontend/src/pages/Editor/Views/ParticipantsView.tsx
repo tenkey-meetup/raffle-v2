@@ -1,4 +1,4 @@
-import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group, Box, Container } from "@mantine/core"
+import { Button, Stack, Table, Title, Text, Modal, Tooltip, Group, Box, Container, Space } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadNewParticipantsCsv, wipeAllParticipants } from "../../../requests/Participants";
@@ -89,6 +89,9 @@ export const ParticipantsView: React.FC<{
 
         <Stack align="center">
           <Title>参加者</Title>
+          <Text>総人数（キャンセルを含む）：{participants.length}人</Text>
+          <Text>Connpass上キャンセル以外の人数：{participants.filter(entry => entry.connpassAttending).length}人</Text>
+          <Space />
 
           <Text>当日不参加リストは「不参加リスト」ページから編集できます。</Text>
 

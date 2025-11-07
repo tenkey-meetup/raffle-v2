@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { editMappings, wipeMappings } from "../../../requests/Mappings";
 import { Mapping, Participant, Prize } from "../../../types/BackendTypes";
 import { ConfirmDeletionModal } from "../../../components/ConfirmDeletionModal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { WordWrapSpan } from "@/components/WordWrapSpan";
@@ -78,7 +78,7 @@ export const MappingsView: React.FC<{
     const tableData: mappingsTableEntries[] = useMemo(() => mappings.map(mapping => {
       const prizeForMapping = prizes.find(prize => prize.id == mapping.prizeId)
       if (!prizeForMapping) {
-        console.error("Invalid prize")
+        console.error(`MappingsView - Invalid prize ${mapping.prizeId}`)
         console.error(mapping)
         notifications.show({
           color: "red",
@@ -103,6 +103,32 @@ export const MappingsView: React.FC<{
         }
       }
     }), [mappings, prizes, participants])
+
+
+    // 万が一の確認用：
+    // 重複している当選者がいるかを探す
+    useEffect(() => {
+      let duplicateWinnerIds: string[] = []
+      for (const mapping of mappings) {
+        if (!mapping.winnerId) { continue }
+        if (mappings.filter(entry => entry.winnerId === mapping.winnerId).length > 1) {
+          duplicateWinnerIds.push(mapping.winnerId)
+        }
+      }
+      if (duplicateWinnerIds.length > 0) {
+        const deduplicatedIds = [...new Set(duplicateWinnerIds)]
+        console.error("Warning: Duplicate winner IDs")
+        console.error(deduplicatedIds)
+        notifications.show({
+          color: "orange",
+          title: "警告",
+          message: `以下の受付番号の参加者は複数の景品に当選しています：${deduplicatedIds}`,
+          autoClose: 7000,
+        })
+      } else {
+        console.log("No duplicate winners - looks good")
+      }
+    }, [mappings])
 
 
     return (
@@ -236,7 +262,7 @@ export const MappingsView: React.FC<{
               >
                 当選者を削除
               </Button>
-              {editError && 
+              {editError &&
                 <Text c="red">{editError}</Text>
               }
             </Stack>

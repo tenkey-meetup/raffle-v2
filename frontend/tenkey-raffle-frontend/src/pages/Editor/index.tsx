@@ -81,28 +81,34 @@ export function Editor() {
     }
 
     if (unknownMappingWinnerIds.length > 0) {
+      const errorStr = `以下の抽選結果マッピングに利用されている当選者IDに対応する参加者データが存在しません：${unknownMappingWinnerIds.join('、')}`
+      console.error(errorStr)
       notifications.show({
         color: "red",
         title: "エラー",
-        message: `以下の抽選結果マッピングに利用されている当選者IDに対応する参加者データが存在しません：${unknownMappingWinnerIds.join('、')}`,
+        message: errorStr,
         autoClose: 7000,
       })
     }
 
     if (unknownMappingPrizeIds.length > 0) {
+      const errorStr = `以下の抽選結果マッピングに利用されている景品IDに対応する景品データが存在しません：${unknownMappingPrizeIds.join('、')}`
+      console.error(errorStr)
       notifications.show({
         color: "red",
         title: "エラー",
-        message: `以下の抽選結果マッピングに利用されている景品IDに対応する景品データが存在しません：${unknownMappingPrizeIds.join('、')}`,
+        message: errorStr,
         autoClose: 7000,
       })
     }
 
     if (unknownCancelReferences.length > 0) {
+      const errorStr = `以下の当日不参加リストに含まれている受付番号が参加者一覧に存在しません：${unknownCancelReferences.join('、')}`
+      console.error(errorStr)
       notifications.show({
         color: "red",
         title: "エラー",
-        message: `以下の当日不参加リストに含まれている受付番号が参加者一覧に存在しません：${unknownCancelReferences.join('、')}`,
+        message: errorStr,
         autoClose: 7000,
       })
     }

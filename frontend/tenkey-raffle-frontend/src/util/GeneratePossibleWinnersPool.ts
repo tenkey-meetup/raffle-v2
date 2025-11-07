@@ -20,6 +20,12 @@ export const generatePossibleWinnersPool = (
   })
 
   let pool = [...availableParticipants]
+  console.log(`Initial pool length: ${pool.length}`)
+  // もし初手からプール人数が0の場合（会場にだれもいない状況）、[]を帰す
+  if (pool.length === 0) {
+    console.error("Pool length is 0 to begin with. Are you sure this is intended?")
+    return []
+  }
   
 
   for (const mapping of allMappings) {
@@ -31,7 +37,7 @@ export const generatePossibleWinnersPool = (
     pool = pool.filter(participant => participant.registrationId !== mapping.winnerId)
     // 削除後にプールが0人の場合（参加者数＞景品数の場合にありえる）、プールに全員を戻してループを続ける
     // 景品リストの順序が変わらない限り、同じ結果が生成されるはず
-    if (pool.length == 0) {
+    if (pool.length === 0) {
       pool = [...availableParticipants]
     }
   }

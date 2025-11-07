@@ -14,6 +14,9 @@ import { PiGift } from "react-icons/pi"
 import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
 import { DelayedDisplayLoader } from "@/components/DelayedDisplayLoader"
 import { useHotkeys } from "@mantine/hooks"
+import { notifications } from "@mantine/notifications"
+import { useLocation } from "wouter"
+import { sleep } from "@/util/util"
 
 
 // 抽選のウィンドウ内部部分
@@ -33,6 +36,7 @@ export const MainView: React.FC<{
 
     // シャッフルから選ばれた参加者
     const [potentialWinner, setPotentialWinner] = useState<Participant | null>(null)
+    const [location, navigate] = useLocation();
     const queryClient = useQueryClient()
 
     // 抽選State
@@ -59,16 +63,28 @@ export const MainView: React.FC<{
         setRaffleState(RaffleStates.PendingWinnerDiscard)
       }),
       onSuccess: (() => {
-        setPotentialWinner(null)
         queryClient.invalidateQueries({ queryKey: ['getCancels'] })
-        setRaffleState(RaffleStates.PendingQueriesRefreshToRolling)
+        //　誤作動防止のために少しDelayを挟む（Tanstack QueryのisPendingがTrueになる前に進んでしまう競合状態を避ける）
+        setTimeout(() => {
+          setRaffleState(RaffleStates.PendingQueriesRefreshToRolling)
+        }, 20)
       }),
       onError: ((error: Error, params) => {
         console.error(error)
+        notifications.show({
+          color: "red",
+          title: "エラー",
+          message: "再抽選に失敗しました。5秒後にページをリロードします",
+          autoClose: 5000,
+        })
         setTimeout(() => {
-          discardUnavailableWinnerMutation.mutate(params)
-        }, 1000)
-      })
+          navigate('~/transition/enter')
+        }, 5000)
+      }),
+      retry(failureCount, error) {
+        return failureCount < 10
+      },
+      retryDelay: 500
     })
 
 
@@ -79,25 +95,37 @@ export const MainView: React.FC<{
         setRaffleState(RaffleStates.PendingWinnerWrite)
       }),
       onSuccess: (() => {
-        setPotentialWinner(null)
         queryClient.invalidateQueries({ queryKey: ['getMappings'] })
-        setRaffleState(RaffleStates.PendingQueriesRefreshToPrizeIntroduction)
+        //　誤作動防止のために少しDelayを挟む（Tanstack QueryのisPendingがTrueになる前に進んでしまう競合状態を避ける）
+        setTimeout(() => {
+          setRaffleState(RaffleStates.PendingQueriesRefreshToPrizeIntroduction)
+        }, 20)
       }),
       onError: ((error: Error, params) => {
         console.error(error)
+        notifications.show({
+          color: "red",
+          title: "エラー",
+          message: "当選者指定に失敗しました。5秒後にページをリロードします",
+          autoClose: 5000,
+        })
         setTimeout(() => {
-          submitWinnerMutation.mutate(params)
-        }, 1000)
-      })
+          navigate('~/transition/enter')
+        }, 5000)
+      }),
+      retry(failureCount, error) {
+        return failureCount < 10
+      },
+      retryDelay: 500
     })
 
 
     // 抽選可能プールを生成
     const rafflePool = useMemo(() => {
       return generatePossibleWinnersPool(participants, cancels, mappings)
-    }, [participants, cancels, mappings])
+    }, [participants, cancels, mappings, anyFetching])
 
-    // console.log(`Pool length: ${rafflePool.length}`)
+    console.log(`Pool length: ${rafflePool.length}`)
     // console.log(rafflePool.map(entry => entry.displayName))
 
 
@@ -155,14 +183,19 @@ export const MainView: React.FC<{
     // 次の景品が存在しない場合、抽選を終了させる
     // または終了していた後に次の景品が復活した場合（抽選完了後の当選者削除など）、Initializingに戻して対応する
     useEffect(() => {
-      if (raffleState !== RaffleStates.RafflingComplete && !nextPrizeDetails.nextPrize) {
+      if (rafflePool.length === 0) {
+        // プールが0人->会場にだれもいない状況
+        console.error("Ending raffle due to pool of 0. Are you sure this is intended?")
         setRaffleState(RaffleStates.RafflingComplete)
       }
-      else if (raffleState === RaffleStates.RafflingComplete && nextPrizeDetails.nextPrize) {
+      else if (raffleState !== RaffleStates.RafflingComplete && !nextPrizeDetails.nextPrize) {
+        setRaffleState(RaffleStates.RafflingComplete)
+      }
+      else if (raffleState === RaffleStates.RafflingComplete && nextPrizeDetails.nextPrize && rafflePool.length > 0) {
         setRaffleState(RaffleStates.Initializing)
       }
 
-    }, [nextPrizeDetails, raffleState])
+    }, [nextPrizeDetails, raffleState, rafflePool])
 
 
     // すべての制御ボタンをオフにする状況
@@ -180,11 +213,13 @@ export const MainView: React.FC<{
     useEffect(() => {
       if (raffleState === RaffleStates.PendingQueriesRefreshToRolling) {
         if (!anyFetching) {
+          setPotentialWinner(null)
           setRaffleState(RaffleStates.Rolling)
         }
       }
       else if (raffleState === RaffleStates.PendingQueriesRefreshToPrizeIntroduction) {
         if (!anyFetching) {
+          setPotentialWinner(null)
           setRaffleState(RaffleStates.PrizeIntroduction)
         }
       }
@@ -202,11 +237,17 @@ export const MainView: React.FC<{
     }
 
     const confirmPossibleWinner = () => {
-       submitWinnerMutation.mutate({ prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId })
+      // もし再抽選と確定を同時に押してしまった場合のためにpotentialWinnerを確認する
+      // おそらくは起こらないけど、テスト中にキースパムで起きたので
+      if (!potentialWinner) { return }
+      submitWinnerMutation.mutate({ prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId })
     }
 
     const discardPossibleWinnner = () => {
-       discardUnavailableWinnerMutation.mutate({ action: "ADD", ids: [potentialWinner.registrationId] })
+      // もし再抽選と確定を同時に押してしまった場合のためにpotentialWinnerを確認する
+      // おそらくは起こらないけど、テスト中にキースパムで起きたので
+      if (!potentialWinner) { return }
+      discardUnavailableWinnerMutation.mutate({ action: "ADD", ids: [potentialWinner.registrationId] })
     }
 
 

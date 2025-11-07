@@ -59,8 +59,8 @@ export const InRaffleEditMenu: React.FC<{
         closeMenu()
       }),
       onError: ((error: Error) => {
-        console.log(error)
         if (error.hasOwnProperty('error')) {
+          console.error(decodeURIComponent(error.message))
           notifications.show({
             color: "red",
             title: "失敗",
@@ -69,6 +69,7 @@ export const InRaffleEditMenu: React.FC<{
           })
         }
         else {
+          console.error(error)
           notifications.show({
             color: "red",
             title: "失敗",

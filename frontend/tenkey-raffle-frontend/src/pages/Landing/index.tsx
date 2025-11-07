@@ -6,10 +6,18 @@ import { TenkeyLogo } from '@/components/TenkeyLogo';
 import { motion } from 'motion/react';
 import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
 import { StylizedWindow } from '@/components/StylizedWindow';
+import { useHotkeys } from '@mantine/hooks';
 
 export function Landing() {
 
 	const [location, navigate] = useLocation();
+
+	useHotkeys([
+		// N -> 抽選開始ボタン
+		['n', () => {
+			navigate('~/transition/enter')
+		}]
+	])
 
 	return (
 

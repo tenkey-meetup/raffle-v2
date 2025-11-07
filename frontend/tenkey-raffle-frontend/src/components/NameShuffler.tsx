@@ -83,9 +83,15 @@ export const NameShuffler: React.FC<{
           await winnerAnimate(winnerScope.current, { top: `${FONT_SIZE * 0.33}px` }, { duration: SHUFFLE_ANIMATION_DURATION_MS / 1000 * 2.5, type: "spring" })
           await sleep(SETTLE_ANIMATION_DURATION_MS / 2.5)
 
+          // 爆速で抽選した場合の対応
+          // winnerTextが既に存在しない場合はここで引き上げる
+          if (!winnerTextRef.current) {
+            return
+          }
+
           // 名前が外枠に収まってるかを確認
-          let winnerTextWidth = winnerTextRef.current.getBoundingClientRect().width
-          let outerDivWidth = outerDivRef.current.getBoundingClientRect().width
+          let winnerTextWidth = winnerTextRef.current?.getBoundingClientRect().width
+          let outerDivWidth = outerDivRef.current?.getBoundingClientRect().width
 
           // 収まってない場合は縮小する
           if (winnerTextWidth && outerDivWidth && winnerTextWidth > outerDivWidth) {

@@ -93,6 +93,7 @@ export const PrizesView: React.FC<{
 
         <Stack align="center">
           <Title>景品リスト</Title>
+          <Text>景品数：{prizes.length}個</Text>
 
           <Tooltip label={"抽選結果が存在する場合は書き換えできません。"} disabled={!editingDisabled}>
             <Group>

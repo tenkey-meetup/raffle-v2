@@ -51,18 +51,22 @@ export const CancelsView: React.FC<{
           autoClose: 7000,
         })
         if (response.skipped.length > 0) {
+          const notifMsg = `編集指定されたうち${response.skipped.length}人はすでに適用済みでした。（${JSON.stringify(response.skipped)}）`
+          console.log(notifMsg)
           notifications.show({
             color: "gray",
             title: "警告",
-            message: `編集指定されたうち${response.skipped.length}人はすでに適用済みでした。（${JSON.stringify(response.skipped)}）`,
+            message: notifMsg,
             autoClose: 7000,
           })
         }
         if (response.nonexistentIds.length > 0) {
+          const errorMsg = `編集指定されたうち${response.nonexistentIds.length}人は参加者リストに含まれてなく、編集できませんでした。（${JSON.stringify(response.nonexistentIds)}）`
+          console.error(errorMsg)
           notifications.show({
             color: "red",
             title: "エラー",
-            message: `編集指定されたうち${response.nonexistentIds.length}人は参加者リストに含まれてなく、編集できませんでした。（${JSON.stringify(response.nonexistentIds)}）`,
+            message: errorMsg,
             autoClose: 7000,
           })
         }
@@ -272,6 +276,7 @@ export const CancelsView: React.FC<{
         {/* 表示テーブル */}
         <Stack align="center">
           <Title>不参加リスト</Title>
+          <Text>現在のリスト：{cancels.length}人</Text>
 
           <Group>
             <Button onClick={() => { setEditorTextfieldRejects([]); openEditModal(); }}>

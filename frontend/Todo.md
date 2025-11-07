@@ -2,6 +2,8 @@ Todo
 
 絶対に終わらせること
 - できる限りのテスト（実機を含む）
+- Debug errors seen during upload of prize CSV
+- Text sizes on handoff screen for nonexistent prizes
 
 できればやりたいこと
 - より精密なエラーハンドリング
