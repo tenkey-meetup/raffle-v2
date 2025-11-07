@@ -74,7 +74,7 @@ export const ConfirmDeletionModal: React.FC<DeleteModalProps> = ({
             <Button onClick={closeModal} disabled={deleteMutation.isPending}>
               キャンセル
             </Button>
-            <Button bg="red" onClick={() => deleteMutation.mutate()} disabled={deleteMutation.isPending}>
+            <Button color="red" onClick={() => deleteMutation.mutate()} disabled={deleteMutation.isPending}>
               削除
             </Button>
           </Group>

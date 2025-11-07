@@ -280,7 +280,7 @@ export const CancelsView: React.FC<{
             <Button onClick={() => { setEditorTextfieldRejects([]); openEditModal(); }}>
               不参加リストの編集
             </Button>
-            <Button onClick={openWipeModal} bg={cancels.length > 0 ? "red" : ""} disabled={cancels.length <= 0}>
+            <Button onClick={openWipeModal} variant="outline" color={cancels.length > 0 ? "red" : ""} disabled={cancels.length <= 0}>
               不参加リストを全削除
             </Button>
           </Group>

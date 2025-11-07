@@ -231,7 +231,7 @@ export const MappingsView: React.FC<{
                 </Text>
               }
               <Button
-                bg="red"
+                color="red"
                 onClick={() => editMappingMutation.mutate({ action: 'DELETE', prizeId: currentRow.id, winnerId: currentEditorValue })}
               >
                 当選者を削除
@@ -250,7 +250,7 @@ export const MappingsView: React.FC<{
           <Text>抽選後の景品受け渡し用のページはメニューに別途あります。</Text>
 
           <Tooltip label={"抽選結果が存在しません。"} disabled={mappings.filter(entry => entry.winnerId).length > 0}>
-            <Button color="red" onClick={openWipeModal} disabled={mappings.filter(entry => entry.winnerId).length <= 0}>
+            <Button color="red" variant="outline" onClick={openWipeModal} disabled={mappings.filter(entry => entry.winnerId).length <= 0}>
               抽選結果を全削除（リセット）
             </Button>
 

@@ -97,7 +97,7 @@ export const ParticipantsView: React.FC<{
               <Button onClick={openUploadModal} disabled={editingDisabled}>
                 参加者CSVを読み込む
               </Button>
-              <Button onClick={openWipeModal} disabled={editingDisabled} bg={editingDisabled ? "" : "red"}>
+              <Button onClick={openWipeModal} disabled={editingDisabled} variant="outline" color={editingDisabled ? "" : "red"}>
                 参加者リストを削除
               </Button>
             </Group>

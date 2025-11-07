@@ -99,7 +99,7 @@ export const PrizesView: React.FC<{
               <Button onClick={openUploadModal} disabled={editingDisabled}>
                 景品CSVを読み込む
               </Button>
-              <Button onClick={openWipeModal} disabled={editingDisabled} bg={editingDisabled ? "" : "red"}>
+              <Button onClick={openWipeModal} disabled={editingDisabled} variant="outline" color={editingDisabled ? "" : "red"}>
                 景品リストを削除
               </Button>
             </Group>

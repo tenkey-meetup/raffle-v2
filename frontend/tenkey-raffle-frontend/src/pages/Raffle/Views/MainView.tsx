@@ -13,6 +13,7 @@ import { submitRaffleWinner } from "@/requests/Raffle"
 import { PiGift } from "react-icons/pi"
 import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
 import { DelayedDisplayLoader } from "@/components/DelayedDisplayLoader"
+import { useHotkeys } from "@mantine/hooks"
 
 
 // 抽選のウィンドウ内部部分
@@ -111,7 +112,7 @@ export const MainView: React.FC<{
       prizeIndex: number,               // 次の景品のIndex（+1で表示用）
       prizeGroup: Prize[] | null,       // 同一の名前の景品が複数ある場合、グループとして返す
       prizeIndexInGroup: number | null  // 現在の景品がグループ内でいくつ目かのIndex
-      
+
     }
     const nextPrizeDetails: NextPrizeDetailsType = useMemo(() => {
       const nextMappingIndex = mappings.findIndex(entry => !entry.winnerId)
@@ -188,6 +189,47 @@ export const MainView: React.FC<{
     }, [anyFetching, raffleState])
 
 
+    // ボタン・キーボード操作共有の操作関数
+    const prizeIntroductionToRolling = () => {
+      setRaffleState(RaffleStates.Rolling)
+    }
+
+    const rollingToPossibleWinnerChosen = () => {
+      pickPotentialWinner()
+    }
+
+    const confirmPossibleWinner = () => {
+       submitWinnerMutation.mutate({ prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId })
+    }
+
+    const discardPossibleWinnner = () => {
+       discardUnavailableWinnerMutation.mutate({ action: "ADD", ids: [potentialWinner.registrationId] })
+    }
+
+
+    // キーボード操作
+    useHotkeys([
+      // N -> 次へ
+      ['n', () => {
+        // 景品表示時->シャッフル画面へ
+        if (raffleState === RaffleStates.PrizeIntroduction) {
+          prizeIntroductionToRolling()
+        }
+        else if (raffleState === RaffleStates.Rolling) {
+          rollingToPossibleWinnerChosen()
+        }
+        else if (raffleState === RaffleStates.PossibleWinnerChosen) {
+          confirmPossibleWinner()
+        }
+      }],
+      // R -> 当選者を破棄
+      ['r', () => {
+        if (raffleState === RaffleStates.PossibleWinnerChosen) {
+          discardPossibleWinnner()
+        }
+      }],
+    ]);
+
 
     // State別レンダー
     // Initializing -> 最初に起動後、準備が完了するまで待つ
@@ -236,9 +278,9 @@ export const MainView: React.FC<{
             >
               <Stack align="center" c={TRANSITION_OVERLAY_TEXT_COLOR}>
                 <motion.div layout="position">
-                  <PiGift size="128px" style={{color: TRANSITION_OVERLAY_TEXT_COLOR}} />
+                  <PiGift size="128px" style={{ color: TRANSITION_OVERLAY_TEXT_COLOR }} />
                 </motion.div>
-                <Text component={motion.p} layout="position" size="48px" style={{color: TRANSITION_OVERLAY_TEXT_COLOR}}>抽選終了!</Text>
+                <Text component={motion.p} layout="position" size="48px" style={{ color: TRANSITION_OVERLAY_TEXT_COLOR }}>抽選終了!</Text>
                 <Box h="48px" />
               </Stack>
             </motion.div>
@@ -305,7 +347,7 @@ export const MainView: React.FC<{
           {raffleState === RaffleStates.PrizeIntroduction &&
             <Button
               disabled={allButtonsDisabled}
-              onClick={() => setRaffleState(RaffleStates.Rolling)}
+              onClick={prizeIntroductionToRolling}
               w="616px"
               h="84px"
               size="28px"
@@ -314,7 +356,7 @@ export const MainView: React.FC<{
               c={BUTTON_PRIMARY_BORDER_COLOR}
               style={{
                 borderColor: BUTTON_PRIMARY_BORDER_COLOR,
-                borderWidth: "2px" 
+                borderWidth: "2px"
               }}
             >
               抽選開始
@@ -324,7 +366,7 @@ export const MainView: React.FC<{
           {raffleState === RaffleStates.Rolling &&
             <Button
               disabled={allButtonsDisabled}
-              onClick={() => pickPotentialWinner()}
+              onClick={rollingToPossibleWinnerChosen}
               w="616px"
               h="84px"
               size="28px"
@@ -350,7 +392,7 @@ export const MainView: React.FC<{
                 h="84px"
                 size="28px"
                 style={{ borderWidth: "2px" }}
-                onClick={() => { discardUnavailableWinnerMutation.mutate({ action: "ADD", ids: [potentialWinner.registrationId] }) }}
+                onClick={discardPossibleWinnner}
               >
                 再抽選 (取り消し)
               </Button>
@@ -360,7 +402,7 @@ export const MainView: React.FC<{
                 w="300px"
                 h="84px"
                 size="28px"
-                onClick={() => { submitWinnerMutation.mutate({ prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId }) }}
+                onClick={confirmPossibleWinner}
               >
                 確定
               </Button>
