@@ -1,4 +1,7 @@
-const backendAddress = import.meta.env.VITE_BACKEND_ADDRESS || "http://localhost:6001"
+// console.log(window.location)
+// const backendAddress = import.meta.env.VITE_BACKEND_ADDRESS || "http://localhost:6001"
+const backendAddress = `${window.location.protocol}//${window.location.hostname}:6001`
+console.log(backendAddress)
 export const API_BASE_URL = `${backendAddress}/api`
 
 export const API_ROUTE_ALL_PARTICIPANTS = API_BASE_URL + "/v1/participants"
