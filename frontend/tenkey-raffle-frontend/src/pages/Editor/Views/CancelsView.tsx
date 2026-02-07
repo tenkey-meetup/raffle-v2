@@ -200,7 +200,7 @@ export const CancelsView: React.FC<{
                     {editorList.length > 0 &&
                       <>
                         <Text>読み取ったバーコード</Text>
-                        {editorList.map(pendingId => {
+                        {editorList.toReversed().map(pendingId => {
                           const pendingParticipant = participants.find(participant => participant.registrationId === pendingId)
                           if (pendingParticipant) {
                             return (
