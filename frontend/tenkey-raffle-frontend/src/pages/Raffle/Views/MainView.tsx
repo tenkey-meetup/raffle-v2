@@ -25,13 +25,15 @@ export const MainView: React.FC<{
   prizes: Prize[],
   mappings: Mapping[],
   cancels: string[],
-  anyFetching: boolean
+  anyFetching: boolean,
+  editPaneOpen: boolean,
 }> = ({
   participants,
   prizes,
   mappings,
   cancels,
-  anyFetching
+  anyFetching,
+  editPaneOpen, 
 }) => {
 
     // シャッフルから選ばれた参加者
@@ -255,6 +257,10 @@ export const MainView: React.FC<{
     useHotkeys([
       // N -> 次へ
       ['n', () => {
+        // 編集メニューが開かれてる際は何もしない
+        if (editPaneOpen) {
+          return
+        }
         // 景品表示時->シャッフル画面へ
         if (raffleState === RaffleStates.PrizeIntroduction) {
           prizeIntroductionToRolling()
@@ -268,6 +274,10 @@ export const MainView: React.FC<{
       }],
       // R -> 当選者を破棄
       ['r', () => {
+        // 編集メニューが開かれてる際は何もしない
+        if (editPaneOpen) {
+          return
+        }
         if (raffleState === RaffleStates.PossibleWinnerChosen) {
           discardPossibleWinnner()
         }

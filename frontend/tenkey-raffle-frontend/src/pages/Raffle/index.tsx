@@ -146,6 +146,7 @@ export function Raffle() {
                     mappings={getMappingsQuery.data}
                     cancels={getCancelsQuery.data}
                     anyFetching={anyFetching}
+                    editPaneOpen={editPaneOpened}
                   />
                 }
               </>
