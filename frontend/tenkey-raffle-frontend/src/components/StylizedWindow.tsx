@@ -18,6 +18,14 @@ export const StylizedWindow: React.FC<{
   children
 }) => {
 
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
     return (
       <Flex ref={windowRef || null} direction="column" bg="white" style={{ borderRadius: "11.5px", width: `${width}px`, height: `${height}px`, borderStyle: "solid", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderWidth: "3px 6px 6px 3px", overflow: "hidden" }}>
         <Flex direction="row" align="center" w="100%" h="51px" style={{ backgroundColor: WINDOW_HEADER_COLOR, borderStyle: "solid", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderWidth: "0px 0px 3px 0px" }}>
@@ -28,14 +36,18 @@ export const StylizedWindow: React.FC<{
           </Group>
           <Box style={{ flexGrow: 1 }} />
           <Group px="0.5em" gap="0.1em">
+            {/* Minimize */}
             <Center w="32px" h="24px" bdrs="5px" style={{ backgroundColor: BUTTON_PRIMARY_BACKGROUND_COLOR, borderStyle: "solid", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderWidth: "2px" }}>
               <Box style={{width: "18px", height: "15px", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderStyle: "solid", borderWidth: "0px 0px 2px 0px"}} />
             </Center>
-            <Center w="32px" h="24px" bdrs="5px" style={{ backgroundColor: BUTTON_PRIMARY_BACKGROUND_COLOR, borderStyle: "solid", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderWidth: "2px" }}>
+            {/* Maximize */}
+            {/* ボタンを押した際フルスクリーンモードを切り替える */}
+            <Center w="32px" h="24px" bdrs="5px" style={{ backgroundColor: BUTTON_PRIMARY_BACKGROUND_COLOR, borderStyle: "solid", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderWidth: "2px", cursor: "pointer" }} onClick={() => toggleFullScreen()}>
               <Box style={{width: "20px", height: "15px", backgroundColor: BUTTON_PRIMARY_BORDER_COLOR, position: "relative"}}>
                 <Box style={{width: "16px", height: "9px", backgroundColor: BUTTON_PRIMARY_BACKGROUND_COLOR, position: "absolute", left: 2, bottom: 2}}></Box>
               </Box>
             </Center>
+            {/* Exit */}
             <Center w="32px" h="24px" bdrs="5px" style={{ backgroundColor: BUTTON_PRIMARY_BACKGROUND_COLOR, borderStyle: "solid", borderColor: BUTTON_PRIMARY_BORDER_COLOR, borderWidth: "2px" }}>
               <PiXBold size="1.5em" color={BUTTON_PRIMARY_BORDER_COLOR} />
             </Center>
