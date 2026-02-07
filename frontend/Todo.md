@@ -3,7 +3,6 @@ Todo
 絶対に終わらせること
 - できる限りのテスト（実機を含む）
 - Debug errors seen during upload of prize CSV
-- バーコードスキャンの改良（大量読み込みのUI）
 
 できればやりたいこと
 - 景品の種類を表示
@@ -15,6 +14,7 @@ Todo
 - 見た目を細部まで配信素材に合わせる
 
 Done
+- バーコードスキャンの改良（大量読み込みのUI）
 - フルスクリーンにならない問題
 - 抽選中編集メニューが開いてる際はホットキー動作を消す
 - Text sizes on handoff screen for nonexistent prizes
