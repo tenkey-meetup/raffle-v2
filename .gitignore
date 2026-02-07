@@ -1,6 +1,7 @@
 # テストデータ
 testing/
 production-data/
+past-raffle-data-archive/
 
 # General
 .DS_Store
