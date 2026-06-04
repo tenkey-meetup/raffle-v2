@@ -149,7 +149,7 @@ export const MainView: React.FC<{
     }
     const nextPrizeDetails: NextPrizeDetailsType = useMemo(() => {
       const nextMappingIndex = mappings.findIndex(entry => !entry.winnerId)
-      if (nextMappingIndex === -1) {
+      if (nextMappingIndex === -1) { // 次の当選者がいないMappingが存在しない場合→抽選終了
         return {
           nextPrize: null,
           prizeIndex: -1,
@@ -160,7 +160,7 @@ export const MainView: React.FC<{
       const nextPrize = prizes.find(prize => prize.id === mappings[nextMappingIndex].prizeId)
       if (!nextPrize) {
         // 起こらないはず（別途対応済み）
-        return undefined
+        throw new Error(`No prize found for ID ${mappings[nextMappingIndex].prizeId} despite previous sanity check`)
       }
       const prizeGroup = prizes.filter(prize => prize.displayName === nextPrize.displayName && prize.provider === nextPrize.provider)
       if (prizeGroup.length > 1) {
@@ -242,6 +242,12 @@ export const MainView: React.FC<{
       // もし再抽選と確定を同時に押してしまった場合のためにpotentialWinnerを確認する
       // おそらくは起こらないけど、テスト中にキースパムで起きたので
       if (!potentialWinner) { return }
+      // もし次の景品がないのに呼ばれた場合、何かおかしい（抽選が完了してるのに景品が確定した？）
+      // その場合はリロード
+      if (!nextPrizeDetails.nextPrize) {
+        navigate('~/transition/enter')
+        return
+      }
       submitWinnerMutation.mutate({ prizeId: nextPrizeDetails.nextPrize.id, winnerId: potentialWinner.registrationId })
     }
 

@@ -61,11 +61,12 @@ export function Raffle() {
   const anyLoading = getParticipantsQuery.isLoading || getPrizesQuery.isLoading || getMappingsQuery.isLoading || getCancelsQuery.isLoading
   const anyFetching = getParticipantsQuery.isFetching || getPrizesQuery.isFetching || getMappingsQuery.isFetching || getCancelsQuery.isFetching
   const anyError = getParticipantsQuery.isError || getPrizesQuery.isError || getMappingsQuery.isError
+  const anyDataMissing = !getParticipantsQuery.data || !getPrizesQuery.data || !getMappingsQuery.data || !getCancelsQuery.data
 
 
   // すべてのMappingsに利用されている景品IDと参加者IDが景品・参加者リストに存在することを確認
   const mappingsSanityCheckRejects = useMemo(() => {
-    if (anyLoading) { return [] }
+    if (anyLoading || anyDataMissing) { return [] }
 
     const rejects = []
 
@@ -86,6 +87,11 @@ export function Raffle() {
     console.error("Mappings mismatch to prize/participants data!")
     console.error(mappingsSanityCheckRejects)
     return null
+  }
+
+  if (anyDataMissing) { 
+    console.error("Data is null for at least one query")
+    return null 
   }
 
   return (
