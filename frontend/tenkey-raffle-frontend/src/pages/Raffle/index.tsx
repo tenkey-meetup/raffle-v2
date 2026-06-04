@@ -90,7 +90,7 @@ export function Raffle() {
   }
 
   if (anyDataMissing) { 
-    console.error("Data is null for at least one query")
+    console.log("Data is null for at least one query; returning null to await query data")
     return null 
   }
 

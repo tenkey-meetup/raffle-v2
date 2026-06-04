@@ -17,6 +17,7 @@ import { useHotkeys } from "@mantine/hooks"
 import { notifications } from "@mantine/notifications"
 import { useLocation } from "wouter"
 import { sleep } from "@/util/util"
+import { WordWrapSpan } from "@/components/WordWrapSpan"
 
 
 // 抽選のウィンドウ内部部分
@@ -33,13 +34,14 @@ export const MainView: React.FC<{
   mappings,
   cancels,
   anyFetching,
-  editPaneOpen, 
+  editPaneOpen,
 }) => {
 
     // シャッフルから選ばれた参加者
     const [potentialWinner, setPotentialWinner] = useState<Participant | null>(null)
     const [location, navigate] = useLocation();
     const queryClient = useQueryClient()
+    const { budouxParser } = useBudoux()
 
     // 抽選State
     enum RaffleStates {
@@ -400,27 +402,45 @@ export const MainView: React.FC<{
 
         </div>
 
+
+
         {/* 制御用ボタン */}
         <Group pb="36px" style={{ position: "absolute", bottom: 0, left: 0, right: 0, width: "100%" }} align="center" justify="center">
 
           {/* 景品紹介画面 */}
           {raffleState === RaffleStates.PrizeIntroduction &&
-            <Button
-              disabled={allButtonsDisabled}
-              onClick={prizeIntroductionToRolling}
-              w="616px"
-              h="84px"
-              size="28px"
-              variant="outline"
-              bg={BUTTON_PRIMARY_BACKGROUND_COLOR}
-              c={BUTTON_PRIMARY_BORDER_COLOR}
-              style={{
-                borderColor: BUTTON_PRIMARY_BORDER_COLOR,
-                borderWidth: "2px"
-              }}
-            >
-              抽選開始
-            </Button>
+            <Stack style={{ width: "100%" }} align="center">
+              <AnimatePresence mode="popLayout">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    ease: "easeOut",
+                    bounce: 0
+                  }}
+                >
+                  <Text size="22px"><strong>{nextPrizeDetails.nextPrize?.category}：</strong> <WordWrapSpan>{budouxParser(nextPrizeDetails.nextPrize?.description || "")}</WordWrapSpan></Text>
+                </motion.div>
+              </AnimatePresence>
+              <Button
+                disabled={allButtonsDisabled}
+                onClick={prizeIntroductionToRolling}
+                w="616px"
+                h="84px"
+                size="28px"
+                variant="outline"
+                bg={BUTTON_PRIMARY_BACKGROUND_COLOR}
+                c={BUTTON_PRIMARY_BORDER_COLOR}
+                style={{
+                  borderColor: BUTTON_PRIMARY_BORDER_COLOR,
+                  borderWidth: "2px"
+                }}
+              >
+                抽選開始
+              </Button>
+            </Stack>
           }
           {/* シャッフル中 */}
           {raffleState === RaffleStates.Rolling &&

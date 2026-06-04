@@ -4,7 +4,7 @@ import { useDebounce } from "use-debounce";
 
 
 interface BarcodeReaderTextInputProps extends TextInputProps {
-  inputRef?: Ref<any> | undefined,
+  inputRef?: Ref<HTMLInputElement> | undefined,
   settleTime?: number | undefined,
   onSettled: (output: string) => void,
   onClear?: (() => void) | undefined
@@ -53,7 +53,7 @@ export const BarcodeReaderInput: React.FC<BarcodeReaderTextInputProps> = ({ sett
 
   return (
     <TextInput
-      ref={inputRef || null}
+      ref={inputRef}
       value={currentText}
       onChange={e => onChangeWrapper(e)}
       onKeyDown={e => handleKeypress(e)}
