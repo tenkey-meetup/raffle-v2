@@ -40,10 +40,5 @@
   },
   "eslintConfig": {
     "extends": "react"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
   }
 }

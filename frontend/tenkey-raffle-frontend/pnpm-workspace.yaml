@@ -1,4 +1,6 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
-- astro
-- "@astrojs/preact"
+  - astro
+  - "@astrojs/preact"
+allowBuilds:
+  esbuild: true
