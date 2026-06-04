@@ -59,7 +59,7 @@ export function Editor() {
 
   // 取得データにミスマッチがある場合は警告する
   useEffect(() => {
-    if (anyLoading) { return }
+    if (anyLoading || !getMappingsQuery.data || !getPrizesQuery.data || !getParticipantsQuery.data || !getCancelsQuery.data) { return }
 
     let unknownMappingWinnerIds: string[] = []
     let unknownMappingPrizeIds: string[] = []
@@ -174,7 +174,7 @@ export function Editor() {
   );
 }
 
-function NavLinks({ disableLinks }) {
+function NavLinks({ disableLinks }: { disableLinks: boolean }) {
 
   const [location, navigate] = useLocation()
 

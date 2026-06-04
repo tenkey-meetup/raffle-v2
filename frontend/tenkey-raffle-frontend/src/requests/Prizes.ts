@@ -12,11 +12,13 @@ export const getAllPrizes: () => Promise<Prize[]> = async () => {
   .then(response => response.json())
   .then(parsedObj => {
     console.log(parsedObj)
-    return parsedObj.map(entry => {
+    return parsedObj.map((entry: any) => {
       return {
         provider: entry.provider,
         displayName: entry.display_name,
-        id: entry.id
+        id: entry.id,
+        category: entry.category,
+        description: entry.description
       }
     })
   })

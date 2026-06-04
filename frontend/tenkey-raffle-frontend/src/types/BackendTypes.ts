@@ -10,7 +10,9 @@ export type Participant = {
 export type Prize = {
   provider: string
   displayName: string
-  id: string
+  id: string,
+  category: string,
+  description: string
 }
 
 export type Mapping = {

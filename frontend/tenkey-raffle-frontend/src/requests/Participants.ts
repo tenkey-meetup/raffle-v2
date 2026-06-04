@@ -18,7 +18,7 @@ export const getAllParticipants: () => Promise<Participant[]> = async () => {
     })
     .then(parsedObj => {
       console.log(parsedObj)
-      return parsedObj.map(entry => {
+      return parsedObj.map((entry: any) => {
         return {
           registrationId: entry.registration_id,
           username: entry.username,

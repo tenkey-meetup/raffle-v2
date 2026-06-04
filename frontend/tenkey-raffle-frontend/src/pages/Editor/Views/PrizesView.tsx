@@ -115,6 +115,8 @@ export const PrizesView: React.FC<{
                   <Table.Th>管理No</Table.Th>
                   <Table.Th>提供元</Table.Th>
                   <Table.Th>景品名</Table.Th>
+                  <Table.Th>種別</Table.Th>
+                  <Table.Th>説明</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -123,6 +125,8 @@ export const PrizesView: React.FC<{
                     <Table.Td>{prize.id}</Table.Td>
                     <Table.Td>{prize.provider}</Table.Td>
                     <Table.Td><WordWrapSpan>{budouxParser(sanitizePrizeName(prize.displayName))}</WordWrapSpan></Table.Td>
+                    <Table.Td>{prize.category}</Table.Td>
+                    <Table.Td><WordWrapSpan>{budouxParser(prize.description)}</WordWrapSpan></Table.Td>
                   </Table.Tr>
                 )
                 }

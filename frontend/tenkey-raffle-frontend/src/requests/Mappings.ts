@@ -17,7 +17,7 @@ export const getAllMappings: () => Promise<Mapping[]> = async () => {
     })
     .then(parsedObj => {
       console.log(parsedObj)
-      return parsedObj.map(entry => {
+      return parsedObj.map((entry: any) => {
         return {
           prizeId: entry.prize_id,
           winnerId: entry.winner_id
