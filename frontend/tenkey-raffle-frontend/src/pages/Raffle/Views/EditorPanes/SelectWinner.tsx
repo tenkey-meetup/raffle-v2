@@ -16,16 +16,16 @@ export const SelectWinner: React.FC<{
   onSelectWinner
 }) => {
 
-    const [selectedValue, setSelectedValue] = useState<string>(null)
+    const [selectedValue, setSelectedValue] = useState<string | null>(null)
     const selectedParticipant: Participant | null = useMemo(() => {
       if (!selectedValue) { return null }
-      return participants.find(participant => participant.registrationId === selectedValue)
+      return participants.find(participant => participant.registrationId === selectedValue) || null
     }, [selectedValue])
 
-    const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping.prizeId)
+    const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping!.prizeId)
     
-    const existingWinner = currentEditorData.mapping.winnerId 
-      ? participants.find(participant => participant.registrationId === currentEditorData.mapping.winnerId) 
+    const existingWinner = currentEditorData.mapping!.winnerId 
+      ? participants.find(participant => participant.registrationId === currentEditorData.mapping!.winnerId) 
       : null
 
     return (
@@ -34,9 +34,9 @@ export const SelectWinner: React.FC<{
         <Paper shadow="xs" p="xl" withBorder w={{base: "100%", lg: "50%"}}>
 
           <Stack gap="xs" align="center">
-            <Text size="xl" dangerouslySetInnerHTML={{ __html: prizeBeingEdited.displayName }} />
-            <Text size="sm" c="dimmed">{prizeBeingEdited.id}</Text>
-            <Text size="sm" c="dimmed">{prizeBeingEdited.provider}</Text>
+            <Text size="xl" dangerouslySetInnerHTML={{ __html: prizeBeingEdited!.displayName }} />
+            <Text size="sm" c="dimmed">{prizeBeingEdited!.id}</Text>
+            <Text size="sm" c="dimmed">{prizeBeingEdited!.provider}</Text>
           </Stack>
 
         </Paper>
@@ -87,7 +87,7 @@ export const SelectWinner: React.FC<{
         />
         <Button
           disabled={!selectedParticipant}
-          onClick={() => onSelectWinner(selectedParticipant)}
+          onClick={() => onSelectWinner(selectedParticipant!)}
           bg={BUTTON_SECONDARY_BORDER_COLOR}
         >
           当選者を変更

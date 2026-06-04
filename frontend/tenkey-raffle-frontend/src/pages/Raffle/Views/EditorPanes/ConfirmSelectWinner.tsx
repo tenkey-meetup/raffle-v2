@@ -16,21 +16,21 @@ export const ConfirmSelectWinner: React.FC<{
   onConfirm
 }) => {
 
-    const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping.prizeId)
+    const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping!.prizeId)
 
     return (
 
       <Stack align="center">
 
         <Text>
-          景品「{sanitizePrizeName(prizeBeingEdited.displayName)}」（ID: {prizeBeingEdited.id}）の当選者を以下に変更します。
+          景品「{sanitizePrizeName(prizeBeingEdited!.displayName)}」（ID: {prizeBeingEdited!.id}）の当選者を以下に変更します。
         </Text>
 
         <Paper shadow="xs" p="xl" withBorder w={{ base: "100%", lg: "50%" }}>
           <Stack gap="xs" align="center">
-            <Text size="xl">{currentEditorData.newWinner.displayName}</Text>
-            <Text size="sm" c="dimmed">{currentEditorData.newWinner.username}</Text>
-            <Text size="sm" c="dimmed">{currentEditorData.newWinner.registrationId}</Text>
+            <Text size="xl">{currentEditorData.newWinner!.displayName}</Text>
+            <Text size="sm" c="dimmed">{currentEditorData.newWinner!.username}</Text>
+            <Text size="sm" c="dimmed">{currentEditorData.newWinner!.registrationId}</Text>
           </Stack>
         </Paper>
 

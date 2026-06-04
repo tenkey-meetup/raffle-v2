@@ -131,7 +131,7 @@ export const InRaffleEditMenu: React.FC<{
         participants={participants}
         prizes={prizes}
         currentEditorData={editorData}
-        onConfirm={() => editMappingMutation.mutate({action: editorData.action, prizeId: editorData.mapping.prizeId, winnerId: editorData.newWinner.registrationId})}
+        onConfirm={() => editMappingMutation.mutate({action: editorData.action, prizeId: editorData.mapping!.prizeId, winnerId: editorData.newWinner!.registrationId})}
       />)
     }
 
@@ -140,7 +140,7 @@ export const InRaffleEditMenu: React.FC<{
         participants={participants}
         prizes={prizes}
         currentEditorData={editorData}
-        onConfirm={() => editMappingMutation.mutate({action: editorData.action, prizeId: editorData.mapping.prizeId, winnerId: null})}
+        onConfirm={() => editMappingMutation.mutate({action: editorData.action, prizeId: editorData.mapping!.prizeId, winnerId: null})}
       />)
     }
 

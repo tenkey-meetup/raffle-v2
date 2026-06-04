@@ -85,10 +85,10 @@ export const AnimatedPrizeDisplay: React.FC<{
         if (prizeGroupIndex === 0) {
           prizeDisplayName += `（${prizeGroup.length}名分）`
         } else {
-          prizeDisplayName += `（その${prizeGroupIndex+1}）`
+          prizeDisplayName += `（その${prizeGroupIndex!+1}）`
         }
       } else {
-        prizeDisplayName += `（${prizeGroupIndex + 1} / ${prizeGroup.length}）`
+        prizeDisplayName += `（${prizeGroupIndex! + 1} / ${prizeGroup.length}）`
       }
     }
 

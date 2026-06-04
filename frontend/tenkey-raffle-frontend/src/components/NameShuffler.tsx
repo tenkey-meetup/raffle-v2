@@ -33,8 +33,8 @@ export const NameShuffler: React.FC<{
     
     // アニメーション・表示用
     const [winnerScope, winnerAnimate] = useAnimate()
-    const outerDivRef = useRef(null)
-    const winnerTextRef = useRef(null)
+    const outerDivRef = useRef<HTMLDivElement>(null)
+    const winnerTextRef = useRef<HTMLParagraphElement>(null)
 
     // シャッフルアニメーションの作製
     useEffect(() => {
@@ -53,8 +53,13 @@ export const NameShuffler: React.FC<{
             ]
           }
 
+          // プールを再生成してもlen->0の場合、何もしない（なぜか参加者0で抽選を行っている状態）
+          if (!participantsPool.current || participantsPool.current.length <= 0) {
+            return
+          }
+
           // 現在指定のIndexに新たな名前を書き込む
-          currentNames.current[nameIndex] = participantsPool.current.pop().displayName
+          currentNames.current[nameIndex] = participantsPool.current.pop()!.displayName
 
           // namesIndexを移動、Stateの更新によって際レンダー
           setNameIndex((nameIndex + 1) % SIMULTANEOUS_TEXT_ELEMENTS)

@@ -102,7 +102,7 @@ export const MappingsView: React.FC<{
           participant: null
         }
       }
-    }), [mappings, prizes, participants])
+    }).filter(entry => entry !== undefined), [mappings, prizes, participants])
 
 
     // 万が一の確認用：
@@ -209,7 +209,7 @@ export const MappingsView: React.FC<{
               />
               <Button
                 disabled={!currentEditorValue}
-                onClick={() => editMappingMutation.mutate({ action: 'OVERWRITE', prizeId: currentRow.id, winnerId: currentEditorValue })}
+                onClick={() => editMappingMutation.mutate({ action: 'OVERWRITE', prizeId: currentRow!.id, winnerId: currentEditorValue })}
               >
                 当選者を変更
               </Button>
@@ -258,7 +258,7 @@ export const MappingsView: React.FC<{
               }
               <Button
                 color="red"
-                onClick={() => editMappingMutation.mutate({ action: 'DELETE', prizeId: currentRow.id, winnerId: currentEditorValue })}
+                onClick={() => editMappingMutation.mutate({ action: 'DELETE', prizeId: currentRow!.id, winnerId: currentEditorValue })}
               >
                 当選者を削除
               </Button>

@@ -219,7 +219,7 @@ export const CancelsView: React.FC<{
                               <Text c="red">???</Text>
                               <Stack gap="0">
                                 <Text size="sm" c="dimmed">以下の受付番号に該当する参加者が見つかりませんでした。</Text>
-                                <Text size="sm" c="dimmed">{pendingParticipant.registrationId}</Text>
+                                <Text size="sm" c="dimmed">{pendingParticipant!.registrationId}</Text>
                               </Stack>
                             </Group>
                           }

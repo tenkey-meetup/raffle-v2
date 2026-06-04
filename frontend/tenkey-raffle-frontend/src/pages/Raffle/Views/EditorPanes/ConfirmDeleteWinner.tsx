@@ -15,10 +15,10 @@ export const ConfirmDeleteWinner: React.FC<{
   onConfirm
 }) => {
 
-    const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping.prizeId)
+    const prizeBeingEdited = prizes.find(prize => prize.id === currentEditorData.mapping!.prizeId)
 
-    const existingWinner = currentEditorData.mapping.winnerId 
-      ? participants.find(participant => participant.registrationId === currentEditorData.mapping.winnerId) 
+    const existingWinner = currentEditorData.mapping!.winnerId 
+      ? participants.find(participant => participant.registrationId === currentEditorData.mapping!.winnerId) 
       : null
 
     return (
@@ -27,9 +27,9 @@ export const ConfirmDeleteWinner: React.FC<{
         <Paper shadow="xs" p="xl" withBorder w={{base: "100%", lg: "50%"}}>
 
           <Stack gap="xs" align="center">
-            <Text size="xl" dangerouslySetInnerHTML={{ __html: prizeBeingEdited.displayName }} />
-            <Text size="sm" c="dimmed">{prizeBeingEdited.id}</Text>
-            <Text size="sm" c="dimmed">{prizeBeingEdited.provider}</Text>
+            <Text size="xl" dangerouslySetInnerHTML={{ __html: prizeBeingEdited!.displayName }} />
+            <Text size="sm" c="dimmed">{prizeBeingEdited!.id}</Text>
+            <Text size="sm" c="dimmed">{prizeBeingEdited!.provider}</Text>
           </Stack>
 
         </Paper>

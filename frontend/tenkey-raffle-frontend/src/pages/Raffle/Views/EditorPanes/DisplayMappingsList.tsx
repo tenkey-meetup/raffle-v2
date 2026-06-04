@@ -35,7 +35,7 @@ export const DisplayMappingsList: React.FC<{
         if (!mapping.winnerId) {
           tableData.push({
             mapping: mapping,
-            prize: correspondingPrize,
+            prize: correspondingPrize!,
             winner: null
           })
         }
@@ -44,8 +44,8 @@ export const DisplayMappingsList: React.FC<{
           const correspondingParticipant = participants.find(participant => participant.registrationId === mapping.winnerId)
           tableData.push({
             mapping: mapping,
-            prize: correspondingPrize,
-            winner: correspondingParticipant
+            prize: correspondingPrize!,
+            winner: correspondingParticipant!
           })
         }
       }
@@ -60,7 +60,8 @@ export const DisplayMappingsList: React.FC<{
       if (mappingsTableData.length > 0) {
         const scrollToIndex = mappingsTableData.findIndex(item => !item.winner) - 4
         if (scrollToIndex <= 0) { return }
-        window.document.getElementById(`MappingsTable-Row-${mappingsTableData[scrollToIndex].prize.id}`).scrollIntoView()
+        const scrollElement = window.document.getElementById(`MappingsTable-Row-${mappingsTableData[scrollToIndex].prize.id}`)
+        scrollElement && scrollElement.scrollIntoView()
 
       }
 

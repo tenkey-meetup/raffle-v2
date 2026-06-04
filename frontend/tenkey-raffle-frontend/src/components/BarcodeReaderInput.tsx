@@ -17,7 +17,7 @@ export const BarcodeReaderInput: React.FC<BarcodeReaderTextInputProps> = ({ sett
   const [currentText, setCurrentText] = useState<string>("")
   // const [debouncedText] = useDebounce(currentText, settleTime || 1000);
 
-  const handleOnSettled = (text) => {
+  const handleOnSettled = (text: string) => {
     if (text !== "") {
       onSettled(text)
       clearOnSettled && setCurrentText("")

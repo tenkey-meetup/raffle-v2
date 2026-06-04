@@ -18,7 +18,7 @@ export const MainView: React.FC<{
 }) => {
 
     const [currentLookupId, setCurrentLookupId] = useState<string | null>(null)
-    const inputRef = useRef(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // 名前検索欄に自動的にフォーカス
     useEffect(() => {
@@ -30,7 +30,7 @@ export const MainView: React.FC<{
     // 検索IDが変更された場合、同じIDを持った参加者を探す
     const matchingParticipant: Participant | null = useMemo(() => {
       if (!currentLookupId) { return null }
-      return participants.find(entry => entry.registrationId === currentLookupId)
+      return participants.find(entry => entry.registrationId === currentLookupId) || null
     }, [currentLookupId])
 
     // 検索IDが変更された場合、IDが当選者欄に入ってる抽選記録を探す
