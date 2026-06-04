@@ -43,7 +43,7 @@ class PrizesManager(metaclass=Singleton):
         self.prizesを変更後に必ず行うべき
         """
         prizes_file = open(PRIZES_CSV_FILEPATH, 'wt', newline='')
-        writer = csv.DictWriter(prizes_file, fieldnames=['管理No', '提供元', '景品名'])
+        writer = csv.DictWriter(prizes_file, fieldnames=['管理No', '提供元', '景品名', '種別', '説明'])
         writer.writeheader()
         for prize in self.prizes:
             writer.writerow({
