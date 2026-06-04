@@ -96,6 +96,11 @@ def parse_prizes_csv(prizes_reader: DictReader[str]) ->  PrizesParserReturnType:
         error_msg = '景品CSVに「提供元」列がありません'
     elif '景品名' not in prizes_headers:
         error_msg = '景品CSVに「景品名」列がありません'
+    elif '種別' not in prizes_headers:
+        error_msg = '景品CSVに「種別」列がありません'
+    elif '説明' not in prizes_headers:
+        error_msg = '景品CSVに「説明」列がありません'
+        
     
     if error_msg:
         return {
@@ -113,7 +118,9 @@ def parse_prizes_csv(prizes_reader: DictReader[str]) ->  PrizesParserReturnType:
         prizes.append(Prize(
             id=id,
             provider=row['提供元'],
-            display_name=row['景品名']
+            display_name=row['景品名'],
+            category=row['種別'],
+            description=row['説明']
         )) 
       
 

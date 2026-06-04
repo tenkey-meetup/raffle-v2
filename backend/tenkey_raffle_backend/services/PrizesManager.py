@@ -49,7 +49,9 @@ class PrizesManager(metaclass=Singleton):
             writer.writerow({
                 '管理No': prize.id, 
                 '提供元': prize.provider, 
-                '景品名': prize.display_name
+                '景品名': prize.display_name,
+                '種別': prize.category,
+                '説明': prize.description
                 })
         prizes_file.close()
     

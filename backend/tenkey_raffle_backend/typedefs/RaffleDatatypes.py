@@ -10,6 +10,8 @@ class Prize(NamedTuple):
     provider: str     # 提供者名
     display_name: str # 表示名
     id: str           # 管理用ID
+    category: str     # 景品の種別
+    description: str  # 短い説明（紹介用）
 
 class WinnerMapping(NamedTuple):
     participant_id: str  # 当選者の受付番号
