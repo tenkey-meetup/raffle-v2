@@ -11,7 +11,7 @@ import { motion } from "motion/react"
 import { MainView } from './Views/MainView';
 import { useLocation } from 'wouter';
 import { InRaffleEditMenu } from './Views/InRaffleEditMenu';
-import { BUTTON_SECONDARY_BACKGROUND_COLOR, BUTTON_SECONDARY_BORDER_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { BUTTON_SECONDARY_BACKGROUND_COLOR, BUTTON_SECONDARY_BORDER_COLOR, BUTTON_SECONDARY_TEXT_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
 import { DelayedDisplayLoader } from '@/components/DelayedDisplayLoader';
 import { useWindowSize } from '@react-hook/window-size';
 import { StylizedWindow } from '@/components/StylizedWindow';
@@ -167,7 +167,7 @@ export function Raffle() {
           <Popover width={200} position="top" withArrow shadow="md" opened={controlPopoverOpened} onDismiss={() => setControlPopoverOpened(false)}>
             <Popover.Target>
               <ActionIcon variant="filled" color={BUTTON_SECONDARY_BORDER_COLOR} size="3em" bdrs="100%" onClick={() => setControlPopoverOpened(!controlPopoverOpened)}>
-                <PiList size="1.5em" />
+                <PiList size="1.5em" color={BUTTON_SECONDARY_TEXT_COLOR} />
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
@@ -176,7 +176,7 @@ export function Raffle() {
                   leftSection={<PiPencilBold size="1em" />}
                   onClick={() => { setControlPopoverOpened(false); openEditPane() }}
                   bg={BUTTON_SECONDARY_BACKGROUND_COLOR}
-                  c={BUTTON_SECONDARY_BORDER_COLOR}
+                  c={BUTTON_SECONDARY_TEXT_COLOR}
                   style={{
                     outlineColor: BUTTON_SECONDARY_BORDER_COLOR,
                     outlineWidth: "2px",
@@ -189,7 +189,7 @@ export function Raffle() {
                   leftSection={<PiXBold size="1em" />}
                   onClick={() => navigate("~/transition/exit")}
                   bg={BUTTON_SECONDARY_BACKGROUND_COLOR}
-                  c={BUTTON_SECONDARY_BORDER_COLOR}
+                  c={BUTTON_SECONDARY_TEXT_COLOR}
                   style={{
                     outlineColor: BUTTON_SECONDARY_BORDER_COLOR,
                     outlineWidth: "2px",

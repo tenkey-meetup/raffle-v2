@@ -4,7 +4,7 @@ import { useLocation } from 'wouter';
 import { MainView } from '../Handoff/Views/MainView';
 import { TenkeyLogo } from '@/components/TenkeyLogo';
 import { motion } from 'motion/react';
-import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, BUTTON_PRIMARY_TEXT_COLOR, FOREGROUND_TEXT_COLOR, WINDOW_HEADER_COLOR } from '@/settings';
 import { StylizedWindow } from '@/components/StylizedWindow';
 import { useHotkeys } from '@mantine/hooks';
 
@@ -46,7 +46,7 @@ export function Landing() {
 										</Center>
 										<Title order={3}>抽選システム</Title>
 									</Group>
-									<Button size="xl" onClick={() => navigate('~/transition/enter')} color={BUTTON_PRIMARY_BACKGROUND_COLOR} bd={`solid 2px ${BUTTON_PRIMARY_BORDER_COLOR}`} c={BUTTON_PRIMARY_BORDER_COLOR}>
+									<Button size="xl" onClick={() => navigate('~/transition/enter')} color={BUTTON_PRIMARY_BACKGROUND_COLOR} bd={`solid 2px ${BUTTON_PRIMARY_BORDER_COLOR}`} c={BUTTON_PRIMARY_TEXT_COLOR}>
 										抽選開始
 									</Button>
 									<Group>

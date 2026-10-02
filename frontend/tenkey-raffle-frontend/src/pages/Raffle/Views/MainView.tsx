@@ -11,7 +11,7 @@ import { AnimatedPrizeDisplay } from "../../../components/AnimatedPrizeDisplay"
 import { TenkeyLogo } from "@components/TenkeyLogo"
 import { submitRaffleWinner } from "@/requests/Raffle"
 import { PiGift } from "react-icons/pi"
-import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, BUTTON_PRIMARY_TEXT_COLOR, TRANSITION_OVERLAY_TEXT_COLOR, TRANSITION_PANE_COLOR } from "@/settings"
 import { DelayedDisplayLoader } from "@/components/DelayedDisplayLoader"
 import { useHotkeys } from "@mantine/hooks"
 import { notifications } from "@mantine/notifications"
@@ -432,7 +432,7 @@ export const MainView: React.FC<{
                 size="28px"
                 variant="outline"
                 bg={BUTTON_PRIMARY_BACKGROUND_COLOR}
-                c={BUTTON_PRIMARY_BORDER_COLOR}
+                c={BUTTON_PRIMARY_TEXT_COLOR}
                 style={{
                   borderColor: BUTTON_PRIMARY_BORDER_COLOR,
                   borderWidth: "2px"

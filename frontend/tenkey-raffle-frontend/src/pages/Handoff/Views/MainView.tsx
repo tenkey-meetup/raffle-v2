@@ -5,7 +5,7 @@ import { BarcodeReaderInput } from "@/components/BarcodeReaderInput"
 import { sanitizePrizeName } from "@/util/SanitizePrizeName"
 import { WordWrapSpan } from "@/components/WordWrapSpan"
 import { AnimatePresence } from "motion/react"
-import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, BUTTON_SECONDARY_BACKGROUND_COLOR, BUTTON_SECONDARY_BORDER_COLOR, SECONDARY_CONTAINER_BACKGROUND_COLOR } from "@/settings"
+import { BUTTON_PRIMARY_BACKGROUND_COLOR, BUTTON_PRIMARY_BORDER_COLOR, BUTTON_SECONDARY_BACKGROUND_COLOR, BUTTON_SECONDARY_BORDER_COLOR, SECONDARY_CONTAINER_BACKGROUND_COLOR, WINDOW_ACCENT_BACKGROUND_COLOR } from "@/settings"
 
 export const MainView: React.FC<{
   participants: Participant[],
@@ -73,7 +73,7 @@ export const MainView: React.FC<{
 
               {/* 参加者情報 */}
               {matchingParticipant ?
-                <Paper shadow="xs" p="xl" withBorder bg={BUTTON_PRIMARY_BACKGROUND_COLOR}>
+                <Paper shadow="xs" p="xl" withBorder bg={WINDOW_ACCENT_BACKGROUND_COLOR}>
                   {/* 一般の場合 */}
                   <Stack align="center" ta="center" h="100%">
                     <Title order={3} c={BUTTON_PRIMARY_BORDER_COLOR}>参加者情報</Title>
